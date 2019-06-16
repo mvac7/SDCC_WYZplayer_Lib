@@ -1,0 +1,166 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 1.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+    .__.$$$.                                                    =  2710 L
+    .__.ABS.                                                    =  0000 G
+    .__.CPU.                                                    =  0000 L
+    .__.H$L.                                                    =  0000 L
+  0 BGICMODBC1                                                     0285 R
+  0 CARGA_CANCION                                                  01A1 R
+  0 CLEAR_PSG_BUFFER                                               00A1 R
+  0 COMANDOS                                                       0416 R
+  0 COM_EFECTO                                                     045B R
+  0 COM_ENVOLVENTE                                                 046C R
+  0 CONT_ENV                                                       0625 R
+  0 CRTBC0                                                         062F R
+  0 DCBC0                                                          0403 R
+  0 DECODE_CANAL                                                   0398 R
+  0 DECODE_SONG                                                    01A9 R
+  0 EVOLVENTES                                                     0602 R
+  0 EXT_WORD                                                       064D R
+  0 FCA_CONT                                                       04B6 R
+  0 FIN_CANAL_A                                                    04AB R
+  0 FIN_CANAL_P                                                    053E R
+  0 FIN_DEC_CANAL                                                  03F1 R
+  0 FIN_NOPLAYER                                                   0324 R
+  0 FIN_NOTA_A                                                     048B R
+  0 FIN_NOTA_P                                                     0526 R
+  0 FIN_RUTINA                                                     0504 R
+  0 FIN_SONIDO                                                     0316 R
+  0 FRECUENCIA_OFF                                                 061C R
+  0 GETLEN                                                         03F6 R
+  0 INICIA_SONIDO                                                  0157 R
+  0 INICIO                                                         029F R
+  0 INIT_DECODER                                                   0240 R
+  0 LEJP0                                                          051D R
+  0 LNJP0                                                          0481 R
+  0 LOCALIZA_EFECTO                                                0505 R
+  0 LOCALIZA_NOTA                                                  0409 R
+  0 LOUT                                                           0175 R
+  0 NOTA                                                           05ED R
+  0 NO_BACKUP_ENVOLVENTE                                           016F R
+  0 NO_DEC_TEMPO                                                   0428 R
+  0 NO_ENVOLVENTE                                                  03D7 R
+  0 NO_ENVOLVENTES_SONIDO                                          02FA R
+  0 NO_FIN_CANAL_A                                                 04C4 R
+  0 NO_FIN_CANAL_P                                                 0546 R
+  0 NO_INC_TEMPO                                                   042D R
+  0 NO_INSTRUMENTO                                                 03C8 R
+  0 NO_MODIFICA                                                    03E4 R
+  0 NO_PUNTILLO                                                    03B1 R
+  0 NO_RUIDO                                                       0308 R
+  0 NO_SILENCIO                                                    03A7 R
+  0 NO_SILENCIO_A                                                  04F2 R
+  0 NPTJP0                                                         01C7 R
+  0 ORNMJP1                                                        05D7 R
+  0 ORNNEG                                                         05B9 R
+  0 PAUTA                                                          054D R
+  0 PAUTAS                                                         036D R
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+  0 PCAJP0                                                         056D R
+  0 PCAJP1                                                         0584 R
+  0 PCAJP2                                                         0599 R
+  0 PCAJP3                                                         05BB R
+  0 PCAJP4                                                         0559 R
+  0 PCAJP5                                                         05DF R
+  0 PCAJP6                                                         05CB R
+  0 PCAJP7                                                         05E9 R
+  0 PLAY                                                           032A R
+  0 PLAYER_OFF                                                     009C R
+  0 REPRODUCE_SONIDO                                               02B5 R
+  0 ROUT                                                           0166 R
+  0 SILENCIO_ENVOLVENTE                                            04DF R
+  0 SI_RUIDO                                                       030E R
+  0 TABLA_NOTAS                                                    05F5 R
+  1 _CANAL_A                                                       000A GR
+  1 _CANAL_B                                                       000C GR
+  1 _CANAL_C                                                       000E GR
+  1 _CANAL_P                                                       0036 GR
+  0 _DATOS_NOTAS                                                   00C3 GR
+  1 _ENVOLVENTE                                                    0069 GR
+  1 _ENVOLVENTE_BACK                                               006A GR
+  1 _INTERR                                                        0000 GR
+  1 _N_SONIDO                                                      0046 GR
+  1 _PSG_REG                                                       0049 GR
+  1 _PSG_REG_SEC                                                   0059 GR
+  1 _PUNTERO_A                                                     0004 GR
+  1 _PUNTERO_B                                                     0006 GR
+  1 _PUNTERO_C                                                     0008 GR
+  1 _PUNTERO_DECA                                                  0022 GR
+  1 _PUNTERO_DECB                                                  0024 GR
+  1 _PUNTERO_DECC                                                  0026 GR
+  1 _PUNTERO_DECP                                                  003A GR
+  1 _PUNTERO_L_DECA                                                002E GR
+  1 _PUNTERO_L_DECB                                                0030 GR
+  1 _PUNTERO_L_DECC                                                0032 GR
+  1 _PUNTERO_L_DECP                                                003C GR
+  1 _PUNTERO_P                                                     0034 GR
+  1 _PUNTERO_P_A                                                   0010 GR
+  1 _PUNTERO_P_A0                                                  0016 GR
+  1 _PUNTERO_P_B                                                   0012 GR
+  1 _PUNTERO_P_B0                                                  0018 GR
+  1 _PUNTERO_P_C                                                   0014 GR
+  1 _PUNTERO_P_C0                                                  001A GR
+  1 _PUNTERO_P_DECA                                                001C GR
+  1 _PUNTERO_P_DECB                                                001E GR
+  1 _PUNTERO_P_DECC                                                0020 GR
+  1 _PUNTERO_P_DECP                                                0038 GR
+  1 _PUNTERO_SONIDO                                                0047 GR
+  1 _REG_NOTA_A                                                    0028 GR
+  1 _REG_NOTA_B                                                    002A GR
+  1 _REG_NOTA_C                                                    002C GR
+  1 _SELECT_CANAL_A                                                00B1 GR
+  1 _SELECT_CANAL_B                                                00B8 GR
+  1 _SELECT_CANAL_C                                                00BF GR
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+  1 _SFX_H                                                         0040 GR
+  1 _SFX_L                                                         003E GR
+  1 _SFX_MIX                                                       0044 GR
+  1 _SFX_V                                                         0042 GR
+  1 _SONG                                                          0001 GR
+  1 _SOUND_BUFFER_A                                                006B GR
+  1 _SOUND_BUFFER_B                                                007B GR
+  1 _SOUND_BUFFER_C                                                008B GR
+  1 _SOUND_BUFFER_P                                                009B GR
+  1 _TABLA_DATOS_CANAL_SFX                                         00C6 GR
+  1 _TABLA_PAUTAS                                                  00AD GR
+  1 _TABLA_SONG                                                    00AB GR
+  1 _TABLA_SONIDOS                                                 00AF GR
+  1 _TEMPO                                                         0002 GR
+  1 _TTEMPO                                                        0003 GR
+  1 _VOL_INST_A                                                    0029 GR
+  1 _VOL_INST_B                                                    002B GR
+  1 _VOL_INST_C                                                    002D GR
+  0 _WYZdecode                                                     029F GR
+  0 _WYZinit                                                       0000 GR
+  0 _WYZloadSong                                                   0190 GR
+  0 _WYZpause                                                      009C GR
+  0 _WYZplayAY                                                     0166 GR
+  0 _WYZplayFX                                                     0146 GR
+  0 _WYZresume                                                     013F GR
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 4.
+Hexadecimal [16-Bits]
+
+Area Table
+
+   0 _CODE                                      size  657   flags    0
+   1 _DATA                                      size   CC   flags    0
+   2 _INITIALIZED                               size    0   flags    0
+   3 _DABS                                      size    0   flags    8
+   4 _HOME                                      size    0   flags    0
+   5 _GSINIT                                    size    0   flags    0
+   6 _GSFINAL                                   size    0   flags    0
+   7 _INITIALIZER                               size    0   flags    0
+   8 _CABS                                      size    0   flags    8
+

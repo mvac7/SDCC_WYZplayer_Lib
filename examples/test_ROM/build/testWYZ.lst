@@ -1,0 +1,602 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 3.6.0 #9615 (MINGW64)
+                              4 ;--------------------------------------------------------
+                              5 	.module testWYZ
+                              6 	.optsdcc -mz80
+                              7 	
+                              8 ;--------------------------------------------------------
+                              9 ; Public variables in this module
+                             10 ;--------------------------------------------------------
+                             11 	.globl _main
+                             12 	.globl _my_isr0
+                             13 	.globl _WYZresume
+                             14 	.globl _WYZpause
+                             15 	.globl _WYZplayAY
+                             16 	.globl _WYZdecode
+                             17 	.globl _WYZloadSong
+                             18 	.globl _WYZinit
+                             19 	.globl _install_isr
+                             20 	.globl _PRINT
+                             21 	.globl _LOCATE
+                             22 	.globl _COLOR
+                             23 	.globl _WIDTH
+                             24 	.globl _SCREEN1
+                             25 	.globl _firstPATaddr
+                             26 	.globl _keyB7semaphore
+                             27 	.globl _SPRBUFFER
+                             28 	.globl _VALUE
+                             29 	.globl _presskey
+                             30 	.globl _text02
+                             31 	.globl _text01
+                             32 	.globl _PauseSong
+                             33 	.globl _SetSpritesSize
+                             34 	.globl _PEEK
+                             35 	.globl _POKE
+                             36 	.globl _CopyMEM
+                             37 	.globl _VPEEK
+                             38 	.globl _INKEY
+                             39 	.globl _WAIT
+                             40 	.globl _GetKeyMatrix
+                             41 	.globl _ShowVumeter
+                             42 	.globl _SetSPRITES
+                             43 ;--------------------------------------------------------
+                             44 ; special function registers
+                             45 ;--------------------------------------------------------
+                             46 ;--------------------------------------------------------
+                             47 ; ram data
+                             48 ;--------------------------------------------------------
+                             49 	.area _DATA
+   0000                      50 _VALUE::
+   0000                      51 	.ds 1
+   0001                      52 _SPRBUFFER::
+   0001                      53 	.ds 72
+   0049                      54 _keyB7semaphore::
+   0049                      55 	.ds 1
+   004A                      56 _firstPATaddr::
+   004A                      57 	.ds 2
+                             58 ;--------------------------------------------------------
+                             59 ; ram data
+                             60 ;--------------------------------------------------------
+                             61 	.area _INITIALIZED
+                             62 ;--------------------------------------------------------
+                             63 ; absolute external ram data
+                             64 ;--------------------------------------------------------
+                             65 	.area _DABS (ABS)
+                             66 ;--------------------------------------------------------
+                             67 ; global & static initialisations
+                             68 ;--------------------------------------------------------
+                             69 	.area _HOME
+                             70 	.area _GSINIT
+                             71 	.area _GSFINAL
+                             72 	.area _GSINIT
+                             73 ;--------------------------------------------------------
+                             74 ; Home
+                             75 ;--------------------------------------------------------
+                             76 	.area _HOME
+                             77 	.area _HOME
+                             78 ;--------------------------------------------------------
+                             79 ; code
+                             80 ;--------------------------------------------------------
+                             81 	.area _CODE
+                             82 ;src\testWYZ.c:102: void my_isr0(void) __interrupt 
+                             83 ;	---------------------------------
+                             84 ; Function my_isr0
+                             85 ; ---------------------------------
+   0000                      86 _my_isr0::
+   0000 FB            [ 4]   87 	ei
+   0001 F5            [11]   88 	push	af
+   0002 C5            [11]   89 	push	bc
+   0003 D5            [11]   90 	push	de
+   0004 E5            [11]   91 	push	hl
+   0005 FD E5         [15]   92 	push	iy
+                             93 ;src\testWYZ.c:104: DI;
+   0007 F3            [ 4]   94 	di	
+                             95 ;src\testWYZ.c:105: READ_VDP_STATUS;
+   0008 DB 99         [11]   96 	in	a,(#0x99) 
+                             97 ;src\testWYZ.c:108: WYZplayAY();
+   000A CDr00r00      [17]   98 	call	_WYZplayAY
+                             99 ;src\testWYZ.c:116: __endasm;
+                            100 ;vuelca	a VRAM buffer atributos sprites
+   000D 21r01r00      [10]  101 	ld	HL,#_SPRBUFFER
+   0010 11 00 1B      [10]  102 	ld	DE,#0x1B00
+   0013 01 50 00      [10]  103 	ld	BC,#20*4
+   0016 CD 5C 00      [17]  104 	call	0x005C
+                            105 ;src\testWYZ.c:119: EI;
+   0019 FB            [ 4]  106 	ei	
+   001A FD E1         [14]  107 	pop	iy
+   001C E1            [10]  108 	pop	hl
+   001D D1            [10]  109 	pop	de
+   001E C1            [10]  110 	pop	bc
+   001F F1            [10]  111 	pop	af
+   0020 ED 4D         [14]  112 	reti
+   0022                     113 _text01:
+   0022 54 65 73 74 20 57   114 	.ascii "Test WYZ player Lib for SDCC"
+        59 5A 20 70 6C 61
+        79 65 72 20 4C 69
+        62 20 66 6F 72 20
+        53 44 43 43
+   003E 00                  115 	.db 0x00
+   003F                     116 _text02:
+   003F 76 31 2E 30 20 28   117 	.ascii "v1.0 (05/06/2019)"
+        30 35 2F 30 36 2F
+        32 30 31 39 29
+   0050 00                  118 	.db 0x00
+   0051                     119 _presskey:
+   0051 50 72 65 73 73 20   120 	.ascii "Press a key to Play"
+        61 20 6B 65 79 20
+        74 6F 20 50 6C 61
+        79
+   0064 00                  121 	.db 0x00
+                            122 ;src\testWYZ.c:128: void main(void)
+                            123 ;	---------------------------------
+                            124 ; Function main
+                            125 ; ---------------------------------
+   0065                     126 _main::
+                            127 ;src\testWYZ.c:135: keyB7semaphore=false;
+   0065 21r49r00      [10]  128 	ld	hl,#_keyB7semaphore + 0
+   0068 36 00         [10]  129 	ld	(hl), #0x00
+                            130 ;src\testWYZ.c:137: COLOR(WHITE,DARK_BLUE,LIGHT_BLUE);
+   006A 21 04 05      [10]  131 	ld	hl,#0x0504
+   006D E5            [11]  132 	push	hl
+   006E 3E 0F         [ 7]  133 	ld	a,#0x0f
+   0070 F5            [11]  134 	push	af
+   0071 33            [ 6]  135 	inc	sp
+   0072 CDr00r00      [17]  136 	call	_COLOR
+   0075 F1            [10]  137 	pop	af
+   0076 33            [ 6]  138 	inc	sp
+                            139 ;src\testWYZ.c:139: WIDTH(32);
+   0077 3E 20         [ 7]  140 	ld	a,#0x20
+   0079 F5            [11]  141 	push	af
+   007A 33            [ 6]  142 	inc	sp
+   007B CDr00r00      [17]  143 	call	_WIDTH
+   007E 33            [ 6]  144 	inc	sp
+                            145 ;src\testWYZ.c:140: SCREEN1();    
+   007F CDr00r00      [17]  146 	call	_SCREEN1
+                            147 ;src\testWYZ.c:141: SetSpritesSize(1);  
+   0082 3E 01         [ 7]  148 	ld	a,#0x01
+   0084 F5            [11]  149 	push	af
+   0085 33            [ 6]  150 	inc	sp
+   0086 CDr72r01      [17]  151 	call	_SetSpritesSize
+   0089 33            [ 6]  152 	inc	sp
+                            153 ;src\testWYZ.c:143: LOCATE(0,0);
+   008A 21 00 00      [10]  154 	ld	hl,#0x0000
+   008D E5            [11]  155 	push	hl
+   008E CDr00r00      [17]  156 	call	_LOCATE
+                            157 ;src\testWYZ.c:144: PRINT(text01);
+   0091 21r22r00      [10]  158 	ld	hl, #_text01
+   0094 E3            [19]  159 	ex	(sp),hl
+   0095 CDr00r00      [17]  160 	call	_PRINT
+                            161 ;src\testWYZ.c:145: PRINT("\n");
+   0098 21r4Br01      [10]  162 	ld	hl, #___str_3
+   009B E3            [19]  163 	ex	(sp),hl
+   009C CDr00r00      [17]  164 	call	_PRINT
+                            165 ;src\testWYZ.c:146: PRINT(text02);
+   009F 21r3Fr00      [10]  166 	ld	hl, #_text02
+   00A2 E3            [19]  167 	ex	(sp),hl
+   00A3 CDr00r00      [17]  168 	call	_PRINT
+                            169 ;src\testWYZ.c:148: PRINT("\n\n");
+   00A6 21r4Dr01      [10]  170 	ld	hl, #___str_4
+   00A9 E3            [19]  171 	ex	(sp),hl
+   00AA CDr00r00      [17]  172 	call	_PRINT
+                            173 ;src\testWYZ.c:150: PRINT("Song name:\n ");
+   00AD 21r50r01      [10]  174 	ld	hl, #___str_5
+   00B0 E3            [19]  175 	ex	(sp),hl
+   00B1 CDr00r00      [17]  176 	call	_PRINT
+                            177 ;src\testWYZ.c:151: PRINT(Song_name);
+   00B4 21r00r00      [10]  178 	ld	hl, #_Song_name
+   00B7 E3            [19]  179 	ex	(sp),hl
+   00B8 CDr00r00      [17]  180 	call	_PRINT
+                            181 ;src\testWYZ.c:153: PRINT("\n\n");
+   00BB 21r4Dr01      [10]  182 	ld	hl, #___str_4
+   00BE E3            [19]  183 	ex	(sp),hl
+   00BF CDr00r00      [17]  184 	call	_PRINT
+                            185 ;src\testWYZ.c:155: PRINT("Author:\n ");
+   00C2 21r5Dr01      [10]  186 	ld	hl, #___str_6
+   00C5 E3            [19]  187 	ex	(sp),hl
+   00C6 CDr00r00      [17]  188 	call	_PRINT
+                            189 ;src\testWYZ.c:156: PRINT(Song_author);
+   00C9 21r00r00      [10]  190 	ld	hl, #_Song_author
+   00CC E3            [19]  191 	ex	(sp),hl
+   00CD CDr00r00      [17]  192 	call	_PRINT
+   00D0 F1            [10]  193 	pop	af
+                            194 ;src\testWYZ.c:183: WYZinit((unsigned int) WYZ_songs, (unsigned int) WYZ_instruments, (unsigned int) WYZ_FXs);   
+   00D1 01r00r00      [10]  195 	ld	bc,#_WYZ_FXs
+   00D4 11r00r00      [10]  196 	ld	de,#_WYZ_instruments
+   00D7 21r00r00      [10]  197 	ld	hl,#_WYZ_songs
+   00DA C5            [11]  198 	push	bc
+   00DB D5            [11]  199 	push	de
+   00DC E5            [11]  200 	push	hl
+   00DD CDr00r00      [17]  201 	call	_WYZinit
+   00E0 21 06 00      [10]  202 	ld	hl,#6
+   00E3 39            [11]  203 	add	hl,sp
+   00E4 F9            [ 6]  204 	ld	sp,hl
+                            205 ;src\testWYZ.c:185: WYZloadSong(0);   //(unsigned int) SONG00);   
+   00E5 AF            [ 4]  206 	xor	a, a
+   00E6 F5            [11]  207 	push	af
+   00E7 33            [ 6]  208 	inc	sp
+   00E8 CDr00r00      [17]  209 	call	_WYZloadSong
+   00EB 33            [ 6]  210 	inc	sp
+                            211 ;src\testWYZ.c:196: SetSPRITES();
+   00EC CDr86r02      [17]  212 	call	_SetSPRITES
+                            213 ;src\testWYZ.c:198: install_isr(my_isr0);
+   00EF 21r00r00      [10]  214 	ld	hl,#_my_isr0
+   00F2 E5            [11]  215 	push	hl
+   00F3 CDr00r00      [17]  216 	call	_install_isr
+   00F6 F1            [10]  217 	pop	af
+                            218 ;src\testWYZ.c:200: while(1)
+   00F7                     219 00109$:
+                            220 ;src\testWYZ.c:202: HALT;
+   00F7 76            [ 4]  221 	halt	
+                            222 ;src\testWYZ.c:233: ShowVumeter(0,PSG_REG_SEC[AY_AmplA]);
+   00F8 21r08r00      [10]  223 	ld	hl, #_PSG_REG_SEC + 8
+   00FB 46            [ 7]  224 	ld	b,(hl)
+   00FC C5            [11]  225 	push	bc
+   00FD 33            [ 6]  226 	inc	sp
+   00FE AF            [ 4]  227 	xor	a, a
+   00FF F5            [11]  228 	push	af
+   0100 33            [ 6]  229 	inc	sp
+   0101 CDr2Er02      [17]  230 	call	_ShowVumeter
+   0104 F1            [10]  231 	pop	af
+                            232 ;src\testWYZ.c:234: ShowVumeter(1,PSG_REG_SEC[AY_AmplB]);
+   0105 21r09r00      [10]  233 	ld	hl, #_PSG_REG_SEC + 9
+   0108 46            [ 7]  234 	ld	b,(hl)
+   0109 C5            [11]  235 	push	bc
+   010A 33            [ 6]  236 	inc	sp
+   010B 3E 01         [ 7]  237 	ld	a,#0x01
+   010D F5            [11]  238 	push	af
+   010E 33            [ 6]  239 	inc	sp
+   010F CDr2Er02      [17]  240 	call	_ShowVumeter
+   0112 F1            [10]  241 	pop	af
+                            242 ;src\testWYZ.c:235: ShowVumeter(2,PSG_REG_SEC[AY_AmplC]);
+   0113 21r0Ar00      [10]  243 	ld	hl, #_PSG_REG_SEC + 10
+   0116 46            [ 7]  244 	ld	b,(hl)
+   0117 C5            [11]  245 	push	bc
+   0118 33            [ 6]  246 	inc	sp
+   0119 3E 02         [ 7]  247 	ld	a,#0x02
+   011B F5            [11]  248 	push	af
+   011C 33            [ 6]  249 	inc	sp
+   011D CDr2Er02      [17]  250 	call	_ShowVumeter
+                            251 ;src\testWYZ.c:240: keyPressed = GetKeyMatrix(7);  
+   0120 26 07         [ 7]  252 	ld	h,#0x07
+   0122 E3            [19]  253 	ex	(sp),hl
+   0123 33            [ 6]  254 	inc	sp
+   0124 CDr1Cr02      [17]  255 	call	_GetKeyMatrix
+   0127 33            [ 6]  256 	inc	sp
+   0128 4D            [ 4]  257 	ld	c,l
+                            258 ;src\testWYZ.c:241: if (keyPressed!=0xFF)  //pressure control of the keys
+   0129 79            [ 4]  259 	ld	a,c
+   012A 3C            [ 4]  260 	inc	a
+   012B 28 14         [12]  261 	jr	Z,00106$
+                            262 ;src\testWYZ.c:243: if(keyB7semaphore==false)
+   012D 3Ar49r00      [13]  263 	ld	a,(#_keyB7semaphore + 0)
+   0130 B7            [ 4]  264 	or	a, a
+   0131 20 13         [12]  265 	jr	NZ,00107$
+                            266 ;src\testWYZ.c:246: if (!(keyPressed&16))//  0b11101111)
+   0133 CB 61         [ 8]  267 	bit	4, c
+   0135 20 0F         [12]  268 	jr	NZ,00107$
+                            269 ;src\testWYZ.c:248: keyB7semaphore=true;
+   0137 21r49r00      [10]  270 	ld	hl,#_keyB7semaphore + 0
+   013A 36 01         [10]  271 	ld	(hl), #0x01
+                            272 ;src\testWYZ.c:249: PauseSong(); 
+   013C CDr67r01      [17]  273 	call	_PauseSong
+   013F 18 05         [12]  274 	jr	00107$
+   0141                     275 00106$:
+                            276 ;src\testWYZ.c:253: keyB7semaphore=false;        
+   0141 21r49r00      [10]  277 	ld	hl,#_keyB7semaphore + 0
+   0144 36 00         [10]  278 	ld	(hl), #0x00
+   0146                     279 00107$:
+                            280 ;src\testWYZ.c:259: WYZdecode();
+   0146 CDr00r00      [17]  281 	call	_WYZdecode
+   0149 18 AC         [12]  282 	jr	00109$
+   014B                     283 ___str_3:
+   014B 0A                  284 	.db 0x0a
+   014C 00                  285 	.db 0x00
+   014D                     286 ___str_4:
+   014D 0A                  287 	.db 0x0a
+   014E 0A                  288 	.db 0x0a
+   014F 00                  289 	.db 0x00
+   0150                     290 ___str_5:
+   0150 53 6F 6E 67 20 6E   291 	.ascii "Song name:"
+        61 6D 65 3A
+   015A 0A                  292 	.db 0x0a
+   015B 20                  293 	.ascii " "
+   015C 00                  294 	.db 0x00
+   015D                     295 ___str_6:
+   015D 41 75 74 68 6F 72   296 	.ascii "Author:"
+        3A
+   0164 0A                  297 	.db 0x0a
+   0165 20                  298 	.ascii " "
+   0166 00                  299 	.db 0x00
+                            300 ;src\testWYZ.c:274: void PauseSong()
+                            301 ;	---------------------------------
+                            302 ; Function PauseSong
+                            303 ; ---------------------------------
+   0167                     304 _PauseSong::
+                            305 ;src\testWYZ.c:276: if((INTERR & 0b00000010)==0) WYZresume();  //AND binario  
+   0167 21r00r00      [10]  306 	ld	hl,#_INTERR+0
+   016A CB 4E         [12]  307 	bit	1, (hl)
+   016C CAr00r00      [10]  308 	jp	Z,_WYZresume
+                            309 ;src\testWYZ.c:277: else WYZpause();  
+   016F C3r00r00      [10]  310 	jp  _WYZpause
+                            311 ;src\testWYZ.c:287: void SetSpritesSize(char size) __naked
+                            312 ;	---------------------------------
+                            313 ; Function SetSpritesSize
+                            314 ; ---------------------------------
+   0172                     315 _SetSpritesSize::
+                            316 ;src\testWYZ.c:333: __endasm;
+   0172 DD E5         [15]  317 	push	IX
+   0174 DD 21 00 00   [14]  318 	ld	IX,#0
+   0178 DD 39         [15]  319 	add	IX,SP
+   017A 21 E0 F3      [10]  320 	ld	HL,#0xF3DF +1 ; --- read vdp(1) from mem
+   017D 46            [ 7]  321 	ld	B,(HL)
+   017E DD 7E 04      [19]  322 	ld	A,4(ix)
+   0181 FE 01         [ 7]  323 	cp	#1
+   0183 20 04         [12]  324 	jr	NZ,size8
+   0185 CB C8         [ 8]  325 	set	1,B ; 16x16
+   0187 18 02         [12]  326 	jr	setSize
+   0189                     327 	size8:
+   0189 CB 88         [ 8]  328 	res	1,B ; 8x8
+   018B                     329 	setSize:
+   018B 0E 01         [ 7]  330 	ld	C,#0x01
+   018D CDr93r01      [17]  331 	call	writeVDP
+   0190 DD E1         [14]  332 	pop	IX
+   0192 C9            [10]  333 	ret
+   0193                     334 	writeVDP:
+   0193 FD 21 DF F3   [14]  335 	ld	IY,#0xF3DF
+   0197 59            [ 4]  336 	ld	E,C
+   0198 16 00         [ 7]  337 	ld	D,#0
+   019A FD 19         [15]  338 	add	IY,DE
+   019C FD 70 00      [19]  339 	ld	(IY),B ;save copy of vdp value in system var
+   019F 78            [ 4]  340 	ld	A,B
+   01A0 F3            [ 4]  341 	di
+   01A1 D3 99         [11]  342 	out	(#0x99),A
+   01A3 79            [ 4]  343 	ld	A,C
+   01A4 F6 80         [ 7]  344 	or	#0x80 ;add 128 to VDP reg value
+   01A6 D3 99         [11]  345 	out	(#0x99),A
+   01A8 FB            [ 4]  346 	ei
+   01A9 C9            [10]  347 	ret
+                            348 ;src\testWYZ.c:341: char PEEK(uint address)
+                            349 ;	---------------------------------
+                            350 ; Function PEEK
+                            351 ; ---------------------------------
+   01AA                     352 _PEEK::
+                            353 ;src\testWYZ.c:355: __endasm;
+   01AA DD E5         [15]  354 	push	IX
+   01AC DD 21 00 00   [14]  355 	ld	IX,#0
+   01B0 DD 39         [15]  356 	add	IX,SP
+   01B2 DD 6E 04      [19]  357 	ld	L,4(IX)
+   01B5 DD 66 05      [19]  358 	ld	H,5(IX)
+   01B8 7E            [ 7]  359 	ld	A,(HL)
+   01B9 6F            [ 4]  360 	ld	L,A
+   01BA DD E1         [14]  361 	pop	IX
+   01BC C9            [10]  362 	ret
+                            363 ;src\testWYZ.c:360: void POKE(uint address, char value)
+                            364 ;	---------------------------------
+                            365 ; Function POKE
+                            366 ; ---------------------------------
+   01BD                     367 _POKE::
+                            368 ;src\testWYZ.c:374: __endasm;
+   01BD DD E5         [15]  369 	push	IX
+   01BF DD 21 00 00   [14]  370 	ld	IX,#0
+   01C3 DD 39         [15]  371 	add	IX,SP
+   01C5 DD 6E 04      [19]  372 	ld	L,4(IX)
+   01C8 DD 66 05      [19]  373 	ld	H,5(IX)
+   01CB DD 7E 06      [19]  374 	ld	A,6(IX)
+   01CE 77            [ 7]  375 	ld	(HL),A
+   01CF DD E1         [14]  376 	pop	IX
+   01D1 C9            [10]  377 	ret
+                            378 ;src\testWYZ.c:388: void CopyMEM(unsigned int source, unsigned int destination, unsigned int length)
+                            379 ;	---------------------------------
+                            380 ; Function CopyMEM
+                            381 ; ---------------------------------
+   01D2                     382 _CopyMEM::
+                            383 ;src\testWYZ.c:408: __endasm;
+   01D2 DD E5         [15]  384 	push	IX
+   01D4 DD 21 00 00   [14]  385 	ld	IX,#0
+   01D8 DD 39         [15]  386 	add	IX,SP
+   01DA DD 6E 04      [19]  387 	ld	L,4(IX)
+   01DD DD 66 05      [19]  388 	ld	H,5(IX) ;source memory address
+   01E0 DD 5E 06      [19]  389 	ld	E,6(IX)
+   01E3 DD 56 07      [19]  390 	ld	D,7(IX) ;Destination RAM address
+   01E6 DD 4E 08      [19]  391 	ld	C,8(IX)
+   01E9 DD 46 09      [19]  392 	ld	B,9(IX) ;length
+   01EC ED B0         [21]  393 	ldir
+   01EE DD E1         [14]  394 	pop	IX
+   01F0 C9            [10]  395 	ret
+                            396 ;src\testWYZ.c:414: char VPEEK(uint address)
+                            397 ;	---------------------------------
+                            398 ; Function VPEEK
+                            399 ; ---------------------------------
+   01F1                     400 _VPEEK::
+                            401 ;src\testWYZ.c:429: __endasm;
+   01F1 DD E5         [15]  402 	push	IX
+   01F3 DD 21 00 00   [14]  403 	ld	IX,#0
+   01F7 DD 39         [15]  404 	add	IX,SP
+   01F9 DD 6E 04      [19]  405 	ld	L,4(IX)
+   01FC DD 66 05      [19]  406 	ld	H,5(IX)
+   01FF CD 4A 00      [17]  407 	call	0x004A
+   0202 6F            [ 4]  408 	ld	L,A
+   0203 DD E1         [14]  409 	pop	IX
+   0205 C9            [10]  410 	ret
+                            411 ;src\testWYZ.c:437: char INKEY(){
+                            412 ;	---------------------------------
+                            413 ; Function INKEY
+                            414 ; ---------------------------------
+   0206                     415 _INKEY::
+                            416 ;src\testWYZ.c:441: __endasm;
+   0206 CD 9F 00      [17]  417 	call	0x009F
+   0209 6F            [ 4]  418 	ld	L,A
+   020A C9            [10]  419 	ret
+                            420 ;src\testWYZ.c:453: void WAIT(uint cicles)
+                            421 ;	---------------------------------
+                            422 ; Function WAIT
+                            423 ; ---------------------------------
+   020B                     424 _WAIT::
+                            425 ;src\testWYZ.c:456: for(i=0;i<cicles;i++) HALT;
+   020B 01 00 00      [10]  426 	ld	bc,#0x0000
+   020E                     427 00103$:
+   020E 21 02 00      [10]  428 	ld	hl,#2
+   0211 39            [11]  429 	add	hl,sp
+   0212 79            [ 4]  430 	ld	a,c
+   0213 96            [ 7]  431 	sub	a, (hl)
+   0214 78            [ 4]  432 	ld	a,b
+   0215 23            [ 6]  433 	inc	hl
+   0216 9E            [ 7]  434 	sbc	a, (hl)
+   0217 D0            [11]  435 	ret	NC
+   0218 76            [ 4]  436 	halt	
+   0219 03            [ 6]  437 	inc	bc
+                            438 ;src\testWYZ.c:457: return;
+   021A 18 F2         [12]  439 	jr	00103$
+                            440 ;src\testWYZ.c:472: char GetKeyMatrix(char line)
+                            441 ;	---------------------------------
+                            442 ; Function GetKeyMatrix
+                            443 ; ---------------------------------
+   021C                     444 _GetKeyMatrix::
+                            445 ;src\testWYZ.c:487: __endasm;
+   021C DD E5         [15]  446 	push	IX
+   021E DD 21 00 00   [14]  447 	ld	IX,#0
+   0222 DD 39         [15]  448 	add	IX,SP
+   0224 DD 7E 04      [19]  449 	ld	A,4(IX)
+   0227 CD 41 01      [17]  450 	call	0x0141
+   022A 6F            [ 4]  451 	ld	L,A
+   022B DD E1         [14]  452 	pop	IX
+   022D C9            [10]  453 	ret
+                            454 ;src\testWYZ.c:527: void ShowVumeter(char channel, char value)
+                            455 ;	---------------------------------
+                            456 ; Function ShowVumeter
+                            457 ; ---------------------------------
+   022E                     458 _ShowVumeter::
+                            459 ;src\testWYZ.c:602: __endasm;
+   022E DD E5         [15]  460 	push	IX
+   0230 DD 21 00 00   [14]  461 	ld	IX,#0
+   0234 DD 39         [15]  462 	add	IX,SP
+   0236 DD 4E 04      [19]  463 	ld	C,4(IX)
+   0239 DD 7E 05      [19]  464 	ld	A,5(IX)
+                            465 ;C	= num channel
+                            466 ;A	= value
+                            467 ;showVumeter:
+   023C 32r00r00      [13]  468 	ld	(_VALUE),A
+   023F CB 21         [ 8]  469 	SLA	C
+   0241 CB 21         [ 8]  470 	SLA	C
+   0243 06 00         [ 7]  471 	ld	B,#0
+   0245                     472 	L00107:
+   0245 79            [ 4]  473 	ld	a,c
+   0246 6F            [ 4]  474 	ld	l,a
+   0247 17            [ 4]  475 	rla
+   0248 9F            [ 4]  476 	sbc	a, a
+   0249 67            [ 4]  477 	ld	h,a
+   024A 29            [11]  478 	add	hl,hl
+   024B 29            [11]  479 	add	hl,hl
+   024C 11r01r00      [10]  480 	ld	DE,#_SPRBUFFER
+   024F 19            [11]  481 	ADD	HL,DE
+   0250 EB            [ 4]  482 	ex	DE,HL
+   0251 13            [ 6]  483 	inc	DE
+   0252 13            [ 6]  484 	inc	DE
+   0253 3Ar00r00      [13]  485 	ld	A,(_VALUE)
+   0256 FE 00         [ 7]  486 	cp	#0
+   0258 20 04         [12]  487 	jr	NZ,L00102
+   025A AF            [ 4]  488 	xor	A
+   025B 12            [ 7]  489 	ld	(DE),A
+   025C 18 1E         [12]  490 	jr	L00105
+   025E                     491 	L00102:
+   025E 3Ar00r00      [13]  492 	ld	A,(_VALUE)
+   0261 FE 04         [ 7]  493 	cp	#4
+   0263 38 0D         [12]  494 	jr	C,L00104
+   0265 3E 10         [ 7]  495 	ld	A,#16
+   0267 12            [ 7]  496 	ld	(DE),A
+   0268 3Ar00r00      [13]  497 	ld	A,(_VALUE)
+   026B D6 04         [ 7]  498 	sub	#4
+   026D 32r00r00      [13]  499 	ld	(_VALUE),A
+   0270 18 0A         [12]  500 	jr	L00105
+   0272                     501 	L00104:
+   0272 3Ar00r00      [13]  502 	ld	A,(_VALUE)
+   0275 87            [ 4]  503 	add	a,a
+   0276 87            [ 4]  504 	add	a,a
+   0277 12            [ 7]  505 	ld	(DE),A
+   0278 AF            [ 4]  506 	xor	A
+   0279 32r00r00      [13]  507 	ld	(_VALUE),A
+   027C                     508 	L00105:
+   027C 0C            [ 4]  509 	inc	C
+   027D 04            [ 4]  510 	inc	B
+   027E 78            [ 4]  511 	ld	A,B
+   027F FE 04         [ 7]  512 	cp	#4
+   0281 38 C2         [12]  513 	jr	C,L00107
+   0283 DD E1         [14]  514 	pop	IX
+                            515 ;	ret
+   0285 C9            [10]  516 	ret
+                            517 ;src\testWYZ.c:607: void SetSPRITES() __naked
+                            518 ;	---------------------------------
+                            519 ; Function SetSPRITES
+                            520 ; ---------------------------------
+   0286                     521 _SetSPRITES::
+                            522 ;src\testWYZ.c:670: __endasm;
+   0286 21r9Er02      [10]  523 	ld	HL,#SPRITE_DATA
+   0289 11 00 38      [10]  524 	ld	DE,#0x3800
+   028C 01 A0 00      [10]  525 	ld	BC,#32*5
+   028F CD 5C 00      [17]  526 	call	0x005C
+   0292 11r01r00      [10]  527 	ld	DE,#_SPRBUFFER
+   0295 21r3Er03      [10]  528 	ld	HL,#VUMETER
+   0298 01 40 00      [10]  529 	ld	BC,#64
+   029B ED B0         [21]  530 	ldir
+   029D C9            [10]  531 	ret
+   029E                     532 	SPRITE_DATA:
+                            533 ;	0-vum0
+   029E 00 00 00 00 00 00   534 	.db	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+        00 00 00 00 00 00
+        00 00 00 00
+   02AE 00 00 00 00 00 00   535 	.db	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+        00 00 00 00 00 00
+        00 00 00 00
+                            536 ;	1-vum1
+   02BE 00 00 00 00 00 00   537 	.db	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x7F,0x7F,0x7F,0x00
+        00 00 00 00 00 00
+        7F 7F 7F 00
+   02CE 00 00 00 00 00 00   538 	.db	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFE,0xFE,0xFE,0x00
+        00 00 00 00 00 00
+        FE FE FE 00
+                            539 ;	2-vum2
+   02DE 00 00 00 00 00 00   540 	.db	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x7F,0x7F,0x7F,0x00,0x7F,0x7F,0x7F,0x00
+        00 00 7F 7F 7F 00
+        7F 7F 7F 00
+   02EE 00 00 00 00 00 00   541 	.db	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFE,0xFE,0xFE,0x00,0xFE,0xFE,0xFE,0x00
+        00 00 FE FE FE 00
+        FE FE FE 00
+                            542 ;	3-vum3
+   02FE 00 00 00 00 7F 7F   543 	.db	0x00,0x00,0x00,0x00,0x7F,0x7F,0x7F,0x00,0x7F,0x7F,0x7F,0x00,0x7F,0x7F,0x7F,0x00
+        7F 00 7F 7F 7F 00
+        7F 7F 7F 00
+   030E 00 00 00 00 FE FE   544 	.db	0x00,0x00,0x00,0x00,0xFE,0xFE,0xFE,0x00,0xFE,0xFE,0xFE,0x00,0xFE,0xFE,0xFE,0x00
+        FE 00 FE FE FE 00
+        FE FE FE 00
+                            545 ;	4-vum4
+   031E 7F 7F 7F 00 7F 7F   546 	.db	0x7F,0x7F,0x7F,0x00,0x7F,0x7F,0x7F,0x00,0x7F,0x7F,0x7F,0x00,0x7F,0x7F,0x7F,0x00
+        7F 00 7F 7F 7F 00
+        7F 7F 7F 00
+   032E FE FE FE 00 FE FE   547 	.db	0xFE,0xFE,0xFE,0x00,0xFE,0xFE,0xFE,0x00,0xFE,0xFE,0xFE,0x00,0xFE,0xFE,0xFE,0x00
+        FE 00 FE FE FE 00
+        FE FE FE 00
+                            548 ;SPRITE	ATRIBUTE DATAS #########################################################
+                            549 ;	for adjust colors, changue the last valor in line
+                            550 ;Y,X,SPR,COLOR
+   033E                     551 	VUMETER:
+   033E A7 08 00 02         552 	.db	167,8,0,2
+   0342 97 08 00 02         553 	.db	151,8,0,2
+   0346 87 08 00 0A         554 	.db	135,8,0,10
+   034A 77 08 00 08         555 	.db	119,8,0,8
+   034E A7 18 00 02         556 	.db	167,24,0,2
+   0352 97 18 00 02         557 	.db	151,24,0,2
+   0356 87 18 00 0A         558 	.db	135,24,0,10
+   035A 77 18 00 08         559 	.db	119,24,0,8
+   035E A7 28 00 02         560 	.db	167,40,0,2
+   0362 97 28 00 02         561 	.db	151,40,0,2
+   0366 87 28 00 0A         562 	.db	135,40,0,10
+   036A 77 28 00 08         563 	.db	119,40,0,8
+   036E A7 38 00 02         564 	.db	167,56,0,2
+   0372 97 38 00 02         565 	.db	151,56,0,2
+   0376 87 38 00 0A         566 	.db	135,56,0,10
+   037A 77 38 00 08         567 	.db	119,56,0,8
+                            568 ;END	SPRITE ATRIBUTE DATAS #####################################################
+                            569 	.area _CODE
+                            570 	.area _INITIALIZER
+                            571 	.area _CABS (ABS)

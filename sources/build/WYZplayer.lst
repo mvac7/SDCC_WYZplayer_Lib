@@ -1,0 +1,1183 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 3.6.0 #9615 (MINGW64)
+                              4 ;--------------------------------------------------------
+                              5 	.module WYZplayer
+                              6 	.optsdcc -mz80
+                              7 	
+                              8 ;--------------------------------------------------------
+                              9 ; Public variables in this module
+                             10 ;--------------------------------------------------------
+                             11 	.globl _TABLA_DATOS_CANAL_SFX
+                             12 	.globl _SELECT_CANAL_C
+                             13 	.globl _SELECT_CANAL_B
+                             14 	.globl _SELECT_CANAL_A
+                             15 	.globl _TABLA_SONIDOS
+                             16 	.globl _TABLA_PAUTAS
+                             17 	.globl _TABLA_SONG
+                             18 	.globl _SOUND_BUFFER_P
+                             19 	.globl _SOUND_BUFFER_C
+                             20 	.globl _SOUND_BUFFER_B
+                             21 	.globl _SOUND_BUFFER_A
+                             22 	.globl _ENVOLVENTE_BACK
+                             23 	.globl _ENVOLVENTE
+                             24 	.globl _PSG_REG_SEC
+                             25 	.globl _PSG_REG
+                             26 	.globl _PUNTERO_SONIDO
+                             27 	.globl _N_SONIDO
+                             28 	.globl _SFX_MIX
+                             29 	.globl _SFX_V
+                             30 	.globl _SFX_H
+                             31 	.globl _SFX_L
+                             32 	.globl _PUNTERO_L_DECP
+                             33 	.globl _PUNTERO_DECP
+                             34 	.globl _PUNTERO_P_DECP
+                             35 	.globl _CANAL_P
+                             36 	.globl _PUNTERO_P
+                             37 	.globl _PUNTERO_L_DECC
+                             38 	.globl _PUNTERO_L_DECB
+                             39 	.globl _PUNTERO_L_DECA
+                             40 	.globl _VOL_INST_C
+                             41 	.globl _REG_NOTA_C
+                             42 	.globl _VOL_INST_B
+                             43 	.globl _REG_NOTA_B
+                             44 	.globl _VOL_INST_A
+                             45 	.globl _REG_NOTA_A
+                             46 	.globl _PUNTERO_DECC
+                             47 	.globl _PUNTERO_DECB
+                             48 	.globl _PUNTERO_DECA
+                             49 	.globl _PUNTERO_P_DECC
+                             50 	.globl _PUNTERO_P_DECB
+                             51 	.globl _PUNTERO_P_DECA
+                             52 	.globl _PUNTERO_P_C0
+                             53 	.globl _PUNTERO_P_B0
+                             54 	.globl _PUNTERO_P_A0
+                             55 	.globl _PUNTERO_P_C
+                             56 	.globl _PUNTERO_P_B
+                             57 	.globl _PUNTERO_P_A
+                             58 	.globl _CANAL_C
+                             59 	.globl _CANAL_B
+                             60 	.globl _CANAL_A
+                             61 	.globl _PUNTERO_C
+                             62 	.globl _PUNTERO_B
+                             63 	.globl _PUNTERO_A
+                             64 	.globl _TTEMPO
+                             65 	.globl _TEMPO
+                             66 	.globl _SONG
+                             67 	.globl _INTERR
+                             68 	.globl _DATOS_NOTAS
+                             69 	.globl _WYZinit
+                             70 	.globl _WYZpause
+                             71 	.globl _WYZresume
+                             72 	.globl _WYZplayFX
+                             73 	.globl _WYZplayAY
+                             74 	.globl _WYZloadSong
+                             75 	.globl _WYZdecode
+                             76 ;--------------------------------------------------------
+                             77 ; special function registers
+                             78 ;--------------------------------------------------------
+                             79 ;--------------------------------------------------------
+                             80 ; ram data
+                             81 ;--------------------------------------------------------
+                             82 	.area _DATA
+   0000                      83 _INTERR::
+   0000                      84 	.ds 1
+   0001                      85 _SONG::
+   0001                      86 	.ds 1
+   0002                      87 _TEMPO::
+   0002                      88 	.ds 1
+   0003                      89 _TTEMPO::
+   0003                      90 	.ds 1
+   0004                      91 _PUNTERO_A::
+   0004                      92 	.ds 2
+   0006                      93 _PUNTERO_B::
+   0006                      94 	.ds 2
+   0008                      95 _PUNTERO_C::
+   0008                      96 	.ds 2
+   000A                      97 _CANAL_A::
+   000A                      98 	.ds 2
+   000C                      99 _CANAL_B::
+   000C                     100 	.ds 2
+   000E                     101 _CANAL_C::
+   000E                     102 	.ds 2
+   0010                     103 _PUNTERO_P_A::
+   0010                     104 	.ds 2
+   0012                     105 _PUNTERO_P_B::
+   0012                     106 	.ds 2
+   0014                     107 _PUNTERO_P_C::
+   0014                     108 	.ds 2
+   0016                     109 _PUNTERO_P_A0::
+   0016                     110 	.ds 2
+   0018                     111 _PUNTERO_P_B0::
+   0018                     112 	.ds 2
+   001A                     113 _PUNTERO_P_C0::
+   001A                     114 	.ds 2
+   001C                     115 _PUNTERO_P_DECA::
+   001C                     116 	.ds 2
+   001E                     117 _PUNTERO_P_DECB::
+   001E                     118 	.ds 2
+   0020                     119 _PUNTERO_P_DECC::
+   0020                     120 	.ds 2
+   0022                     121 _PUNTERO_DECA::
+   0022                     122 	.ds 2
+   0024                     123 _PUNTERO_DECB::
+   0024                     124 	.ds 2
+   0026                     125 _PUNTERO_DECC::
+   0026                     126 	.ds 2
+   0028                     127 _REG_NOTA_A::
+   0028                     128 	.ds 1
+   0029                     129 _VOL_INST_A::
+   0029                     130 	.ds 1
+   002A                     131 _REG_NOTA_B::
+   002A                     132 	.ds 1
+   002B                     133 _VOL_INST_B::
+   002B                     134 	.ds 1
+   002C                     135 _REG_NOTA_C::
+   002C                     136 	.ds 1
+   002D                     137 _VOL_INST_C::
+   002D                     138 	.ds 1
+   002E                     139 _PUNTERO_L_DECA::
+   002E                     140 	.ds 2
+   0030                     141 _PUNTERO_L_DECB::
+   0030                     142 	.ds 2
+   0032                     143 _PUNTERO_L_DECC::
+   0032                     144 	.ds 2
+   0034                     145 _PUNTERO_P::
+   0034                     146 	.ds 2
+   0036                     147 _CANAL_P::
+   0036                     148 	.ds 2
+   0038                     149 _PUNTERO_P_DECP::
+   0038                     150 	.ds 2
+   003A                     151 _PUNTERO_DECP::
+   003A                     152 	.ds 2
+   003C                     153 _PUNTERO_L_DECP::
+   003C                     154 	.ds 2
+   003E                     155 _SFX_L::
+   003E                     156 	.ds 2
+   0040                     157 _SFX_H::
+   0040                     158 	.ds 2
+   0042                     159 _SFX_V::
+   0042                     160 	.ds 2
+   0044                     161 _SFX_MIX::
+   0044                     162 	.ds 2
+   0046                     163 _N_SONIDO::
+   0046                     164 	.ds 1
+   0047                     165 _PUNTERO_SONIDO::
+   0047                     166 	.ds 2
+   0049                     167 _PSG_REG::
+   0049                     168 	.ds 16
+   0059                     169 _PSG_REG_SEC::
+   0059                     170 	.ds 16
+   0069                     171 _ENVOLVENTE::
+   0069                     172 	.ds 1
+   006A                     173 _ENVOLVENTE_BACK::
+   006A                     174 	.ds 1
+   006B                     175 _SOUND_BUFFER_A::
+   006B                     176 	.ds 16
+   007B                     177 _SOUND_BUFFER_B::
+   007B                     178 	.ds 16
+   008B                     179 _SOUND_BUFFER_C::
+   008B                     180 	.ds 16
+   009B                     181 _SOUND_BUFFER_P::
+   009B                     182 	.ds 16
+   00AB                     183 _TABLA_SONG::
+   00AB                     184 	.ds 2
+   00AD                     185 _TABLA_PAUTAS::
+   00AD                     186 	.ds 2
+   00AF                     187 _TABLA_SONIDOS::
+   00AF                     188 	.ds 2
+   00B1                     189 _SELECT_CANAL_A::
+   00B1                     190 	.ds 7
+   00B8                     191 _SELECT_CANAL_B::
+   00B8                     192 	.ds 7
+   00BF                     193 _SELECT_CANAL_C::
+   00BF                     194 	.ds 7
+   00C6                     195 _TABLA_DATOS_CANAL_SFX::
+   00C6                     196 	.ds 6
+                            197 ;--------------------------------------------------------
+                            198 ; ram data
+                            199 ;--------------------------------------------------------
+                            200 	.area _INITIALIZED
+                            201 ;--------------------------------------------------------
+                            202 ; absolute external ram data
+                            203 ;--------------------------------------------------------
+                            204 	.area _DABS (ABS)
+                            205 ;--------------------------------------------------------
+                            206 ; global & static initialisations
+                            207 ;--------------------------------------------------------
+                            208 	.area _HOME
+                            209 	.area _GSINIT
+                            210 	.area _GSFINAL
+                            211 	.area _GSINIT
+                            212 ;--------------------------------------------------------
+                            213 ; Home
+                            214 ;--------------------------------------------------------
+                            215 	.area _HOME
+                            216 	.area _HOME
+                            217 ;--------------------------------------------------------
+                            218 ; code
+                            219 ;--------------------------------------------------------
+                            220 	.area _CODE
+                            221 ;src\WYZplayer.c:170: void WYZinit(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs) __naked
+                            222 ;	---------------------------------
+                            223 ; Function WYZinit
+                            224 ; ---------------------------------
+   0000                     225 _WYZinit::
+                            226 ;src\WYZplayer.c:265: __endasm;
+   0000 DD E5         [15]  227 	push	IX
+   0002 DD 21 00 00   [14]  228 	ld	IX,#0
+   0006 DD 39         [15]  229 	add	IX,sp
+   0008 DD 6E 04      [19]  230 	ld	L,4(IX)
+   000B DD 66 05      [19]  231 	ld	H,5(IX)
+   000E 22rABr00      [16]  232 	ld	(#_TABLA_SONG),HL
+   0011 DD 6E 06      [19]  233 	ld	L,6(IX)
+   0014 DD 66 07      [19]  234 	ld	H,7(IX)
+   0017 22rADr00      [16]  235 	ld	(#_TABLA_PAUTAS),HL
+   001A DD 6E 08      [19]  236 	ld	L,8(IX)
+   001D DD 66 09      [19]  237 	ld	H,9(IX)
+   0020 22rAFr00      [16]  238 	ld	(#_TABLA_SONIDOS),HL
+   0023 AF            [ 4]  239 	XOR	A
+   0024 32r00r00      [13]  240 	LD	(#_INTERR),A
+   0027 CDr9Cr00      [17]  241 	call	PLAYER_OFF
+   002A 21r6Br00      [10]  242 	LD	HL,#_SOUND_BUFFER_A ;* RESERVAR MEMORIA PARA BUFFER DE SONIDO!!!!!
+   002D 22r0Ar00      [16]  243 	LD	(#_CANAL_A),HL
+   0030 21r7Br00      [10]  244 	LD	HL,#_SOUND_BUFFER_B
+   0033 22r0Cr00      [16]  245 	LD	(#_CANAL_B),HL
+   0036 21r8Br00      [10]  246 	LD	HL,#_SOUND_BUFFER_C
+   0039 22r0Er00      [16]  247 	LD	(#_CANAL_C),HL
+   003C 21r9Br00      [10]  248 	LD	HL,#_SOUND_BUFFER_P
+   003F 22r36r00      [16]  249 	LD	(#_CANAL_P),HL
+                            250 ;TABLA	DE DATOS DEL SELECTOR DEL CANAL DE EFECTOS DE RITMO
+                            251 ;---	chan A
+   0042 21r59r00      [10]  252 	LD	HL,#_PSG_REG_SEC+0
+   0045 22rB1r00      [16]  253 	LD	(#_SELECT_CANAL_A),HL
+   0048 21r5Ar00      [10]  254 	LD	HL,#_PSG_REG_SEC+1
+   004B 22rB3r00      [16]  255 	LD	(#_SELECT_CANAL_A+2),HL
+   004E 21r61r00      [10]  256 	LD	HL,#_PSG_REG_SEC+8
+   0051 22rB5r00      [16]  257 	LD	(#_SELECT_CANAL_A+4),HL
+   0054 3E B1         [ 7]  258 	LD	A,#0b10110001
+   0056 32rB7r00      [13]  259 	LD	(#_SELECT_CANAL_A+6),A
+                            260 ;---	chan B
+   0059 21r5Br00      [10]  261 	LD	HL,#_PSG_REG_SEC+2
+   005C 22rB8r00      [16]  262 	LD	(#_SELECT_CANAL_B),HL
+   005F 21r5Cr00      [10]  263 	LD	HL,#_PSG_REG_SEC+3
+   0062 22rBAr00      [16]  264 	LD	(#_SELECT_CANAL_B+2),HL
+   0065 21r62r00      [10]  265 	LD	HL,#_PSG_REG_SEC+9
+   0068 22rBCr00      [16]  266 	LD	(#_SELECT_CANAL_B+4),HL
+   006B 3E AA         [ 7]  267 	LD	A,#0b10101010
+   006D 32rBEr00      [13]  268 	LD	(#_SELECT_CANAL_B+6),A
+                            269 ;---	chan C
+   0070 21r5Dr00      [10]  270 	LD	HL,#_PSG_REG_SEC+4
+   0073 22rBFr00      [16]  271 	LD	(#_SELECT_CANAL_C),HL
+   0076 21r5Er00      [10]  272 	LD	HL,#_PSG_REG_SEC+5
+   0079 22rC1r00      [16]  273 	LD	(#_SELECT_CANAL_C+2),HL
+   007C 21r63r00      [10]  274 	LD	HL,#_PSG_REG_SEC+10
+   007F 22rC3r00      [16]  275 	LD	(#_SELECT_CANAL_C+4),HL
+   0082 3E 9C         [ 7]  276 	LD	A,#0b10011100
+   0084 32rC5r00      [13]  277 	LD	(#_SELECT_CANAL_C+6),A
+                            278 ;	TABLA_DATOS_CANAL_SFX
+   0087 21rB1r00      [10]  279 	LD	HL,#_SELECT_CANAL_A
+   008A 22rC6r00      [16]  280 	LD	(#_TABLA_DATOS_CANAL_SFX),HL
+   008D 21rB8r00      [10]  281 	LD	HL,#_SELECT_CANAL_B
+   0090 22rC8r00      [16]  282 	LD	(#_TABLA_DATOS_CANAL_SFX+2),HL
+   0093 21rBFr00      [10]  283 	LD	HL,#_SELECT_CANAL_C
+   0096 22rCAr00      [16]  284 	LD	(#_TABLA_DATOS_CANAL_SFX+4),HL
+   0099 DD E1         [14]  285 	pop	IX
+   009B C9            [10]  286 	ret
+                            287 ;src\WYZplayer.c:279: void WYZpause()
+                            288 ;	---------------------------------
+                            289 ; Function WYZpause
+                            290 ; ---------------------------------
+   009C                     291 _WYZpause::
+                            292 ;src\WYZplayer.c:309: __endasm;
+   009C                     293 	PLAYER_OFF:
+                            294 ;	XOR A
+                            295 ;	LD [INTERR],A
+                            296 ;	LD [FADE],A ;solo si hay fade out
+   009C 21r00r00      [10]  297 	LD	HL,#_INTERR
+   009F CB 8E         [15]  298 	RES	1,(HL)
+   00A1                     299 	CLEAR_PSG_BUFFER:
+   00A1 AF            [ 4]  300 	XOR	A
+   00A2 21r49r00      [10]  301 	LD	HL,#_PSG_REG
+   00A5 11r4Ar00      [10]  302 	LD	DE,#_PSG_REG+1
+   00A8 01 0E 00      [10]  303 	LD	BC,#14
+   00AB 77            [ 7]  304 	LD	(HL),A
+   00AC ED B0         [21]  305 	LDIR
+   00AE 3E B8         [ 7]  306 	LD	A,#0b10111000 ; **** POR SI ACASO ****
+   00B0 32r50r00      [13]  307 	LD	(#_PSG_REG+7),A
+   00B3 21r49r00      [10]  308 	LD	HL,#_PSG_REG
+   00B6 11r59r00      [10]  309 	LD	DE,#_PSG_REG_SEC
+   00B9 01 0E 00      [10]  310 	LD	BC,#14
+   00BC ED B0         [21]  311 	LDIR
+   00BE CDr66r01      [17]  312 	CALL	ROUT
+   00C1 C9            [10]  313 	RET
+   00C2 C9            [10]  314 	ret
+   00C3                     315 _DATOS_NOTAS:
+   00C3 00 00               316 	.dw #0x0000
+   00C5 00 00               317 	.dw #0x0000
+   00C7 AF 06               318 	.dw #0x06af
+   00C9 4E 06               319 	.dw #0x064e
+   00CB F4 05               320 	.dw #0x05f4
+   00CD 9E 05               321 	.dw #0x059e
+   00CF 4E 05               322 	.dw #0x054e
+   00D1 01 05               323 	.dw #0x0501
+   00D3 BA 04               324 	.dw #0x04ba
+   00D5 76 04               325 	.dw #0x0476
+   00D7 36 04               326 	.dw #0x0436
+   00D9 F9 03               327 	.dw #0x03f9
+   00DB C0 03               328 	.dw #0x03c0
+   00DD 8A 03               329 	.dw #0x038a
+   00DF 57 03               330 	.dw #0x0357
+   00E1 27 03               331 	.dw #0x0327
+   00E3 FA 02               332 	.dw #0x02fa
+   00E5 CF 02               333 	.dw #0x02cf
+   00E7 A7 02               334 	.dw #0x02a7
+   00E9 81 02               335 	.dw #0x0281
+   00EB 5D 02               336 	.dw #0x025d
+   00ED 3B 02               337 	.dw #0x023b
+   00EF 1B 02               338 	.dw #0x021b
+   00F1 FD 01               339 	.dw #0x01fd
+   00F3 E0 01               340 	.dw #0x01e0
+   00F5 C5 01               341 	.dw #0x01c5
+   00F7 AC 01               342 	.dw #0x01ac
+   00F9 94 01               343 	.dw #0x0194
+   00FB 7D 01               344 	.dw #0x017d
+   00FD 68 01               345 	.dw #0x0168
+   00FF 53 01               346 	.dw #0x0153
+   0101 40 01               347 	.dw #0x0140
+   0103 2E 01               348 	.dw #0x012e
+   0105 1D 01               349 	.dw #0x011d
+   0107 0D 01               350 	.dw #0x010d
+   0109 FE 00               351 	.dw #0x00fe
+   010B F0 00               352 	.dw #0x00f0
+   010D E3 00               353 	.dw #0x00e3
+   010F D6 00               354 	.dw #0x00d6
+   0111 CA 00               355 	.dw #0x00ca
+   0113 BE 00               356 	.dw #0x00be
+   0115 B4 00               357 	.dw #0x00b4
+   0117 AA 00               358 	.dw #0x00aa
+   0119 A0 00               359 	.dw #0x00a0
+   011B 97 00               360 	.dw #0x0097
+   011D 8F 00               361 	.dw #0x008f
+   011F 87 00               362 	.dw #0x0087
+   0121 7F 00               363 	.dw #0x007f
+   0123 78 00               364 	.dw #0x0078
+   0125 71 00               365 	.dw #0x0071
+   0127 6B 00               366 	.dw #0x006b
+   0129 65 00               367 	.dw #0x0065
+   012B 5F 00               368 	.dw #0x005f
+   012D 5A 00               369 	.dw #0x005a
+   012F 55 00               370 	.dw #0x0055
+   0131 50 00               371 	.dw #0x0050
+   0133 4C 00               372 	.dw #0x004c
+   0135 47 00               373 	.dw #0x0047
+   0137 43 00               374 	.dw #0x0043
+   0139 40 00               375 	.dw #0x0040
+   013B 3C 00               376 	.dw #0x003c
+   013D 39 00               377 	.dw #0x0039
+                            378 ;src\WYZplayer.c:324: void WYZresume()
+                            379 ;	---------------------------------
+                            380 ; Function WYZresume
+                            381 ; ---------------------------------
+   013F                     382 _WYZresume::
+                            383 ;src\WYZplayer.c:331: __endasm;
+   013F 21r00r00      [10]  384 	LD	HL,#_INTERR
+   0142 CB CE         [15]  385 	SET	1,(HL) ;PLAYER ON
+   0144 C9            [10]  386 	RET
+   0145 C9            [10]  387 	ret
+                            388 ;src\WYZplayer.c:345: void WYZplayFX(char numSound) __naked
+                            389 ;	---------------------------------
+                            390 ; Function WYZplayFX
+                            391 ; ---------------------------------
+   0146                     392 _WYZplayFX::
+                            393 ;src\WYZplayer.c:375: __endasm;
+   0146 DD E5         [15]  394 	push	IX
+   0148 DD 21 00 00   [14]  395 	ld	IX,#0
+   014C DD 39         [15]  396 	add	IX,sp
+   014E DD 7E 04      [19]  397 	LD	A,4(IX)
+   0151 CDr57r01      [17]  398 	CALL	INICIA_SONIDO
+   0154 DD E1         [14]  399 	pop	IX
+   0156 C9            [10]  400 	ret
+                            401 ;-------------------------------------------------------------------------------
+                            402 ;INICIA	EL SONIDO No [A]
+   0157                     403 	INICIA_SONIDO:
+                            404 ;CP	8 ;SFX SPEECH
+                            405 ;JP	Z,SLOOP
+   0157 2ArAFr00      [16]  406 	LD	HL,(#_TABLA_SONIDOS) ;(v 360) HL,TABLA_SONIDOS
+   015A CDr4Dr06      [17]  407 	CALL	EXT_WORD
+   015D 22r47r00      [16]  408 	LD	(#_PUNTERO_SONIDO),HL
+   0160 21r00r00      [10]  409 	LD	HL,#_INTERR
+   0163 CB D6         [15]  410 	SET	2,(HL)
+   0165 C9            [10]  411 	RET
+                            412 ;src\WYZplayer.c:394: void WYZplayAY() __naked
+                            413 ;	---------------------------------
+                            414 ; Function WYZplayAY
+                            415 ; ---------------------------------
+   0166                     416 _WYZplayAY::
+                            417 ;src\WYZplayer.c:429: __endasm;
+   0166                     418 	ROUT:
+   0166 3Ar56r00      [13]  419 	LD	A,(#_PSG_REG+13)
+   0169 A7            [ 4]  420 	AND	A ;ES CERO?
+   016A 28 03         [12]  421 	JR	Z,NO_BACKUP_ENVOLVENTE
+   016C 32r6Ar00      [13]  422 	LD	(#_ENVOLVENTE_BACK),A ;08.13 / GUARDA LA ENVOLVENTE EN EL BACKUP
+   016F                     423 	NO_BACKUP_ENVOLVENTE:
+   016F AF            [ 4]  424 	XOR	A
+   0170 0E A0         [ 7]  425 	LD	C,#0xA0
+   0172 21r59r00      [10]  426 	LD	HL,#_PSG_REG_SEC
+   0175                     427 	LOUT:
+   0175 ED 79         [12]  428 	OUT	(C),A
+   0177 0C            [ 4]  429 	INC	C
+   0178 ED A3         [16]  430 	OUTI
+   017A 0D            [ 4]  431 	DEC	C
+   017B 3C            [ 4]  432 	INC	A
+   017C FE 0D         [ 7]  433 	CP	#13
+   017E 20 F5         [12]  434 	JR	NZ,LOUT
+   0180 ED 79         [12]  435 	OUT	(C),A
+   0182 7E            [ 7]  436 	LD	A,(HL)
+   0183 A7            [ 4]  437 	AND	A
+   0184 C8            [11]  438 	RET	Z
+   0185 0C            [ 4]  439 	INC	C
+   0186 ED 79         [12]  440 	OUT	(C),A
+   0188 AF            [ 4]  441 	XOR	A
+   0189 32r66r00      [13]  442 	LD	(#_PSG_REG_SEC+13),A
+   018C 32r56r00      [13]  443 	LD	(#_PSG_REG+13),A
+   018F C9            [10]  444 	RET
+                            445 ;src\WYZplayer.c:448: void WYZloadSong(char numSong) __naked
+                            446 ;	---------------------------------
+                            447 ; Function WYZloadSong
+                            448 ; ---------------------------------
+   0190                     449 _WYZloadSong::
+                            450 ;src\WYZplayer.c:640: __endasm;
+   0190 DD E5         [15]  451 	push	IX
+   0192 DD 21 00 00   [14]  452 	ld	IX,#0
+   0196 DD 39         [15]  453 	add	IX,sp
+   0198 DD 7E 04      [19]  454 	LD	A,4(IX)
+                            455 ;ld	L,4(IX)
+                            456 ;ld	H,5(IX)
+   019B CDrA1r01      [17]  457 	CALL	CARGA_CANCION
+   019E DD E1         [14]  458 	pop	IX
+   01A0 C9            [10]  459 	ret
+                            460 ;-------------------------------------------------------------------------------<	CARGA_CANCION
+                            461 ;CARGA	UNA CANCION
+                            462 ;IN:[A]=Nº	DE CANCION
+   01A1                     463 	CARGA_CANCION:
+                            464 ;LD	HL,#_SONG
+   01A1 32r01r00      [13]  465 	LD	(#_SONG),A ;Nº A
+   01A4 21r00r00      [10]  466 	LD	HL,#_INTERR ;CARGA CANCION
+   01A7 CB CE         [15]  467 	SET	1,(HL) ;REPRODUCE CANCION
+                            468 ;DECODIFICAR
+                            469 ;IN->	INTERR 0 ON
+                            470 ;	SONG
+                            471 ;CARGA	CANCION SI/NO
+   01A9                     472 	DECODE_SONG:
+   01A9 3Ar01r00      [13]  473 	LD	A,(#_SONG)
+                            474 ;LEE	CABECERA DE LA CANCION
+                            475 ;BYTE	0=TEMPO
+   01AC 2ArABr00      [16]  476 	LD	HL,(#_TABLA_SONG) ;(v 360) HL,_TABLA_SONG
+   01AF CDr4Dr06      [17]  477 	CALL	EXT_WORD
+   01B2 7E            [ 7]  478 	LD	A,(HL)
+   01B3 32r02r00      [13]  479 	LD	(#_TEMPO),A
+   01B6 3D            [ 4]  480 	DEC	A
+   01B7 32r03r00      [13]  481 	LD	(#_TTEMPO),A
+                            482 ;HEADER	BYTE 1
+                            483 ;[-|-|-|-|	3-1 | 0 ]
+                            484 ;[-|-|-|-|FX	CHN|LOOP]
+   01BA 23            [ 6]  485 	INC	HL ;LOOP 1=ON/0=OFF?
+   01BB 7E            [ 7]  486 	LD	A,(HL)
+   01BC CB 47         [ 8]  487 	BIT	0,A
+   01BE 28 07         [12]  488 	JR	Z,NPTJP0
+   01C0 E5            [11]  489 	PUSH	HL
+   01C1 21r00r00      [10]  490 	LD	HL,#_INTERR
+   01C4 CB E6         [15]  491 	SET	4,(HL)
+   01C6 E1            [10]  492 	POP	HL
+                            493 ;SELECCION	DEL CANAL DE EFECTOS DE RITMO
+   01C7                     494 	NPTJP0:
+   01C7 E6 06         [ 7]  495 	AND	#0b00000110
+   01C9 1F            [ 4]  496 	RRA
+                            497 ;LD	[SELECT_CANAL_P],A
+   01CA E5            [11]  498 	PUSH	HL
+   01CB 21rC6r00      [10]  499 	LD	HL,#_TABLA_DATOS_CANAL_SFX
+   01CE CDr4Dr06      [17]  500 	CALL	EXT_WORD
+   01D1 E5            [11]  501 	PUSH	HL
+   01D2 DD E1         [14]  502 	POP	IX
+   01D4 DD 5E 00      [19]  503 	LD	E,0(IX)
+   01D7 DD 56 01      [19]  504 	LD	D,1(IX)
+   01DA ED 53r3Er00   [20]  505 	LD	(#_SFX_L),DE
+   01DE DD 5E 02      [19]  506 	LD	E,2(IX)
+   01E1 DD 56 03      [19]  507 	LD	D,3(IX)
+   01E4 ED 53r40r00   [20]  508 	LD	(#_SFX_H),DE
+   01E8 DD 5E 04      [19]  509 	LD	E,4(IX)
+   01EB DD 56 05      [19]  510 	LD	D,5(IX)
+   01EE ED 53r42r00   [20]  511 	LD	(#_SFX_V),DE
+   01F2 DD 7E 06      [19]  512 	LD	A,6(IX)
+   01F5 32r44r00      [13]  513 	LD	(#_SFX_MIX),A
+   01F8 E1            [10]  514 	POP	HL
+   01F9 23            [ 6]  515 	INC	HL ;2 BYTES RESERVADOS
+   01FA 23            [ 6]  516 	INC	HL
+   01FB 23            [ 6]  517 	INC	HL
+                            518 ;BUSCA	Y GUARDA INICIO DE LOS CANALES EN EL MODULO MUS (OPTIMIZAR)
+                            519 ;AÑADE	OFFSET DEL LOOP
+   01FC E5            [11]  520 	PUSH	HL ;IX INICIO OFFSETS LOOP POR CANAL
+   01FD DD E1         [14]  521 	POP	IX
+   01FF 11 08 00      [10]  522 	LD	DE,#0x0008 ;HASTA INICIO DEL CANAL A
+   0202 19            [11]  523 	ADD	HL,DE
+   0203 22r1Cr00      [16]  524 	LD	(#_PUNTERO_P_DECA),HL ;GUARDA PUNTERO INICIO CANAL
+   0206 DD 5E 00      [19]  525 	LD	E,(IX)
+   0209 DD 56 01      [19]  526 	LD	D,1(IX)
+   020C 19            [11]  527 	ADD	HL,DE
+   020D 22r2Er00      [16]  528 	LD	(#_PUNTERO_L_DECA),HL ;GUARDA PUNTERO INICIO LOOP
+   0210 CDr85r02      [17]  529 	CALL	BGICMODBC1
+   0213 22r1Er00      [16]  530 	LD	(#_PUNTERO_P_DECB),HL
+   0216 DD 5E 02      [19]  531 	LD	E,2(IX)
+   0219 DD 56 03      [19]  532 	LD	D,3(IX)
+   021C 19            [11]  533 	ADD	HL,DE
+   021D 22r30r00      [16]  534 	LD	(#_PUNTERO_L_DECB),HL
+   0220 CDr85r02      [17]  535 	CALL	BGICMODBC1
+   0223 22r20r00      [16]  536 	LD	(#_PUNTERO_P_DECC),HL
+   0226 DD 5E 04      [19]  537 	LD	E,4(IX)
+   0229 DD 56 05      [19]  538 	LD	D,5(IX)
+   022C 19            [11]  539 	ADD	HL,DE
+   022D 22r32r00      [16]  540 	LD	(#_PUNTERO_L_DECC),HL
+   0230 CDr85r02      [17]  541 	CALL	BGICMODBC1
+   0233 22r38r00      [16]  542 	LD	(#_PUNTERO_P_DECP),HL
+   0236 DD 5E 06      [19]  543 	LD	E,6(IX)
+   0239 DD 56 07      [19]  544 	LD	D,7(IX)
+   023C 19            [11]  545 	ADD	HL,DE
+   023D 22r3Cr00      [16]  546 	LD	(#_PUNTERO_L_DECP),HL
+                            547 ;LEE	DATOS DE LAS NOTAS
+                            548 ;[|][|||||]	LONGITUD\NOTA
+   0240                     549 	INIT_DECODER:
+   0240 ED 5Br0Ar00   [20]  550 	LD	DE,(#_CANAL_A)
+   0244 ED 53r04r00   [20]  551 	LD	(#_PUNTERO_A),DE
+   0248 2Ar1Cr00      [16]  552 	LD	HL,(#_PUNTERO_P_DECA)
+   024B CDr98r03      [17]  553 	CALL	DECODE_CANAL ;CANAL A
+   024E 22r22r00      [16]  554 	LD	(#_PUNTERO_DECA),HL
+   0251 ED 5Br0Cr00   [20]  555 	LD	DE,(#_CANAL_B)
+   0255 ED 53r06r00   [20]  556 	LD	(#_PUNTERO_B),DE
+   0259 2Ar1Er00      [16]  557 	LD	HL,(#_PUNTERO_P_DECB)
+   025C CDr98r03      [17]  558 	CALL	DECODE_CANAL ;CANAL B
+   025F 22r24r00      [16]  559 	LD	(#_PUNTERO_DECB),HL
+   0262 ED 5Br0Er00   [20]  560 	LD	DE,(#_CANAL_C)
+   0266 ED 53r08r00   [20]  561 	LD	(#_PUNTERO_C),DE
+   026A 2Ar20r00      [16]  562 	LD	HL,(#_PUNTERO_P_DECC)
+   026D CDr98r03      [17]  563 	CALL	DECODE_CANAL ;CANAL C
+   0270 22r26r00      [16]  564 	LD	(#_PUNTERO_DECC),HL
+   0273 ED 5Br36r00   [20]  565 	LD	DE,(#_CANAL_P)
+   0277 ED 53r34r00   [20]  566 	LD	(#_PUNTERO_P),DE
+   027B 2Ar38r00      [16]  567 	LD	HL,(#_PUNTERO_P_DECP)
+   027E CDr98r03      [17]  568 	CALL	DECODE_CANAL ;CANAL P (FX)
+   0281 22r3Ar00      [16]  569 	LD	(#_PUNTERO_DECP),HL
+   0284 C9            [10]  570 	RET
+                            571 ;BUSCA	INICIO DEL CANAL
+   0285                     572 	BGICMODBC1:
+   0285 AF            [ 4]  573 	XOR	A ;BUSCA EL BYTE 0
+   0286 1E 3F         [ 7]  574 	LD	E,#0x3F ;CODIGO INSTRUMENTO 0
+   0288 06 FF         [ 7]  575 	LD	B,#0xFF ;EL MODULO DEBE TENER UNA LONGITUD MENOR DE $FF00 ... o_O!
+   028A ED B1         [21]  576 	CPIR
+   028C 2B            [ 6]  577 	DEC	HL
+   028D 2B            [ 6]  578 	DEC	HL
+   028E 7B            [ 4]  579 	LD	A,E ;ES EL INSTRUMENTO 0??
+   028F BE            [ 7]  580 	CP	(HL)
+   0290 23            [ 6]  581 	INC	HL
+   0291 23            [ 6]  582 	INC	HL
+   0292 28 F1         [12]  583 	JR	Z,BGICMODBC1
+   0294 2B            [ 6]  584 	DEC	HL
+   0295 2B            [ 6]  585 	DEC	HL
+   0296 2B            [ 6]  586 	DEC	HL
+   0297 7B            [ 4]  587 	LD	A,E ;ES VOLUMEN 0??
+   0298 BE            [ 7]  588 	CP	(HL)
+   0299 23            [ 6]  589 	INC	HL
+   029A 23            [ 6]  590 	INC	HL
+   029B 23            [ 6]  591 	INC	HL
+   029C 28 E7         [12]  592 	JR	Z,BGICMODBC1
+   029E C9            [10]  593 	RET
+                            594 ;src\WYZplayer.c:662: void WYZdecode() __naked
+                            595 ;	---------------------------------
+                            596 ; Function WYZdecode
+                            597 ; ---------------------------------
+   029F                     598 _WYZdecode::
+                            599 ;src\WYZplayer.c:1353: __endasm;
+   029F                     600 	INICIO:
+   029F DD E5         [15]  601 	push	IX
+                            602 ;	CALL ROUT
+                            603 ;	CALL MIXER
+   02A1 21r49r00      [10]  604 	LD	HL,#_PSG_REG
+   02A4 11r59r00      [10]  605 	LD	DE,#_PSG_REG_SEC
+   02A7 01 0E 00      [10]  606 	LD	BC,#14
+   02AA ED B0         [21]  607 	LDIR
+   02AC CDrB5r02      [17]  608 	CALL	REPRODUCE_SONIDO
+   02AF CDr2Ar03      [17]  609 	CALL	PLAY
+   02B2 DD E1         [14]  610 	pop	IX
+   02B4 C9            [10]  611 	RET
+                            612 ;REPRODUCE	EFECTOS DE SONIDO
+   02B5                     613 	REPRODUCE_SONIDO:
+   02B5 21r00r00      [10]  614 	LD	HL,#_INTERR
+   02B8 CB 56         [12]  615 	BIT	2,(HL) ;ESTA ACTIVADO EL EFECTO?
+   02BA C8            [11]  616 	RET	Z
+   02BB 2Ar47r00      [16]  617 	LD	HL,(#_PUNTERO_SONIDO)
+   02BE 7E            [ 7]  618 	LD	A,(HL)
+   02BF FE FF         [ 7]  619 	CP	#0xFF
+   02C1 28 53         [12]  620 	JR	Z,FIN_SONIDO
+   02C3 ED 5Br3Er00   [20]  621 	LD	DE,(#_SFX_L)
+   02C7 12            [ 7]  622 	LD	(DE),A
+   02C8 23            [ 6]  623 	INC	HL
+   02C9 7E            [ 7]  624 	LD	A,(HL)
+   02CA 0F            [ 4]  625 	RRCA
+   02CB 0F            [ 4]  626 	RRCA
+   02CC 0F            [ 4]  627 	RRCA
+   02CD 0F            [ 4]  628 	RRCA
+   02CE E6 0F         [ 7]  629 	AND	#0b00001111
+   02D0 ED 5Br40r00   [20]  630 	LD	DE,(#_SFX_H)
+   02D4 12            [ 7]  631 	LD	(DE),A
+   02D5 7E            [ 7]  632 	LD	A,(HL)
+   02D6 E6 0F         [ 7]  633 	AND	#0b00001111
+   02D8 ED 5Br42r00   [20]  634 	LD	DE,(#_SFX_V)
+   02DC 12            [ 7]  635 	LD	(DE),A
+   02DD 23            [ 6]  636 	INC	HL
+   02DE 7E            [ 7]  637 	LD	A,(HL)
+   02DF 47            [ 4]  638 	LD	B,A
+   02E0 CB 7F         [ 8]  639 	BIT	7,A ;09.08.13 BIT MAS SIGINIFICATIVO ACTIVA ENVOLVENTES
+   02E2 28 16         [12]  640 	JR	Z,NO_ENVOLVENTES_SONIDO
+   02E4 3E 12         [ 7]  641 	LD	A,#0x12
+   02E6 12            [ 7]  642 	LD	(DE),A
+   02E7 23            [ 6]  643 	INC	HL
+   02E8 7E            [ 7]  644 	LD	A,(HL)
+   02E9 32r64r00      [13]  645 	LD	(#_PSG_REG_SEC+11),A
+   02EC 23            [ 6]  646 	INC	HL
+   02ED 7E            [ 7]  647 	LD	A,(HL)
+   02EE 32r65r00      [13]  648 	LD	(#_PSG_REG_SEC+12),A
+   02F1 23            [ 6]  649 	INC	HL
+   02F2 7E            [ 7]  650 	LD	A,(HL)
+   02F3 FE 01         [ 7]  651 	CP	#1
+   02F5 28 03         [12]  652 	JR	Z,NO_ENVOLVENTES_SONIDO ;NO ESCRIBE LA ENVOLVENTE SI SU VALOR ES 1
+   02F7 32r66r00      [13]  653 	LD	(#_PSG_REG_SEC+13),A
+   02FA                     654 	NO_ENVOLVENTES_SONIDO:
+   02FA 78            [ 4]  655 	LD	A,B
+   02FB CB BF         [ 8]  656 	RES	7,A
+   02FD A7            [ 4]  657 	AND	A
+   02FE 28 08         [12]  658 	JR	Z,NO_RUIDO
+   0300 32r5Fr00      [13]  659 	LD	(#_PSG_REG_SEC+6),A
+   0303 3Ar44r00      [13]  660 	LD	A,(#_SFX_MIX)
+   0306 18 06         [12]  661 	JR	SI_RUIDO
+   0308                     662 	NO_RUIDO:
+   0308 AF            [ 4]  663 	XOR	A
+   0309 32r5Fr00      [13]  664 	LD	(#_PSG_REG_SEC+6),A
+   030C 3E B8         [ 7]  665 	LD	A,#0b10111000
+   030E                     666 	SI_RUIDO:
+   030E 32r60r00      [13]  667 	LD	(#_PSG_REG_SEC+7),A
+   0311 23            [ 6]  668 	INC	HL
+   0312 22r47r00      [16]  669 	LD	(#_PUNTERO_SONIDO),HL
+   0315 C9            [10]  670 	RET
+   0316                     671 	FIN_SONIDO:
+   0316 21r00r00      [10]  672 	LD	HL,#_INTERR
+   0319 CB 96         [15]  673 	RES	2,(HL)
+   031B 3Ar6Ar00      [13]  674 	LD	A,(#_ENVOLVENTE_BACK) ;NO RESTAURA LA ENVOLVENTE SI ES 0
+   031E A7            [ 4]  675 	AND	A
+   031F 28 03         [12]  676 	JR	Z,FIN_NOPLAYER
+                            677 ;xor	a
+   0321 32r66r00      [13]  678 	LD	(#_PSG_REG_SEC+13),A ;08.13 RESTAURA LA ENVOLVENTE TRAS EL SFX
+   0324                     679 	FIN_NOPLAYER:
+   0324 3E B8         [ 7]  680 	LD	A,#0b10111000
+   0326 32r60r00      [13]  681 	LD	(#_PSG_REG_SEC+7),A
+   0329 C9            [10]  682 	RET
+   032A                     683 	PLAY:
+   032A 21r00r00      [10]  684 	LD	HL,#_INTERR ;PLAY BIT 1 ON?
+   032D CB 4E         [12]  685 	BIT	1,(HL)
+   032F C8            [11]  686 	RET	Z
+                            687 ;TEMPO
+   0330 21r03r00      [10]  688 	LD	HL,#_TTEMPO ;CONTADOR TEMPO
+   0333 34            [11]  689 	INC	(HL)
+   0334 3Ar02r00      [13]  690 	LD	A,(#_TEMPO)
+   0337 BE            [ 7]  691 	CP	(HL)
+   0338 20 33         [12]  692 	JR	NZ,PAUTAS
+   033A 36 00         [10]  693 	LD	(HL),#0
+                            694 ;INTERPRETA
+   033C FD 21r49r00   [14]  695 	LD	IY,#_PSG_REG
+   0340 DD 21r04r00   [14]  696 	LD	IX,#_PUNTERO_A
+   0344 01r51r00      [10]  697 	LD	BC,#_PSG_REG+8
+   0347 CDr09r04      [17]  698 	CALL	LOCALIZA_NOTA
+   034A FD 21r4Br00   [14]  699 	LD	IY,#_PSG_REG+2
+   034E DD 21r06r00   [14]  700 	LD	IX,#_PUNTERO_B
+   0352 01r52r00      [10]  701 	LD	BC,#_PSG_REG+9
+   0355 CDr09r04      [17]  702 	CALL	LOCALIZA_NOTA
+   0358 FD 21r4Dr00   [14]  703 	LD	IY,#_PSG_REG+4
+   035C DD 21r08r00   [14]  704 	LD	IX,#_PUNTERO_C
+   0360 01r53r00      [10]  705 	LD	BC,#_PSG_REG+10
+   0363 CDr09r04      [17]  706 	CALL	LOCALIZA_NOTA
+   0366 DD 21r34r00   [14]  707 	LD	IX,#_PUNTERO_P ;EL CANAL DE EFECTOS ENMASCARA OTRO CANAL
+   036A CDr05r05      [17]  708 	CALL	LOCALIZA_EFECTO
+   036D                     709 	PAUTAS:
+   036D FD 21r49r00   [14]  710 	LD	IY,#_PSG_REG+0
+   0371 DD 21r10r00   [14]  711 	LD	IX,#_PUNTERO_P_A
+   0375 21r51r00      [10]  712 	LD	HL,#_PSG_REG+8
+   0378 CDr4Dr05      [17]  713 	CALL	PAUTA ;PAUTA CANAL A
+   037B FD 21r4Br00   [14]  714 	LD	IY,#_PSG_REG+2
+   037F DD 21r12r00   [14]  715 	LD	IX,#_PUNTERO_P_B
+   0383 21r52r00      [10]  716 	LD	HL,#_PSG_REG+9
+   0386 CDr4Dr05      [17]  717 	CALL	PAUTA ;PAUTA CANAL B
+   0389 FD 21r4Dr00   [14]  718 	LD	IY,#_PSG_REG+4
+   038D DD 21r14r00   [14]  719 	LD	IX,#_PUNTERO_P_C
+   0391 21r53r00      [10]  720 	LD	HL,#_PSG_REG+10
+   0394 CDr4Dr05      [17]  721 	CALL	PAUTA ;PAUTA CANAL C
+   0397 C9            [10]  722 	RET
+                            723 ;DECODIFICA	NOTAS DE UN CANAL
+                            724 ;IN	(DE)=DIRECCION DESTINO
+                            725 ;NOTA=0	FIN CANAL
+                            726 ;NOTA=1	SILENCIO
+                            727 ;NOTA=2	PUNTILLO
+                            728 ;NOTA=3	COMANDO I
+   0398                     729 	DECODE_CANAL:
+   0398 7E            [ 7]  730 	LD	A,(HL)
+   0399 A7            [ 4]  731 	AND	A ;FIN DEL CANAL?
+   039A 28 55         [12]  732 	JR	Z,FIN_DEC_CANAL
+   039C CDrF6r03      [17]  733 	CALL	GETLEN
+   039F FE 01         [ 7]  734 	CP	#0b00000001 ;ES SILENCIO?
+   03A1 20 04         [12]  735 	JR	NZ,NO_SILENCIO
+   03A3 CB F7         [ 8]  736 	SET	6,A
+   03A5 18 3D         [12]  737 	JR	NO_MODIFICA
+   03A7                     738 	NO_SILENCIO:
+   03A7 FE 3E         [ 7]  739 	CP	#0b00111110 ;ES PUNTILLO?
+   03A9 20 06         [12]  740 	JR	NZ,NO_PUNTILLO
+   03AB B7            [ 4]  741 	OR	A
+   03AC CB 08         [ 8]  742 	RRC	B
+   03AE AF            [ 4]  743 	XOR	A
+   03AF 18 33         [12]  744 	JR	NO_MODIFICA
+   03B1                     745 	NO_PUNTILLO:
+   03B1 FE 3F         [ 7]  746 	CP	#0b00111111 ;ES COMANDO?
+   03B3 20 2F         [12]  747 	JR	NZ,NO_MODIFICA
+   03B5 CB 40         [ 8]  748 	BIT	0,B ;COMADO=INSTRUMENTO?
+   03B7 28 0F         [12]  749 	JR	Z,NO_INSTRUMENTO
+   03B9 3E C1         [ 7]  750 	LD	A,#0b11000001 ;CODIGO DE INSTRUMENTO
+   03BB 12            [ 7]  751 	LD	(DE),A
+   03BC 23            [ 6]  752 	INC	HL
+   03BD 13            [ 6]  753 	INC	DE
+   03BE 7E            [ 7]  754 	LD	A,(HL) ;Nº DE INSTRUMENTO
+   03BF 12            [ 7]  755 	LD	(DE),A
+   03C0 13            [ 6]  756 	INC	DE
+   03C1 23            [ 6]  757 	INC	HL
+   03C2 7E            [ 7]  758 	LD	A,(HL) ;VOLUMEN RELATIVO DEL INSTRUMENTO
+   03C3 12            [ 7]  759 	LD	(DE),A
+   03C4 13            [ 6]  760 	INC	DE
+   03C5 23            [ 6]  761 	INC	HL
+   03C6 18 D0         [12]  762 	JR	DECODE_CANAL
+   03C8                     763 	NO_INSTRUMENTO:
+   03C8 CB 50         [ 8]  764 	BIT	2,B
+   03CA 28 0B         [12]  765 	JR	Z,NO_ENVOLVENTE
+   03CC 3E C4         [ 7]  766 	LD	A,#0b11000100 ;CODIGO ENVOLVENTE
+   03CE 12            [ 7]  767 	LD	(DE),A
+   03CF 13            [ 6]  768 	INC	DE
+   03D0 23            [ 6]  769 	INC	HL
+   03D1 7E            [ 7]  770 	LD	A,(HL)
+   03D2 12            [ 7]  771 	LD	(DE),A
+   03D3 13            [ 6]  772 	INC	DE
+   03D4 23            [ 6]  773 	INC	HL
+   03D5 18 C1         [12]  774 	JR	DECODE_CANAL
+   03D7                     775 	NO_ENVOLVENTE:
+   03D7 CB 48         [ 8]  776 	BIT	1,B
+   03D9 28 09         [12]  777 	JR	Z,NO_MODIFICA
+   03DB 3E C2         [ 7]  778 	LD	A,#0b11000010 ;CODIGO EFECTO
+   03DD 12            [ 7]  779 	LD	(DE),A
+   03DE 23            [ 6]  780 	INC	HL
+   03DF 13            [ 6]  781 	INC	DE
+   03E0 7E            [ 7]  782 	LD	A,(HL)
+   03E1 CDrF6r03      [17]  783 	CALL	GETLEN
+   03E4                     784 	NO_MODIFICA:
+   03E4 12            [ 7]  785 	LD	(DE),A
+   03E5 13            [ 6]  786 	INC	DE
+   03E6 AF            [ 4]  787 	XOR	A
+   03E7 10 FB         [13]  788 	DJNZ	NO_MODIFICA
+   03E9 CB FF         [ 8]  789 	SET	7,A
+   03EB CB C7         [ 8]  790 	SET	0,A
+   03ED 12            [ 7]  791 	LD	(DE),A
+   03EE 13            [ 6]  792 	INC	DE
+   03EF 23            [ 6]  793 	INC	HL
+   03F0 C9            [10]  794 	RET	;** JR DECODE_CANAL
+   03F1                     795 	FIN_DEC_CANAL:
+   03F1 CB FF         [ 8]  796 	SET	7,A
+   03F3 12            [ 7]  797 	LD	(DE),A
+   03F4 13            [ 6]  798 	INC	DE
+   03F5 C9            [10]  799 	RET
+   03F6                     800 	GETLEN:
+   03F6 47            [ 4]  801 	LD	B,A
+   03F7 E6 3F         [ 7]  802 	AND	#0b00111111
+   03F9 F5            [11]  803 	PUSH	AF
+   03FA 78            [ 4]  804 	LD	A,B
+   03FB E6 C0         [ 7]  805 	AND	#0b11000000
+   03FD 07            [ 4]  806 	RLCA
+   03FE 07            [ 4]  807 	RLCA
+   03FF 3C            [ 4]  808 	INC	A
+   0400 47            [ 4]  809 	LD	B,A
+   0401 3E 80         [ 7]  810 	LD	A,#0b10000000
+   0403                     811 	DCBC0:
+   0403 07            [ 4]  812 	RLCA
+   0404 10 FD         [13]  813 	DJNZ	DCBC0
+   0406 47            [ 4]  814 	LD	B,A
+   0407 F1            [10]  815 	pop	AF
+   0408 C9            [10]  816 	ret
+                            817 ;LOCALIZA	NOTA CANAL A
+                            818 ;IN	[PUNTERO_A]
+                            819 ;LOCALIZA	NOTA CANAL A
+                            820 ;IN	[PUNTERO_A]
+   0409                     821 	LOCALIZA_NOTA:
+   0409 DD 6E 00      [19]  822 	LD	L,_PUNTERO_A - _PUNTERO_A(IX) ;HL=[PUNTERO_A_C_B]
+   040C DD 66 01      [19]  823 	LD	H,_PUNTERO_A - _PUNTERO_A+1(IX) ;
+   040F 7E            [ 7]  824 	LD	A,(HL)
+   0410 E6 C0         [ 7]  825 	AND	#0b11000000 ;COMANDO?
+   0412 FE C0         [ 7]  826 	CP	#0b11000000
+   0414 20 6B         [12]  827 	JR	NZ,LNJP0
+                            828 ;BIT[0]=INSTRUMENTO
+   0416                     829 	COMANDOS:
+   0416 7E            [ 7]  830 	LD	A,(HL)
+   0417 CB 47         [ 8]  831 	BIT	0,A ;INSTRUMENTO
+   0419 28 40         [12]  832 	JR	Z,COM_EFECTO
+   041B 23            [ 6]  833 	INC	HL
+   041C 7E            [ 7]  834 	LD	A,(HL) ;Nº DE PAUTA
+   041D 23            [ 6]  835 	INC	HL
+   041E 5E            [ 7]  836 	LD	E,(HL)
+   041F E5            [11]  837 	PUSH	HL ;TEMPO
+   0420 21r02r00      [10]  838 	LD	HL,#_TEMPO
+   0423 CB 6B         [ 8]  839 	BIT	5,E
+   0425 28 01         [12]  840 	JR	Z,NO_DEC_TEMPO
+   0427 35            [11]  841 	DEC	(HL)
+   0428                     842 	NO_DEC_TEMPO:
+   0428 CB 73         [ 8]  843 	BIT	6,E
+   042A 28 01         [12]  844 	JR	Z,NO_INC_TEMPO
+   042C 34            [11]  845 	INC	(HL)
+   042D                     846 	NO_INC_TEMPO:
+   042D CB AB         [ 8]  847 	RES	5,E ;SIEMPRE RESETEA LOS BITS DE TEMPO
+   042F CB B3         [ 8]  848 	RES	6,E
+   0431 E1            [10]  849 	POP	HL
+   0432 DD 73 25      [19]  850 	LD	_VOL_INST_A - _PUNTERO_A(IX),E ;REGISTRO DEL VOLUMEN RELATIVO
+   0435 23            [ 6]  851 	INC	HL
+   0436 DD 75 00      [19]  852 	LD	_PUNTERO_A - _PUNTERO_A(IX),L ;
+   0439 DD 74 01      [19]  853 	LD	_PUNTERO_A - _PUNTERO_A+1(IX),H ;
+   043C 2ArADr00      [16]  854 	LD	HL,(#_TABLA_PAUTAS) ;(v sdcc) HL,#_TABLA_PAUTAS
+   043F CDr4Dr06      [17]  855 	CALL	EXT_WORD
+   0442 DD 75 12      [19]  856 	LD	_PUNTERO_P_A0 - _PUNTERO_A(IX),L
+   0445 DD 74 13      [19]  857 	LD	_PUNTERO_P_A0 - _PUNTERO_A+1(IX),H
+   0448 DD 75 0C      [19]  858 	LD	_PUNTERO_P_A - _PUNTERO_A(IX),L
+   044B DD 74 0D      [19]  859 	LD	_PUNTERO_P_A - _PUNTERO_A+1(IX),H
+   044E 69            [ 4]  860 	LD	L,C
+   044F 60            [ 4]  861 	LD	H,B
+   0450 CB A6         [15]  862 	RES	4,(HL) ;APAGA EFECTO ENVOLVENTE
+   0452 AF            [ 4]  863 	XOR	A
+   0453 32r66r00      [13]  864 	LD	(#_PSG_REG_SEC+13),A
+   0456 32r56r00      [13]  865 	LD	(#_PSG_REG+13),A
+                            866 ;LD	[ENVOLVENTE_BACK],A ;08.13 RESETEA EL BACKUP DE LA ENVOLVENTE
+   0459 18 AE         [12]  867 	JR	LOCALIZA_NOTA
+   045B                     868 	COM_EFECTO:
+   045B CB 4F         [ 8]  869 	BIT	1,A ;EFECTO DE SONIDO
+   045D 28 0D         [12]  870 	JR	Z,COM_ENVOLVENTE
+   045F 23            [ 6]  871 	INC	HL
+   0460 7E            [ 7]  872 	LD	A,(HL)
+   0461 23            [ 6]  873 	INC	HL
+   0462 DD 75 00      [19]  874 	LD	_PUNTERO_A - _PUNTERO_A(IX),L ;
+   0465 DD 74 01      [19]  875 	LD	_PUNTERO_A - _PUNTERO_A+1(IX),H ;
+   0468 CDr57r01      [17]  876 	CALL	INICIA_SONIDO
+   046B C9            [10]  877 	RET
+   046C                     878 	COM_ENVOLVENTE:
+   046C CB 57         [ 8]  879 	BIT	2,A
+   046E C8            [11]  880 	RET	Z ;IGNORA - ERROR
+   046F 23            [ 6]  881 	INC	HL
+   0470 7E            [ 7]  882 	LD	A,(HL) ;CARGA CODIGO DE ENVOLVENTE
+   0471 32r69r00      [13]  883 	LD	(#_ENVOLVENTE),A
+   0474 23            [ 6]  884 	INC	HL
+   0475 DD 75 00      [19]  885 	LD	_PUNTERO_A - _PUNTERO_A(IX),L ;
+   0478 DD 74 01      [19]  886 	LD	_PUNTERO_A - _PUNTERO_A+1(IX),H ;
+   047B 69            [ 4]  887 	LD	L,C
+   047C 60            [ 4]  888 	LD	H,B
+   047D 36 10         [10]  889 	LD	(HL),#0b00010000 ;ENCIENDE EFECTO ENVOLVENTE
+   047F 18 88         [12]  890 	JR	LOCALIZA_NOTA
+   0481                     891 	LNJP0:
+   0481 7E            [ 7]  892 	LD	A,(HL)
+   0482 23            [ 6]  893 	INC	HL
+   0483 CB 7F         [ 8]  894 	BIT	7,A
+   0485 28 3D         [12]  895 	JR	Z,NO_FIN_CANAL_A ;
+   0487 CB 47         [ 8]  896 	BIT	0,A
+   0489 28 20         [12]  897 	JR	Z,FIN_CANAL_A
+   048B                     898 	FIN_NOTA_A:
+   048B DD 5E 06      [19]  899 	LD	E,_CANAL_A - _PUNTERO_A(IX)
+   048E DD 56 07      [19]  900 	LD	D,_CANAL_A - _PUNTERO_A+1(IX) ;PUNTERO BUFFER AL INICIO
+   0491 DD 73 00      [19]  901 	LD	_PUNTERO_A - _PUNTERO_A(IX),E ;
+   0494 DD 72 01      [19]  902 	LD	_PUNTERO_A - _PUNTERO_A+1(IX),D ;
+   0497 DD 6E 1E      [19]  903 	LD	L,_PUNTERO_DECA - _PUNTERO_A(IX) ;CARGA PUNTERO DECODER
+   049A DD 66 1F      [19]  904 	LD	H,_PUNTERO_DECA - _PUNTERO_A+1(IX)
+   049D C5            [11]  905 	PUSH	BC
+   049E CDr98r03      [17]  906 	CALL	DECODE_CANAL ;DECODIFICA CANAL
+   04A1 C1            [10]  907 	POP	BC
+   04A2 DD 75 1E      [19]  908 	LD	_PUNTERO_DECA - _PUNTERO_A(IX),L ;GUARDA PUNTERO DECODER
+   04A5 DD 74 1F      [19]  909 	LD	_PUNTERO_DECA - _PUNTERO_A+1(IX),H
+   04A8 C3r09r04      [10]  910 	JP	LOCALIZA_NOTA
+   04AB                     911 	FIN_CANAL_A:
+   04AB 21r00r00      [10]  912 	LD	HL,#_INTERR ;LOOP?
+   04AE CB 66         [12]  913 	BIT	4,(HL)
+   04B0 20 04         [12]  914 	JR	NZ,FCA_CONT
+   04B2 F1            [10]  915 	POP	AF
+   04B3 C3r9Cr00      [10]  916 	JP	PLAYER_OFF
+   04B6                     917 	FCA_CONT:
+   04B6 DD 6E 2A      [19]  918 	LD	L,_PUNTERO_L_DECA - _PUNTERO_A(IX) ;CARGA PUNTERO INICIAL DECODER
+   04B9 DD 66 2B      [19]  919 	LD	H,_PUNTERO_L_DECA - _PUNTERO_A+1(IX)
+   04BC DD 75 1E      [19]  920 	LD	_PUNTERO_DECA - _PUNTERO_A(IX),L
+   04BF DD 74 1F      [19]  921 	LD	_PUNTERO_DECA - _PUNTERO_A+1(IX),H
+   04C2 18 C7         [12]  922 	JR	FIN_NOTA_A
+   04C4                     923 	NO_FIN_CANAL_A:
+   04C4 DD 75 00      [19]  924 	LD	_PUNTERO_A - _PUNTERO_A(IX),L ;[PUNTERO_A_B_C]=HL GUARDA PUNTERO
+   04C7 DD 74 01      [19]  925 	LD	_PUNTERO_A - _PUNTERO_A+1(IX),H ;
+   04CA A7            [ 4]  926 	AND	A ;NO REPRODUCE NOTA SI NOTA=0
+   04CB 28 37         [12]  927 	JR	Z,FIN_RUTINA
+   04CD CB 77         [ 8]  928 	BIT	6,A ;SILENCIO?
+   04CF 28 21         [12]  929 	JR	Z,NO_SILENCIO_A
+   04D1 0A            [ 7]  930 	LD	A,(BC)
+   04D2 E6 10         [ 7]  931 	AND	#0b00010000
+   04D4 20 09         [12]  932 	JR	NZ,SILENCIO_ENVOLVENTE
+   04D6 AF            [ 4]  933 	XOR	A
+   04D7 02            [ 7]  934 	LD	(BC),A ;RESET VOLUMEN DEL CORRESPODIENTE CHIP
+   04D8 FD 77 00      [19]  935 	LD	0(IY),A
+   04DB FD 77 01      [19]  936 	LD	1(IY),A
+   04DE C9            [10]  937 	RET
+   04DF                     938 	SILENCIO_ENVOLVENTE:
+   04DF 3E FF         [ 7]  939 	LD	A,#0xFF
+   04E1 32r54r00      [13]  940 	LD	(#_PSG_REG+11),A
+   04E4 32r55r00      [13]  941 	LD	(#_PSG_REG+12),A
+   04E7 AF            [ 4]  942 	XOR	A
+   04E8 32r56r00      [13]  943 	LD	(#_PSG_REG+13),A
+   04EB FD 77 00      [19]  944 	LD	0(IY),A
+   04EE FD 77 01      [19]  945 	LD	1(IY),A
+   04F1 C9            [10]  946 	RET
+   04F2                     947 	NO_SILENCIO_A:
+   04F2 DD 77 24      [19]  948 	LD	_REG_NOTA_A - _PUNTERO_A(IX),A ;REGISTRO DE LA NOTA DEL CANAL
+   04F5 CDrEDr05      [17]  949 	CALL	NOTA ;REPRODUCE NOTA
+   04F8 DD 6E 12      [19]  950 	LD	L,_PUNTERO_P_A0 - _PUNTERO_A(IX) ;HL=[PUNTERO_P_A0] RESETEA PAUTA
+   04FB DD 66 13      [19]  951 	LD	H,_PUNTERO_P_A0 - _PUNTERO_A+1(IX)
+   04FE DD 75 0C      [19]  952 	LD	_PUNTERO_P_A - _PUNTERO_A(IX),L ;[PUNTERO_P_A]=HL
+   0501 DD 74 0D      [19]  953 	LD	_PUNTERO_P_A - _PUNTERO_A+1(IX),H
+   0504                     954 	FIN_RUTINA:
+   0504 C9            [10]  955 	RET
+                            956 ;LOCALIZA	EFECTO
+                            957 ;IN	HL=[PUNTERO_P]
+   0505                     958 	LOCALIZA_EFECTO:
+   0505 DD 6E 00      [19]  959 	LD	L,0(IX) ;HL=[PUNTERO_P]
+   0508 DD 66 01      [19]  960 	LD	H,1(IX)
+   050B 7E            [ 7]  961 	LD	A,(HL)
+   050C FE C2         [ 7]  962 	CP	#0b11000010
+   050E 20 0D         [12]  963 	JR	NZ,LEJP0
+   0510 23            [ 6]  964 	INC	HL
+   0511 7E            [ 7]  965 	LD	A,(HL)
+   0512 23            [ 6]  966 	INC	HL
+   0513 DD 75 00      [19]  967 	LD	0(IX),L
+   0516 DD 74 01      [19]  968 	LD	1(IX),H
+   0519 CDr57r01      [17]  969 	CALL	INICIA_SONIDO
+   051C C9            [10]  970 	RET
+   051D                     971 	LEJP0:
+   051D 23            [ 6]  972 	INC	HL
+   051E CB 7F         [ 8]  973 	BIT	7,A
+   0520 28 24         [12]  974 	JR	Z,NO_FIN_CANAL_P ;
+   0522 CB 47         [ 8]  975 	BIT	0,A
+   0524 28 18         [12]  976 	JR	Z,FIN_CANAL_P
+   0526                     977 	FIN_NOTA_P:
+   0526 ED 5Br36r00   [20]  978 	LD	DE,(#_CANAL_P)
+   052A DD 73 00      [19]  979 	LD	0(IX),E
+   052D DD 72 01      [19]  980 	LD	1(IX),D
+   0530 2Ar3Ar00      [16]  981 	LD	HL,(#_PUNTERO_DECP) ;CARGA PUNTERO DECODER
+   0533 C5            [11]  982 	PUSH	BC
+   0534 CDr98r03      [17]  983 	CALL	DECODE_CANAL ;DECODIFICA CANAL
+   0537 C1            [10]  984 	POP	BC
+   0538 22r3Ar00      [16]  985 	LD	(#_PUNTERO_DECP),HL ;GUARDA PUNTERO DECODER
+   053B C3r05r05      [10]  986 	JP	LOCALIZA_EFECTO
+   053E                     987 	FIN_CANAL_P:
+   053E 2Ar3Cr00      [16]  988 	LD	HL,(#_PUNTERO_L_DECP) ;CARGA PUNTERO INICIAL DECODER
+   0541 22r3Ar00      [16]  989 	LD	(#_PUNTERO_DECP),HL
+   0544 18 E0         [12]  990 	JR	FIN_NOTA_P
+   0546                     991 	NO_FIN_CANAL_P:
+   0546 DD 75 00      [19]  992 	LD	0(IX),L ;[PUNTERO_A_B_C]=HL GUARDA PUNTERO
+   0549 DD 74 01      [19]  993 	LD	1(IX),H
+   054C C9            [10]  994 	RET
+                            995 ;	PAUTA DE LOS 3 CANALES
+                            996 ;	IN:[IX]:PUNTERO DE LA PAUTA
+                            997 ;	(HL):REGISTRO DE VOLUMEN
+                            998 ;	[IY]:REGISTROS DE FRECUENCIA
+                            999 ;	FORMATO PAUTA
+                           1000 ;	7 6 5 4 3-0 3-0
+                           1001 ;	BYTE 1 [LOOP|OCT-1|OCT+1|ORNMT|VOL] - BYTE 2 [ | | | |PITCH/NOTA]
+   054D                    1002 	PAUTA:
+   054D CB 66         [12] 1003 	BIT	4,(HL) ;SI LA ENVOLVENTE ESTA ACTIVADA NO ACTUA PAUTA
+   054F C0            [11] 1004 	RET	NZ
+   0550 FD 7E 00      [19] 1005 	LD	A,0(IY)
+   0553 FD 46 01      [19] 1006 	LD	B,1(IY)
+   0556 B0            [ 4] 1007 	OR	B
+   0557 C8            [11] 1008 	RET	Z
+   0558 E5            [11] 1009 	PUSH	HL
+   0559                    1010 	PCAJP4:
+   0559 DD 6E 00      [19] 1011 	LD	L,0(IX)
+   055C DD 66 01      [19] 1012 	LD	H,1(IX)
+   055F 7E            [ 7] 1013 	LD	A,(HL)
+   0560 CB 7F         [ 8] 1014 	BIT	7,A ;LOOP / EL RESTO DE BITS NO AFECTAN
+   0562 28 09         [12] 1015 	JR	Z,PCAJP0
+   0564 E6 1F         [ 7] 1016 	AND	#0b00011111 ;MÁXIMO LOOP PAUTA [0,32]X2!!!-> PARA ORNAMENTOS
+   0566 07            [ 4] 1017 	RLCA	;X2
+   0567 16 00         [ 7] 1018 	LD	D,#0
+   0569 5F            [ 4] 1019 	LD	E,A
+   056A ED 52         [15] 1020 	SBC	HL,DE
+   056C 7E            [ 7] 1021 	LD	A,(HL)
+   056D                    1022 	PCAJP0:
+   056D CB 77         [ 8] 1023 	BIT	6,A ;OCTAVA -1
+   056F 28 13         [12] 1024 	JR	Z,PCAJP1
+   0571 FD 5E 00      [19] 1025 	LD	E,0(IY)
+   0574 FD 56 01      [19] 1026 	LD	D,1(IY)
+   0577 A7            [ 4] 1027 	AND	A
+   0578 CB 0A         [ 8] 1028 	RRC	D
+   057A CB 1B         [ 8] 1029 	RR	E
+   057C FD 73 00      [19] 1030 	LD	0(IY),E
+   057F FD 72 01      [19] 1031 	LD	1(IY),D
+   0582 18 15         [12] 1032 	JR	PCAJP2
+   0584                    1033 	PCAJP1:
+   0584 CB 6F         [ 8] 1034 	BIT	5,A ;OCTAVA +1
+   0586 28 11         [12] 1035 	JR	Z,PCAJP2
+   0588 FD 5E 00      [19] 1036 	LD	E,0(IY)
+   058B FD 56 01      [19] 1037 	LD	D,1(IY)
+   058E A7            [ 4] 1038 	AND	A
+   058F CB 03         [ 8] 1039 	RLC	E
+   0591 CB 12         [ 8] 1040 	RL	D
+   0593 FD 73 00      [19] 1041 	LD	0(IY),E
+   0596 FD 72 01      [19] 1042 	LD	1(IY),D
+   0599                    1043 	PCAJP2:
+   0599 7E            [ 7] 1044 	LD	A,(HL)
+   059A CB 67         [ 8] 1045 	BIT	4,A
+   059C 20 2D         [12] 1046 	JR	NZ,PCAJP6 ;ORNAMENTOS SELECCIONADOS
+                           1047 ;FUNCION	PITCH DE FRECUENCIA
+   059E 23            [ 6] 1048 	INC	HL
+   059F E5            [11] 1049 	PUSH	HL
+   05A0 5F            [ 4] 1050 	LD	E,A
+   05A1 7E            [ 7] 1051 	LD	A,(HL) ;PITCH DE FRECUENCIA
+   05A2 6F            [ 4] 1052 	LD	L,A
+   05A3 A7            [ 4] 1053 	AND	A
+   05A4 7B            [ 4] 1054 	LD	A,E
+   05A5 28 30         [12] 1055 	JR	Z,ORNMJP1
+   05A7 FD 7E 00      [19] 1056 	LD	A,0(IY) ;SI LA FRECUENCIA ES 0 NO HAY PITCH
+   05AA FD 86 01      [19] 1057 	ADD	A,1(IY)
+   05AD A7            [ 4] 1058 	AND	A
+   05AE 7B            [ 4] 1059 	LD	A,E
+   05AF 28 26         [12] 1060 	JR	Z,ORNMJP1
+   05B1 CB 7D         [ 8] 1061 	BIT	7,L
+   05B3 28 04         [12] 1062 	JR	Z,ORNNEG
+   05B5 26 FF         [ 7] 1063 	LD	H,#0xFF
+   05B7 18 02         [12] 1064 	JR	PCAJP3
+   05B9                    1065 	ORNNEG:
+   05B9 26 00         [ 7] 1066 	LD	H,#0
+   05BB                    1067 	PCAJP3:
+   05BB FD 5E 00      [19] 1068 	LD	E,0(IY)
+   05BE FD 56 01      [19] 1069 	LD	D,1(IY)
+   05C1 ED 5A         [15] 1070 	ADC	HL,DE
+   05C3 FD 75 00      [19] 1071 	LD	0(IY),L
+   05C6 FD 74 01      [19] 1072 	LD	1(IY),H
+   05C9 18 0C         [12] 1073 	JR	ORNMJP1
+                           1074 ;FUNCION	ORNAMENTOS
+   05CB                    1075 	PCAJP6:
+   05CB 23            [ 6] 1076 	INC	HL
+   05CC E5            [11] 1077 	PUSH	HL
+   05CD F5            [11] 1078 	PUSH	AF
+   05CE DD 7E 18      [19] 1079 	LD	A,_REG_NOTA_A - _PUNTERO_P_A(IX) ;RECUPERA REGISTRO DE NOTA EN EL CANAL
+   05D1 5E            [ 7] 1080 	LD	E,(HL) ;
+   05D2 8B            [ 4] 1081 	ADC	E ;+- NOTA
+   05D3 CDrF5r05      [17] 1082 	CALL	TABLA_NOTAS
+   05D6 F1            [10] 1083 	POP	AF
+   05D7                    1084 	ORNMJP1:
+   05D7 E1            [10] 1085 	POP	HL
+   05D8 23            [ 6] 1086 	INC	HL
+   05D9 DD 75 00      [19] 1087 	LD	0(IX),L
+   05DC DD 74 01      [19] 1088 	LD	1(IX),H
+   05DF                    1089 	PCAJP5:
+   05DF E1            [10] 1090 	POP	HL
+   05E0 DD 46 19      [19] 1091 	LD	B,_VOL_INST_A - _PUNTERO_P_A(IX) ;VOLUMEN RELATIVO
+   05E3 80            [ 4] 1092 	ADD	B
+   05E4 F2rE9r05      [10] 1093 	JP	P,PCAJP7
+   05E7 3E 01         [ 7] 1094 	LD	A,#1 ;NO SE EXTIGUE EL VOLUMEN
+   05E9                    1095 	PCAJP7:
+   05E9 E6 0F         [ 7] 1096 	AND	#0b00001111 ;VOLUMEN FINAL MODULADO
+   05EB 77            [ 7] 1097 	LD	(HL),A
+   05EC C9            [10] 1098 	RET
+                           1099 ;NOTA	: REPRODUCE UNA NOTA
+                           1100 ;IN	[A]=CODIGO DE LA NOTA
+                           1101 ;	[IY]=REGISTROS DE FRECUENCIA
+   05ED                    1102 	NOTA:
+   05ED 69            [ 4] 1103 	LD	L,C
+   05EE 60            [ 4] 1104 	LD	H,B
+   05EF CB 66         [12] 1105 	BIT	4,(HL)
+   05F1 47            [ 4] 1106 	LD	B,A
+   05F2 20 0E         [12] 1107 	JR	NZ,EVOLVENTES
+   05F4 78            [ 4] 1108 	LD	A,B
+   05F5                    1109 	TABLA_NOTAS:
+   05F5 21rC3r00      [10] 1110 	LD	HL,#_DATOS_NOTAS ;BUSCA FRECUENCIA
+   05F8 CDr4Dr06      [17] 1111 	CALL	EXT_WORD
+   05FB FD 75 00      [19] 1112 	LD	0(IY),L
+   05FE FD 74 01      [19] 1113 	LD	1(IY),H
+   0601 C9            [10] 1114 	RET
+                           1115 ;IN	[A]=CODIGO DE LA ENVOLVENTE
+                           1116 ;	[IY]=REGISTRO DE FRECUENCIA
+   0602                    1117 	EVOLVENTES:
+   0602 21rC3r00      [10] 1118 	LD	HL,#_DATOS_NOTAS
+                           1119 ;SUB	12
+   0605 07            [ 4] 1120 	RLCA	;X2
+   0606 16 00         [ 7] 1121 	LD	D,#0
+   0608 5F            [ 4] 1122 	LD	E,A
+   0609 19            [11] 1123 	ADD	HL,DE
+   060A 5E            [ 7] 1124 	LD	E,(HL)
+   060B 23            [ 6] 1125 	INC	HL
+   060C 56            [ 7] 1126 	LD	D,(HL)
+   060D D5            [11] 1127 	PUSH	DE
+   060E 3Ar69r00      [13] 1128 	LD	A,(#_ENVOLVENTE) ;FRECUENCIA DEL CANAL ON/OFF
+   0611 1F            [ 4] 1129 	RRA
+   0612 30 08         [12] 1130 	JR	NC,FRECUENCIA_OFF
+   0614 FD 73 00      [19] 1131 	LD	0(IY),E
+   0617 FD 72 01      [19] 1132 	LD	1(IY),D
+   061A 18 09         [12] 1133 	JR	CONT_ENV
+   061C                    1134 	FRECUENCIA_OFF:
+   061C 11 00 00      [10] 1135 	LD	DE,#0
+   061F FD 73 00      [19] 1136 	LD	0(IY),E
+   0622 FD 72 01      [19] 1137 	LD	1(IY),D
+                           1138 ;CALCULO	DEL RATIO (OCTAVA ARRIBA)
+   0625                    1139 	CONT_ENV:
+   0625 D1            [10] 1140 	POP	DE
+   0626 F5            [11] 1141 	PUSH	AF
+   0627 C5            [11] 1142 	PUSH	BC
+   0628 E6 03         [ 7] 1143 	AND	#0b00000011
+   062A 47            [ 4] 1144 	LD	B,A
+                           1145 ;INC	B
+                           1146 ;AND	A ;1/2
+   062B CB 1A         [ 8] 1147 	RR	D
+   062D CB 1B         [ 8] 1148 	RR	E
+   062F                    1149 	CRTBC0:
+                           1150 ;AND	A ;1/4 - 1/8 - 1/16
+   062F CB 1A         [ 8] 1151 	RR	D
+   0631 CB 1B         [ 8] 1152 	RR	E
+   0633 10 FA         [13] 1153 	DJNZ	CRTBC0
+   0635 7B            [ 4] 1154 	LD	A,E
+   0636 32r54r00      [13] 1155 	LD	(#_PSG_REG+11),A
+   0639 7A            [ 4] 1156 	LD	A,D
+   063A E6 03         [ 7] 1157 	AND	#0b00000011
+   063C 32r55r00      [13] 1158 	LD	(#_PSG_REG+12),A
+   063F C1            [10] 1159 	POP	BC
+   0640 F1            [10] 1160 	POP	AF ;SELECCION FORMA DE ENVOLVENTE
+   0641 1F            [ 4] 1161 	RRA
+   0642 E6 06         [ 7] 1162 	AND	#0b00000110 ;$08,$0A,$0C,$0E
+   0644 C6 08         [ 7] 1163 	ADD	#8
+   0646 32r56r00      [13] 1164 	LD	(#_PSG_REG+13),A
+   0649 32r6Ar00      [13] 1165 	LD	(#_ENVOLVENTE_BACK),A
+   064C C9            [10] 1166 	RET
+                           1167 ;EXTRAE	UN WORD DE UNA TABLA
+                           1168 ;IN:(HL)=DIRECCION	TABLA
+                           1169 ;	[A]= POSICION
+                           1170 ;OUT(HL)=WORD
+   064D                    1171 	EXT_WORD:
+   064D 16 00         [ 7] 1172 	LD	D,#0
+   064F 07            [ 4] 1173 	RLCA
+   0650 5F            [ 4] 1174 	LD	E,A
+   0651 19            [11] 1175 	ADD	HL,DE
+   0652 5E            [ 7] 1176 	LD	E,(HL)
+   0653 23            [ 6] 1177 	INC	HL
+   0654 56            [ 7] 1178 	LD	D,(HL)
+   0655 EB            [ 4] 1179 	EX	DE,HL
+   0656 C9            [10] 1180 	RET
+                           1181 	.area _CODE
+                           1182 	.area _INITIALIZER
+                           1183 	.area _CABS (ABS)

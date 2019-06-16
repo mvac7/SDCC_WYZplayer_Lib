@@ -1,0 +1,14 @@
+-mjwx
+-i build\testWYZ.ihx
+-b _CODE = 0x4020
+-b _DATA = 0xc000
+-k C:\Program Files\SDCC\bin\..\lib\z80
+-l z80
+build\testWYZ.rel
+libs\crt0msx.16k.4000.rel
+libs\interrupt_ROM.rel
+libs\textmode_ROM.rel
+libs\WYZplayer.rel
+libs\pt10_test.rel
+
+-e

@@ -1,0 +1,83 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 1.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+    .__.$$$.                                                    =  2710 L
+    .__.ABS.                                                    =  0000 G
+    .__.CPU.                                                    =  0000 L
+    .__.H$L.                                                    =  0000 L
+  0 L00102                                                         025E R
+  0 L00104                                                         0272 R
+  0 L00105                                                         027C R
+  0 L00107                                                         0245 R
+  0 SPRITE_DATA                                                    029E R
+  0 VUMETER                                                        033E R
+    _COLOR                                                         **** GX
+  0 _CopyMEM                                                       01D2 GR
+  0 _GetKeyMatrix                                                  021C GR
+  0 _INKEY                                                         0206 GR
+    _INTERR                                                        **** GX
+    _LOCATE                                                        **** GX
+  0 _PEEK                                                          01AA GR
+  0 _POKE                                                          01BD GR
+    _PRINT                                                         **** GX
+    _PSG_REG_SEC                                                   **** GX
+  0 _PauseSong                                                     0167 GR
+    _SCREEN1                                                       **** GX
+  1 _SPRBUFFER                                                     0001 GR
+  0 _SetSPRITES                                                    0286 GR
+  0 _SetSpritesSize                                                0172 GR
+  0 _ShowVumeter                                                   022E GR
+    _Song_author                                                   **** GX
+    _Song_name                                                     **** GX
+  1 _VALUE                                                         0000 GR
+  0 _VPEEK                                                         01F1 GR
+  0 _WAIT                                                          020B GR
+    _WIDTH                                                         **** GX
+    _WYZ_FXs                                                       **** GX
+    _WYZ_instruments                                               **** GX
+    _WYZ_songs                                                     **** GX
+    _WYZdecode                                                     **** GX
+    _WYZinit                                                       **** GX
+    _WYZloadSong                                                   **** GX
+    _WYZpause                                                      **** GX
+    _WYZplayAY                                                     **** GX
+    _WYZresume                                                     **** GX
+  0 ___str_3                                                       014B R
+  0 ___str_4                                                       014D R
+  0 ___str_5                                                       0150 R
+  0 ___str_6                                                       015D R
+  1 _firstPATaddr                                                  004A GR
+    _install_isr                                                   **** GX
+  1 _keyB7semaphore                                                0049 GR
+  0 _main                                                          0065 GR
+  0 _my_isr0                                                       0000 GR
+  0 _presskey                                                      0051 GR
+  0 _text01                                                        0022 GR
+  0 _text02                                                        003F GR
+  0 setSize                                                        018B R
+  0 size8                                                          0189 R
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+  0 writeVDP                                                       0193 R
+
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
+Hexadecimal [16-Bits]
+
+Area Table
+
+   0 _CODE                                      size  37E   flags    0
+   1 _DATA                                      size   4C   flags    0
+   2 _INITIALIZED                               size    0   flags    0
+   3 _DABS                                      size    0   flags    8
+   4 _HOME                                      size    0   flags    0
+   5 _GSINIT                                    size    0   flags    0
+   6 _GSFINAL                                   size    0   flags    0
+   7 _INITIALIZER                               size    0   flags    0
+   8 _CABS                                      size    0   flags    8
+
