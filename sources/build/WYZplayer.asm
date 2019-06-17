@@ -12,6 +12,7 @@
 	.globl _SELECT_CANAL_C
 	.globl _SELECT_CANAL_B
 	.globl _SELECT_CANAL_A
+	.globl _DATOS_NOTAS
 	.globl _TABLA_SONIDOS
 	.globl _TABLA_PAUTAS
 	.globl _TABLA_SONG
@@ -64,11 +65,11 @@
 	.globl _TTEMPO
 	.globl _TEMPO
 	.globl _SONG
-	.globl _INTERR
-	.globl _DATOS_NOTAS
+	.globl _WYZstate
 	.globl _WYZinit
 	.globl _WYZpause
 	.globl _WYZresume
+	.globl _WYZsetLoop
 	.globl _WYZplayFX
 	.globl _WYZplayAY
 	.globl _WYZloadSong
@@ -80,7 +81,7 @@
 ; ram data
 ;--------------------------------------------------------
 	.area _DATA
-_INTERR::
+_WYZstate::
 	.ds 1
 _SONG::
 	.ds 1
@@ -186,6 +187,8 @@ _TABLA_PAUTAS::
 	.ds 2
 _TABLA_SONIDOS::
 	.ds 2
+_DATOS_NOTAS::
+	.ds 2
 _SELECT_CANAL_A::
 	.ds 7
 _SELECT_CANAL_B::
@@ -218,15 +221,15 @@ _TABLA_DATOS_CANAL_SFX::
 ; code
 ;--------------------------------------------------------
 	.area _CODE
-;src\WYZplayer.c:170: void WYZinit(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs) __naked
+;src\WYZplayer.c:181: void WYZinit(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked
 ;	---------------------------------
 ; Function WYZinit
 ; ---------------------------------
 _WYZinit::
-;src\WYZplayer.c:265: __endasm;
+;src\WYZplayer.c:280: __endasm;
 	push	IX
 	ld	IX,#0
-	add	IX,sp
+	add	IX,SP
 	ld	L,4(IX)
 	ld	H,5(IX)
 	ld	(#_TABLA_SONG),HL
@@ -236,9 +239,12 @@ _WYZinit::
 	ld	L,8(IX)
 	ld	H,9(IX)
 	ld	(#_TABLA_SONIDOS),HL
+	ld	L,10(IX)
+	ld	H,11(IX)
+	ld	(#_DATOS_NOTAS),HL
 	XOR	A
-	LD	(#_INTERR),A
-	call	PLAYER_OFF
+	LD	(#_WYZstate),A
+	call	CLEAR_PSG_BUFFER ;PLAYER_OFF
 	LD	HL,#_SOUND_BUFFER_A ;* RESERVAR MEMORIA PARA BUFFER DE SONIDO!!!!!
 	LD	(#_CANAL_A),HL
 	LD	HL,#_SOUND_BUFFER_B
@@ -284,17 +290,17 @@ _WYZinit::
 	LD	(#_TABLA_DATOS_CANAL_SFX+4),HL
 	pop	IX
 	ret
-;src\WYZplayer.c:279: void WYZpause()
+;src\WYZplayer.c:294: void WYZpause()
 ;	---------------------------------
 ; Function WYZpause
 ; ---------------------------------
 _WYZpause::
-;src\WYZplayer.c:309: __endasm;
+;src\WYZplayer.c:324: __endasm;
 	PLAYER_OFF:
 ;	XOR A
 ;	LD [INTERR],A
 ;	LD [FADE],A ;solo si hay fade out
-	LD	HL,#_INTERR
+	LD	HL,#_WYZstate
 	RES	1,(HL)
 	CLEAR_PSG_BUFFER:
 	XOR	A
@@ -312,85 +318,41 @@ _WYZpause::
 	CALL	ROUT
 	RET
 	ret
-_DATOS_NOTAS:
-	.dw #0x0000
-	.dw #0x0000
-	.dw #0x06af
-	.dw #0x064e
-	.dw #0x05f4
-	.dw #0x059e
-	.dw #0x054e
-	.dw #0x0501
-	.dw #0x04ba
-	.dw #0x0476
-	.dw #0x0436
-	.dw #0x03f9
-	.dw #0x03c0
-	.dw #0x038a
-	.dw #0x0357
-	.dw #0x0327
-	.dw #0x02fa
-	.dw #0x02cf
-	.dw #0x02a7
-	.dw #0x0281
-	.dw #0x025d
-	.dw #0x023b
-	.dw #0x021b
-	.dw #0x01fd
-	.dw #0x01e0
-	.dw #0x01c5
-	.dw #0x01ac
-	.dw #0x0194
-	.dw #0x017d
-	.dw #0x0168
-	.dw #0x0153
-	.dw #0x0140
-	.dw #0x012e
-	.dw #0x011d
-	.dw #0x010d
-	.dw #0x00fe
-	.dw #0x00f0
-	.dw #0x00e3
-	.dw #0x00d6
-	.dw #0x00ca
-	.dw #0x00be
-	.dw #0x00b4
-	.dw #0x00aa
-	.dw #0x00a0
-	.dw #0x0097
-	.dw #0x008f
-	.dw #0x0087
-	.dw #0x007f
-	.dw #0x0078
-	.dw #0x0071
-	.dw #0x006b
-	.dw #0x0065
-	.dw #0x005f
-	.dw #0x005a
-	.dw #0x0055
-	.dw #0x0050
-	.dw #0x004c
-	.dw #0x0047
-	.dw #0x0043
-	.dw #0x0040
-	.dw #0x003c
-	.dw #0x0039
-;src\WYZplayer.c:324: void WYZresume()
+;src\WYZplayer.c:339: void WYZresume() __naked
 ;	---------------------------------
 ; Function WYZresume
 ; ---------------------------------
 _WYZresume::
-;src\WYZplayer.c:331: __endasm;
-	LD	HL,#_INTERR
+;src\WYZplayer.c:346: __endasm;
+	LD	HL,#_WYZstate
 	SET	1,(HL) ;PLAYER ON
 	RET
-	ret
-;src\WYZplayer.c:345: void WYZplayFX(char numSound) __naked
+;src\WYZplayer.c:360: void WYZsetLoop(char mode) __naked
+;	---------------------------------
+; Function WYZsetLoop
+; ---------------------------------
+_WYZsetLoop::
+;src\WYZplayer.c:384: __endasm;
+	push	IX
+	ld	IX,#0
+	add	IX,SP
+	LD	HL,#_WYZstate
+	ld	A,4(IX)
+	or	A
+	jr	Z,resetLOOP
+	SET	4,(HL) ;LOOP ON
+	pop	IX
+	RET
+	resetLOOP:
+	RES	4,(HL)
+	pop	IX
+	RET
+;src\WYZplayer.c:398: void WYZplayFX(char numSound) __naked
 ;	---------------------------------
 ; Function WYZplayFX
 ; ---------------------------------
 _WYZplayFX::
-;src\WYZplayer.c:375: __endasm;
+;src\WYZplayer.c:428: __endasm;
 	push	IX
 	ld	IX,#0
 	add	IX,sp
@@ -398,7 +360,6 @@ _WYZplayFX::
 	CALL	INICIA_SONIDO
 	pop	IX
 	ret
-;-------------------------------------------------------------------------------
 ;INICIA	EL SONIDO No [A]
 	INICIA_SONIDO:
 ;CP	8 ;SFX SPEECH
@@ -406,15 +367,15 @@ _WYZplayFX::
 	LD	HL,(#_TABLA_SONIDOS) ;(v 360) HL,TABLA_SONIDOS
 	CALL	EXT_WORD
 	LD	(#_PUNTERO_SONIDO),HL
-	LD	HL,#_INTERR
+	LD	HL,#_WYZstate
 	SET	2,(HL)
 	RET
-;src\WYZplayer.c:394: void WYZplayAY() __naked
+;src\WYZplayer.c:446: void WYZplayAY() __naked
 ;	---------------------------------
 ; Function WYZplayAY
 ; ---------------------------------
 _WYZplayAY::
-;src\WYZplayer.c:429: __endasm;
+;src\WYZplayer.c:481: __endasm;
 	ROUT:
 	LD	A,(#_PSG_REG+13)
 	AND	A ;ES CERO?
@@ -442,31 +403,28 @@ _WYZplayAY::
 	LD	(#_PSG_REG_SEC+13),A
 	LD	(#_PSG_REG+13),A
 	RET
-;src\WYZplayer.c:448: void WYZloadSong(char numSong) __naked
+;src\WYZplayer.c:499: void WYZloadSong(char numSong) __naked
 ;	---------------------------------
 ; Function WYZloadSong
 ; ---------------------------------
 _WYZloadSong::
-;src\WYZplayer.c:640: __endasm;
+;src\WYZplayer.c:689: __endasm;
 	push	IX
 	ld	IX,#0
 	add	IX,sp
 	LD	A,4(IX)
-;ld	L,4(IX)
-;ld	H,5(IX)
 	CALL	CARGA_CANCION
 	pop	IX
 	ret
-;-------------------------------------------------------------------------------<	CARGA_CANCION
 ;CARGA	UNA CANCION
 ;IN:[A]=Nº	DE CANCION
 	CARGA_CANCION:
 ;LD	HL,#_SONG
 	LD	(#_SONG),A ;Nº A
-	LD	HL,#_INTERR ;CARGA CANCION
+	LD	HL,#_WYZstate ;CARGA CANCION
 	SET	1,(HL) ;REPRODUCE CANCION
 ;DECODIFICAR
-;IN->	INTERR 0 ON
+;IN->	WYZstate 0 ON
 ;	SONG
 ;CARGA	CANCION SI/NO
 	DECODE_SONG:
@@ -487,7 +445,7 @@ _WYZloadSong::
 	BIT	0,A
 	JR	Z,NPTJP0
 	PUSH	HL
-	LD	HL,#_INTERR
+	LD	HL,#_WYZstate
 	SET	4,(HL)
 	POP	HL
 ;SELECCION	DEL CANAL DE EFECTOS DE RITMO
@@ -591,14 +549,14 @@ _WYZloadSong::
 	INC	HL
 	JR	Z,BGICMODBC1
 	RET
-;src\WYZplayer.c:662: void WYZdecode() __naked
+;src\WYZplayer.c:709: void WYZdecode() __naked
 ;	---------------------------------
 ; Function WYZdecode
 ; ---------------------------------
 _WYZdecode::
-;src\WYZplayer.c:1353: __endasm;
+;src\WYZplayer.c:1402: __endasm;
 	INICIO:
-	push	IX
+;	push IX
 ;	CALL ROUT
 ;	CALL MIXER
 	LD	HL,#_PSG_REG
@@ -607,11 +565,11 @@ _WYZdecode::
 	LDIR
 	CALL	REPRODUCE_SONIDO
 	CALL	PLAY
-	pop	IX
+;	pop IX
 	RET
 ;REPRODUCE	EFECTOS DE SONIDO
 	REPRODUCE_SONIDO:
-	LD	HL,#_INTERR
+	LD	HL,#_WYZstate
 	BIT	2,(HL) ;ESTA ACTIVADO EL EFECTO?
 	RET	Z
 	LD	HL,(#_PUNTERO_SONIDO)
@@ -669,7 +627,7 @@ _WYZdecode::
 	LD	(#_PUNTERO_SONIDO),HL
 	RET
 	FIN_SONIDO:
-	LD	HL,#_INTERR
+	LD	HL,#_WYZstate
 	RES	2,(HL)
 	LD	A,(#_ENVOLVENTE_BACK) ;NO RESTAURA LA ENVOLVENTE SI ES 0
 	AND	A
@@ -681,7 +639,7 @@ _WYZdecode::
 	LD	(#_PSG_REG_SEC+7),A
 	RET
 	PLAY:
-	LD	HL,#_INTERR ;PLAY BIT 1 ON?
+	LD	HL,#_WYZstate ;PLAY BIT 1 ON?
 	BIT	1,(HL)
 	RET	Z
 ;TEMPO
@@ -909,7 +867,7 @@ _WYZdecode::
 	LD	_PUNTERO_DECA - _PUNTERO_A+1(IX),H
 	JP	LOCALIZA_NOTA
 	FIN_CANAL_A:
-	LD	HL,#_INTERR ;LOOP?
+	LD	HL,#_WYZstate ;LOOP?
 	BIT	4,(HL)
 	JR	NZ,FCA_CONT
 	POP	AF
@@ -1107,7 +1065,7 @@ _WYZdecode::
 	JR	NZ,EVOLVENTES
 	LD	A,B
 	TABLA_NOTAS:
-	LD	HL,#_DATOS_NOTAS ;BUSCA FRECUENCIA
+	LD	HL,(#_DATOS_NOTAS) ;BUSCA FRECUENCIA
 	CALL	EXT_WORD
 	LD	0(IY),L
 	LD	1(IY),H
@@ -1115,7 +1073,7 @@ _WYZdecode::
 ;IN	[A]=CODIGO DE LA ENVOLVENTE
 ;	[IY]=REGISTRO DE FRECUENCIA
 	EVOLVENTES:
-	LD	HL,#_DATOS_NOTAS
+	LD	HL,(#_DATOS_NOTAS)
 ;SUB	12
 	RLCA	;X2
 	LD	D,#0

@@ -85,12 +85,20 @@ For C:
    
 ## 5. Functions
 
-* void **WYZInit**(unsigned int, char) Init Song: (unsigned int) Song data address ;(char) Loop - 0=off ; 1=on
-* void **WYZDecode**() Decode a frame from WYZ Song.
-* void **WYZPlayAY**() Play Song. Execute on each interruption of VBLANK.
-* void **WYZMute**() Silence the PSG.
+* **WYZInit**(many input data) - Init player
+* **WYZloadSong**(char numSong) - Init song
+* **WYZdecode**() - Decode a frame from WYZ song
+* **WYZplayAY**() - Send data to AY registers. Execute on each interruption of VBLANK
+* **WYZsetLoop**(char mode) - Change loop mode. false = 0, true = 1
+* **WYZpause**() - Pause song playback
+* **WYZresume**() - Resume song playback
 
 
 
 ## 6. How to use
 
+### 6.1 Introduction 
+
+### 6.2 How to create a Song Data Object
+
+### 6.3 Control music playback

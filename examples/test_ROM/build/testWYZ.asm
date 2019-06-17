@@ -12,6 +12,7 @@
 	.globl _my_isr0
 	.globl _WYZresume
 	.globl _WYZpause
+	.globl _WYZsetLoop
 	.globl _WYZplayAY
 	.globl _WYZdecode
 	.globl _WYZloadSong
@@ -29,7 +30,9 @@
 	.globl _presskey
 	.globl _text02
 	.globl _text01
+	.globl _PlaySong
 	.globl _PauseSong
+	.globl _ChangeLoop
 	.globl _SetSpritesSize
 	.globl _PEEK
 	.globl _POKE
@@ -79,7 +82,7 @@ _firstPATaddr::
 ; code
 ;--------------------------------------------------------
 	.area _CODE
-;src\testWYZ.c:102: void my_isr0(void) __interrupt 
+;src\testWYZ.c:104: void my_isr0(void) __interrupt 
 ;	---------------------------------
 ; Function my_isr0
 ; ---------------------------------
@@ -90,19 +93,19 @@ _my_isr0::
 	push	de
 	push	hl
 	push	iy
-;src\testWYZ.c:104: DI;
+;src\testWYZ.c:106: DI;
 	di	
-;src\testWYZ.c:105: READ_VDP_STATUS;
+;src\testWYZ.c:107: READ_VDP_STATUS;
 	in	a,(#0x99) 
-;src\testWYZ.c:108: WYZplayAY();
+;src\testWYZ.c:110: WYZplayAY();
 	call	_WYZplayAY
-;src\testWYZ.c:116: __endasm;
+;src\testWYZ.c:118: __endasm;
 ;vuelca	a VRAM buffer atributos sprites
 	ld	HL,#_SPRBUFFER
 	ld	DE,#0x1B00
 	ld	BC,#20*4
 	call	0x005C
-;src\testWYZ.c:119: EI;
+;src\testWYZ.c:121: EI;
 	ei	
 	pop	iy
 	pop	hl
@@ -119,15 +122,19 @@ _text02:
 _presskey:
 	.ascii "Press a key to Play"
 	.db 0x00
-;src\testWYZ.c:128: void main(void)
+;src\testWYZ.c:130: void main(void)
 ;	---------------------------------
 ; Function main
 ; ---------------------------------
 _main::
-;src\testWYZ.c:135: keyB7semaphore=false;
+	push	ix
+	ld	ix,#0
+	add	ix,sp
+	push	af
+;src\testWYZ.c:137: keyB7semaphore=false;
 	ld	hl,#_keyB7semaphore + 0
 	ld	(hl), #0x00
-;src\testWYZ.c:137: COLOR(WHITE,DARK_BLUE,LIGHT_BLUE);
+;src\testWYZ.c:139: COLOR(WHITE,DARK_BLUE,LIGHT_BLUE);
 	ld	hl,#0x0504
 	push	hl
 	ld	a,#0x0f
@@ -136,90 +143,106 @@ _main::
 	call	_COLOR
 	pop	af
 	inc	sp
-;src\testWYZ.c:139: WIDTH(32);
+;src\testWYZ.c:141: WIDTH(32);
 	ld	a,#0x20
 	push	af
 	inc	sp
 	call	_WIDTH
 	inc	sp
-;src\testWYZ.c:140: SCREEN1();    
+;src\testWYZ.c:142: SCREEN1();    
 	call	_SCREEN1
-;src\testWYZ.c:141: SetSpritesSize(1);  
+;src\testWYZ.c:143: SetSpritesSize(1);  
 	ld	a,#0x01
 	push	af
 	inc	sp
 	call	_SetSpritesSize
 	inc	sp
-;src\testWYZ.c:143: LOCATE(0,0);
+;src\testWYZ.c:145: LOCATE(0,0);
 	ld	hl,#0x0000
 	push	hl
 	call	_LOCATE
-;src\testWYZ.c:144: PRINT(text01);
+;src\testWYZ.c:146: PRINT(text01);
 	ld	hl, #_text01
 	ex	(sp),hl
 	call	_PRINT
-;src\testWYZ.c:145: PRINT("\n");
+;src\testWYZ.c:147: PRINT("\n");
 	ld	hl, #___str_3
 	ex	(sp),hl
 	call	_PRINT
-;src\testWYZ.c:146: PRINT(text02);
+;src\testWYZ.c:148: PRINT(text02);
 	ld	hl, #_text02
 	ex	(sp),hl
 	call	_PRINT
-;src\testWYZ.c:148: PRINT("\n\n");
+;src\testWYZ.c:150: PRINT("\n\n");
 	ld	hl, #___str_4
 	ex	(sp),hl
 	call	_PRINT
-;src\testWYZ.c:150: PRINT("Song name:\n ");
+;src\testWYZ.c:152: PRINT("Song name:\n ");
 	ld	hl, #___str_5
 	ex	(sp),hl
 	call	_PRINT
-;src\testWYZ.c:151: PRINT(Song_name);
+;src\testWYZ.c:153: PRINT(Song_name);
 	ld	hl, #_Song_name
 	ex	(sp),hl
 	call	_PRINT
-;src\testWYZ.c:153: PRINT("\n\n");
+;src\testWYZ.c:155: PRINT("\n\n");
 	ld	hl, #___str_4
 	ex	(sp),hl
 	call	_PRINT
-;src\testWYZ.c:155: PRINT("Author:\n ");
+;src\testWYZ.c:157: PRINT("Author:\n ");
 	ld	hl, #___str_6
 	ex	(sp),hl
 	call	_PRINT
-;src\testWYZ.c:156: PRINT(Song_author);
+;src\testWYZ.c:158: PRINT(Song_author);
 	ld	hl, #_Song_author
 	ex	(sp),hl
 	call	_PRINT
 	pop	af
-;src\testWYZ.c:183: WYZinit((unsigned int) WYZ_songs, (unsigned int) WYZ_instruments, (unsigned int) WYZ_FXs);   
-	ld	bc,#_WYZ_FXs
+;src\testWYZ.c:167: WYZinit((unsigned int) WYZ_songs, (unsigned int) WYZ_instruments, (unsigned int) WYZ_FXs, (unsigned int) WYZ_notas);   
+	ld	bc,#_WYZ_notas
+	ld	-2 (ix),#<(_WYZ_FXs)
+	ld	-1 (ix),#>(_WYZ_FXs)
 	ld	de,#_WYZ_instruments
 	ld	hl,#_WYZ_songs
+	push	bc
+	ld	c,-2 (ix)
+	ld	b,-1 (ix)
 	push	bc
 	push	de
 	push	hl
 	call	_WYZinit
-	ld	hl,#6
+	ld	hl,#8
 	add	hl,sp
 	ld	sp,hl
-;src\testWYZ.c:185: WYZloadSong(0);   //(unsigned int) SONG00);   
-	xor	a, a
-	push	af
-	inc	sp
-	call	_WYZloadSong
-	inc	sp
-;src\testWYZ.c:196: SetSPRITES();
+;src\testWYZ.c:179: LOCATE(0,10);
+	ld	hl,#0x0a00
+	push	hl
+	call	_LOCATE
+;src\testWYZ.c:180: PRINT("STOP for Mute the song\n");
+	ld	hl, #___str_7
+	ex	(sp),hl
+	call	_PRINT
+;src\testWYZ.c:181: PRINT("SELECT for change Loop mode\n");
+	ld	hl, #___str_8
+	ex	(sp),hl
+	call	_PRINT
+;src\testWYZ.c:182: PRINT("RETURN for Play song\n"); 
+	ld	hl, #___str_9
+	ex	(sp),hl
+	call	_PRINT
+	pop	af
+;src\testWYZ.c:184: SetSPRITES();
 	call	_SetSPRITES
-;src\testWYZ.c:198: install_isr(my_isr0);
+;src\testWYZ.c:186: install_isr(my_isr0);
 	ld	hl,#_my_isr0
 	push	hl
 	call	_install_isr
 	pop	af
-;src\testWYZ.c:200: while(1)
-00109$:
-;src\testWYZ.c:202: HALT;
+;src\testWYZ.c:188: while(1)
+00113$:
+;src\testWYZ.c:190: HALT;
 	halt	
-;src\testWYZ.c:233: ShowVumeter(0,PSG_REG_SEC[AY_AmplA]);
+;src\testWYZ.c:221: ShowVumeter(0,PSG_REG_SEC[AY_AmplA]);
 	ld	hl, #_PSG_REG_SEC + 8
 	ld	b,(hl)
 	push	bc
@@ -229,7 +252,7 @@ _main::
 	inc	sp
 	call	_ShowVumeter
 	pop	af
-;src\testWYZ.c:234: ShowVumeter(1,PSG_REG_SEC[AY_AmplB]);
+;src\testWYZ.c:222: ShowVumeter(1,PSG_REG_SEC[AY_AmplB]);
 	ld	hl, #_PSG_REG_SEC + 9
 	ld	b,(hl)
 	push	bc
@@ -239,7 +262,7 @@ _main::
 	inc	sp
 	call	_ShowVumeter
 	pop	af
-;src\testWYZ.c:235: ShowVumeter(2,PSG_REG_SEC[AY_AmplC]);
+;src\testWYZ.c:223: ShowVumeter(2,PSG_REG_SEC[AY_AmplC]);
 	ld	hl, #_PSG_REG_SEC + 10
 	ld	b,(hl)
 	push	bc
@@ -248,38 +271,60 @@ _main::
 	push	af
 	inc	sp
 	call	_ShowVumeter
-;src\testWYZ.c:240: keyPressed = GetKeyMatrix(7);  
+;src\testWYZ.c:228: keyPressed = GetKeyMatrix(7);  
 	ld	h,#0x07
 	ex	(sp),hl
 	inc	sp
 	call	_GetKeyMatrix
 	inc	sp
 	ld	c,l
-;src\testWYZ.c:241: if (keyPressed!=0xFF)  //pressure control of the keys
+;src\testWYZ.c:229: if (keyPressed!=0xFF)  //pressure control of the keys
 	ld	a,c
 	inc	a
-	jr	Z,00106$
-;src\testWYZ.c:243: if(keyB7semaphore==false)
+	jr	Z,00110$
+;src\testWYZ.c:231: if(keyB7semaphore==false)
 	ld	a,(#_keyB7semaphore + 0)
 	or	a, a
-	jr	NZ,00107$
-;src\testWYZ.c:246: if (!(keyPressed&16))//  0b11101111)
+	jr	NZ,00111$
+;src\testWYZ.c:233: if (!(keyPressed&16))    //STOP Key
 	bit	4, c
-	jr	NZ,00107$
-;src\testWYZ.c:248: keyB7semaphore=true;
+	jr	NZ,00102$
+;src\testWYZ.c:235: keyB7semaphore=true;
 	ld	hl,#_keyB7semaphore + 0
 	ld	(hl), #0x01
-;src\testWYZ.c:249: PauseSong(); 
+;src\testWYZ.c:236: PauseSong(); 
+	push	bc
 	call	_PauseSong
-	jr	00107$
-00106$:
-;src\testWYZ.c:253: keyB7semaphore=false;        
+	pop	bc
+00102$:
+;src\testWYZ.c:238: if (!(keyPressed&64))    //SELECT Key
+	bit	6, c
+	jr	NZ,00104$
+;src\testWYZ.c:240: keyB7semaphore=true;
+	ld	hl,#_keyB7semaphore + 0
+	ld	(hl), #0x01
+;src\testWYZ.c:241: ChangeLoop(); 
+	push	bc
+	call	_ChangeLoop
+	pop	bc
+00104$:
+;src\testWYZ.c:243: if (!(keyPressed&128))    //RETURN Key
+	bit	7, c
+	jr	NZ,00111$
+;src\testWYZ.c:245: keyB7semaphore=true;
+	ld	hl,#_keyB7semaphore + 0
+	ld	(hl), #0x01
+;src\testWYZ.c:246: PlaySong(); 
+	call	_PlaySong
+	jr	00111$
+00110$:
+;src\testWYZ.c:250: keyB7semaphore=false;        
 	ld	hl,#_keyB7semaphore + 0
 	ld	(hl), #0x00
-00107$:
-;src\testWYZ.c:259: WYZdecode();
+00111$:
+;src\testWYZ.c:256: WYZdecode();
 	call	_WYZdecode
-	jr	00109$
+	jr	00113$
 ___str_3:
 	.db 0x0a
 	.db 0x00
@@ -297,23 +342,70 @@ ___str_6:
 	.db 0x0a
 	.ascii " "
 	.db 0x00
-;src\testWYZ.c:274: void PauseSong()
+___str_7:
+	.ascii "STOP for Mute the song"
+	.db 0x0a
+	.db 0x00
+___str_8:
+	.ascii "SELECT for change Loop mode"
+	.db 0x0a
+	.db 0x00
+___str_9:
+	.ascii "RETURN for Play song"
+	.db 0x0a
+	.db 0x00
+;src\testWYZ.c:271: void PlaySong()
+;	---------------------------------
+; Function PlaySong
+; ---------------------------------
+_PlaySong::
+;src\testWYZ.c:273: WYZloadSong(0);
+	xor	a, a
+	push	af
+	inc	sp
+	call	_WYZloadSong
+	inc	sp
+	ret
+;src\testWYZ.c:277: void PauseSong()
 ;	---------------------------------
 ; Function PauseSong
 ; ---------------------------------
 _PauseSong::
-;src\testWYZ.c:276: if((INTERR & 0b00000010)==0) WYZresume();  //AND binario  
-	ld	hl,#_INTERR+0
+;src\testWYZ.c:279: if((WYZstate & 0b00000010)==0) WYZresume();  //AND binario  
+	ld	hl,#_WYZstate+0
 	bit	1, (hl)
 	jp	Z,_WYZresume
-;src\testWYZ.c:277: else WYZpause();  
+;src\testWYZ.c:280: else WYZpause();  
 	jp  _WYZpause
-;src\testWYZ.c:287: void SetSpritesSize(char size) __naked
+;src\testWYZ.c:285: void ChangeLoop()
+;	---------------------------------
+; Function ChangeLoop
+; ---------------------------------
+_ChangeLoop::
+;src\testWYZ.c:287: if((WYZstate & 0b00010000)==0) WYZsetLoop(true); 
+	ld	hl,#_WYZstate+0
+	bit	4, (hl)
+	jr	NZ,00102$
+	ld	a,#0x01
+	push	af
+	inc	sp
+	call	_WYZsetLoop
+	inc	sp
+	ret
+00102$:
+;src\testWYZ.c:288: else WYZsetLoop(false);  
+	xor	a, a
+	push	af
+	inc	sp
+	call	_WYZsetLoop
+	inc	sp
+	ret
+;src\testWYZ.c:299: void SetSpritesSize(char size) __naked
 ;	---------------------------------
 ; Function SetSpritesSize
 ; ---------------------------------
 _SetSpritesSize::
-;src\testWYZ.c:333: __endasm;
+;src\testWYZ.c:345: __endasm;
 	push	IX
 	ld	IX,#0
 	add	IX,SP
@@ -345,12 +437,12 @@ _SetSpritesSize::
 	out	(#0x99),A
 	ei
 	ret
-;src\testWYZ.c:341: char PEEK(uint address)
+;src\testWYZ.c:353: char PEEK(uint address)
 ;	---------------------------------
 ; Function PEEK
 ; ---------------------------------
 _PEEK::
-;src\testWYZ.c:355: __endasm;
+;src\testWYZ.c:367: __endasm;
 	push	IX
 	ld	IX,#0
 	add	IX,SP
@@ -360,12 +452,12 @@ _PEEK::
 	ld	L,A
 	pop	IX
 	ret
-;src\testWYZ.c:360: void POKE(uint address, char value)
+;src\testWYZ.c:372: void POKE(uint address, char value)
 ;	---------------------------------
 ; Function POKE
 ; ---------------------------------
 _POKE::
-;src\testWYZ.c:374: __endasm;
+;src\testWYZ.c:386: __endasm;
 	push	IX
 	ld	IX,#0
 	add	IX,SP
@@ -375,12 +467,12 @@ _POKE::
 	ld	(HL),A
 	pop	IX
 	ret
-;src\testWYZ.c:388: void CopyMEM(unsigned int source, unsigned int destination, unsigned int length)
+;src\testWYZ.c:400: void CopyMEM(unsigned int source, unsigned int destination, unsigned int length)
 ;	---------------------------------
 ; Function CopyMEM
 ; ---------------------------------
 _CopyMEM::
-;src\testWYZ.c:408: __endasm;
+;src\testWYZ.c:420: __endasm;
 	push	IX
 	ld	IX,#0
 	add	IX,SP
@@ -393,12 +485,12 @@ _CopyMEM::
 	ldir
 	pop	IX
 	ret
-;src\testWYZ.c:414: char VPEEK(uint address)
+;src\testWYZ.c:426: char VPEEK(uint address)
 ;	---------------------------------
 ; Function VPEEK
 ; ---------------------------------
 _VPEEK::
-;src\testWYZ.c:429: __endasm;
+;src\testWYZ.c:441: __endasm;
 	push	IX
 	ld	IX,#0
 	add	IX,SP
@@ -408,21 +500,21 @@ _VPEEK::
 	ld	L,A
 	pop	IX
 	ret
-;src\testWYZ.c:437: char INKEY(){
+;src\testWYZ.c:449: char INKEY(){
 ;	---------------------------------
 ; Function INKEY
 ; ---------------------------------
 _INKEY::
-;src\testWYZ.c:441: __endasm;
+;src\testWYZ.c:453: __endasm;
 	call	0x009F
 	ld	L,A
 	ret
-;src\testWYZ.c:453: void WAIT(uint cicles)
+;src\testWYZ.c:465: void WAIT(uint cicles)
 ;	---------------------------------
 ; Function WAIT
 ; ---------------------------------
 _WAIT::
-;src\testWYZ.c:456: for(i=0;i<cicles;i++) HALT;
+;src\testWYZ.c:468: for(i=0;i<cicles;i++) HALT;
 	ld	bc,#0x0000
 00103$:
 	ld	hl,#2
@@ -435,14 +527,14 @@ _WAIT::
 	ret	NC
 	halt	
 	inc	bc
-;src\testWYZ.c:457: return;
+;src\testWYZ.c:469: return;
 	jr	00103$
-;src\testWYZ.c:472: char GetKeyMatrix(char line)
+;src\testWYZ.c:484: char GetKeyMatrix(char line)
 ;	---------------------------------
 ; Function GetKeyMatrix
 ; ---------------------------------
 _GetKeyMatrix::
-;src\testWYZ.c:487: __endasm;
+;src\testWYZ.c:499: __endasm;
 	push	IX
 	ld	IX,#0
 	add	IX,SP
@@ -451,12 +543,12 @@ _GetKeyMatrix::
 	ld	L,A
 	pop	IX
 	ret
-;src\testWYZ.c:527: void ShowVumeter(char channel, char value)
+;src\testWYZ.c:539: void ShowVumeter(char channel, char value)
 ;	---------------------------------
 ; Function ShowVumeter
 ; ---------------------------------
 _ShowVumeter::
-;src\testWYZ.c:602: __endasm;
+;src\testWYZ.c:614: __endasm;
 	push	IX
 	ld	IX,#0
 	add	IX,SP
@@ -514,12 +606,12 @@ _ShowVumeter::
 	pop	IX
 ;	ret
 	ret
-;src\testWYZ.c:607: void SetSPRITES() __naked
+;src\testWYZ.c:619: void SetSPRITES() __naked
 ;	---------------------------------
 ; Function SetSPRITES
 ; ---------------------------------
 _SetSPRITES::
-;src\testWYZ.c:670: __endasm;
+;src\testWYZ.c:682: __endasm;
 	ld	HL,#SPRITE_DATA
 	ld	DE,#0x3800
 	ld	BC,#32*5

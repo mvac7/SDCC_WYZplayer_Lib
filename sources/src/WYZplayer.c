@@ -18,14 +18,18 @@
 
 
 // -----------------------------------------------------------------------------
-char INTERR;
-/*INTERR          EQU     $E400         ;INTERRUPTORES 1=ON 0=OFF
-                                        ;BIT 0=CARGA CANCION ON/OFF
-                                        ;BIT 1=PLAYER ON/OFF
-                                        ;BIT 2=EFECTOS ON/OFF
-                                        ;BIT 3=SFX ON/OFF
-                                        ;BIT 4=LOOP
+
+/*
+WYZstate = INTERR            
+INTERRUPTORES 1=ON 0=OFF
+- BIT 0=CARGA CANCION ON/OFF
+- BIT 1=PLAYER ON/OFF
+- BIT 2=EFECTOS ON/OFF
+- BIT 3=SFX ON/OFF
+- BIT 4=LOOP
 */
+char WYZstate;  // (v SDCC) original player name = INTERR
+
 
 
 
@@ -33,34 +37,34 @@ char SONG;   //number of song playing
 char TEMPO;  //TEMPO
 char TTEMPO; //CONTADOR TEMPO
 
-unsigned int PUNTERO_A; //DW PUNTERO DEL CANAL A
-unsigned int PUNTERO_B; //DW PUNTERO DEL CANAL B
-unsigned int PUNTERO_C; //DW PUNTERO DEL CANAL C
+unsigned int PUNTERO_A;      //DW PUNTERO DEL CANAL A
+unsigned int PUNTERO_B;      //DW PUNTERO DEL CANAL B
+unsigned int PUNTERO_C;      //DW PUNTERO DEL CANAL C
 
-unsigned int CANAL_A; //DW DIRECION DE INICIO DE LA MUSICA A
-unsigned int CANAL_B; //DW DIRECION DE INICIO DE LA MUSICA B
-unsigned int CANAL_C; //DW DIRECION DE INICIO DE LA MUSICA C
+unsigned int CANAL_A;        //DW DIRECION DE INICIO DE LA MUSICA A
+unsigned int CANAL_B;        //DW DIRECION DE INICIO DE LA MUSICA B
+unsigned int CANAL_C;        //DW DIRECION DE INICIO DE LA MUSICA C
 
-unsigned int PUNTERO_P_A; //DW PUNTERO PAUTA CANAL A
-unsigned int PUNTERO_P_B; //DW PUNTERO PAUTA CANAL B
-unsigned int PUNTERO_P_C; //DW PUNTERO PAUTA CANAL C
+unsigned int PUNTERO_P_A;    //DW PUNTERO PAUTA CANAL A
+unsigned int PUNTERO_P_B;    //DW PUNTERO PAUTA CANAL B
+unsigned int PUNTERO_P_C;    //DW PUNTERO PAUTA CANAL C
 
-unsigned int PUNTERO_P_A0; //DW INI PUNTERO PAUTA CANAL A
-unsigned int PUNTERO_P_B0; //DW INI PUNTERO PAUTA CANAL B
-unsigned int PUNTERO_P_C0; //DW INI PUNTERO PAUTA CANAL C
+unsigned int PUNTERO_P_A0;   //DW INI PUNTERO PAUTA CANAL A
+unsigned int PUNTERO_P_B0;   //DW INI PUNTERO PAUTA CANAL B
+unsigned int PUNTERO_P_C0;   //DW INI PUNTERO PAUTA CANAL C
 
 unsigned int PUNTERO_P_DECA; //DW PUNTERO DE INICIO DEL DECODER CANAL A
 unsigned int PUNTERO_P_DECB; //DW PUNTERO DE INICIO DEL DECODER CANAL B
 unsigned int PUNTERO_P_DECC; //DW PUNTERO DE INICIO DEL DECODER CANAL C
 
-unsigned int PUNTERO_DECA; //DW PUNTERO DECODER CANAL A
-unsigned int PUNTERO_DECB; //DW PUNTERO DECODER CANAL B
-unsigned int PUNTERO_DECC; //DW PUNTERO DECODER CANAL C
+unsigned int PUNTERO_DECA;   //DW PUNTERO DECODER CANAL A
+unsigned int PUNTERO_DECB;   //DW PUNTERO DECODER CANAL B
+unsigned int PUNTERO_DECC;   //DW PUNTERO DECODER CANAL C
 
 char REG_NOTA_A; //DB REGISTRO DE LA NOTA EN EL CANAL A
 char VOL_INST_A; //DB VOLUMEN RELATIVO DEL INSTRUMENTO DEL CANAL A
 char REG_NOTA_B; //DB REGISTRO DE LA NOTA EN EL CANAL B
-char VOL_INST_B; //DB VOLUMEN RELATIVO DEL INSTRUMENTO DEL CANAL B ;VACIO
+char VOL_INST_B; //DB VOLUMEN RELATIVO DEL INSTRUMENTO DEL CANAL B
 char REG_NOTA_C; //DB REGISTRO DE LA NOTA EN EL CANAL C
 char VOL_INST_C; //DB VOLUMEN RELATIVO DEL INSTRUMENTO DEL CANAL C
 
@@ -69,9 +73,8 @@ unsigned int PUNTERO_L_DECB; //DW PUNTERO DE INICIO DEL LOOP DEL DECODER CANAL B
 unsigned int PUNTERO_L_DECC; //DW PUNTERO DE INICIO DEL LOOP DEL DECODER CANAL C
 
 //CANAL DE EFECTOS DE RITMO - ENMASCARA OTRO CANAL
-
-unsigned int PUNTERO_P; //DW PUNTERO DEL CANAL EFECTOS
-unsigned int CANAL_P;   //DW DIRECION DE INICIO DE LOS EFECTOS
+unsigned int PUNTERO_P;      //DW PUNTERO DEL CANAL EFECTOS
+unsigned int CANAL_P;        //DW DIRECION DE INICIO DE LOS EFECTOS
 
 unsigned int PUNTERO_P_DECP; //DW PUNTERO DE INICIO DEL DECODER CANAL P
 unsigned int PUNTERO_DECP;   //DW PUNTERO DECODER CANAL P
@@ -79,14 +82,13 @@ unsigned int PUNTERO_L_DECP; //DW PUNTERO DE INICIO DEL LOOP DEL DECODER CANAL P
 //SELECT_CANAL_P	EQU	INTERR+$36	;DB SELECCION DE CANAL DE EFECTOS DE RITMO
 
 
-unsigned int SFX_L;   //DW DIRECCION BUFFER EFECTOS DE RITMO REGISTRO BAJO
-unsigned int SFX_H;   //DW DIRECCION BUFFER EFECTOS DE RITMO REGISTRO ALTO
-unsigned int SFX_V;   //DW DIRECCION BUFFER EFECTOS DE RITMO REGISTRO VOLUMEN
-unsigned int SFX_MIX; //DW DIRECCION BUFFER EFECTOS DE RITMO REGISTRO MIXER
+unsigned int SFX_L;      //DW DIRECCION BUFFER EFECTOS DE RITMO REGISTRO BAJO
+unsigned int SFX_H;      //DW DIRECCION BUFFER EFECTOS DE RITMO REGISTRO ALTO
+unsigned int SFX_V;      //DW DIRECCION BUFFER EFECTOS DE RITMO REGISTRO VOLUMEN
+unsigned int SFX_MIX;    //DW DIRECCION BUFFER EFECTOS DE RITMO REGISTRO MIXER
 
 
 //EFECTOS DE SONIDO
-
 char N_SONIDO;               //DB : NUMERO DE SONIDO
 unsigned int PUNTERO_SONIDO; //DW : PUNTERO DEL SONIDO QUE SE REPRODUCE
 
@@ -108,6 +110,8 @@ char SOUND_BUFFER_B[0x10];
 char SOUND_BUFFER_C[0x10];
 char SOUND_BUFFER_P[0x10];
 
+
+
 //songs index address
 unsigned int TABLA_SONG;
 
@@ -117,7 +121,18 @@ unsigned int TABLA_PAUTAS;
 //FXs index address 
 unsigned int TABLA_SONIDOS;
 
+//Data of the frequencies of the notes
+unsigned int DATOS_NOTAS;
 
+/*
+unsigned int DATOS_NOTAS[]={0,0,
+1711,1614,1524,1438,1358,1281,1210,1142,1078,1017,
+960,906,855,807,762,719,679,641,605,571,
+539,509,480,453,428,404,381,360,339,320,
+302,285,269,254,240,227,214,202,190,180,
+170,160,151,143,135,127,120,113,107,101,
+95,90,85,80,76,71,67,64,60,57};
+*/
 
 
 
@@ -149,33 +164,30 @@ char TABLA_DATOS_CANAL_SFX[6];
 
 
 
-const unsigned int DATOS_NOTAS[]={0,0,
-1711,1614,1524,1438,1358,1281,1210,1142,1078,1017,
-960,906,855,807,762,719,679,641,605,571,
-539,509,480,453,428,404,381,360,339,320,
-302,285,269,254,240,227,214,202,190,180,
-170,160,151,143,135,127,120,113,107,101,
-95,90,85,80,76,71,67,64,60,57};
 
 
 
 
-// ----------------------------------------------------------------------------- >>> WYZinit
+
+
+
+
 /* =============================================================================
  WYZinit
  Description: Init player
  Input:       -
  Output:      -
 ============================================================================= */
-void WYZinit(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs) __naked
+void WYZinit(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked
 {
 addrSONGs;
 addrInstruments;
 addrFXs;
+addrFreqs;
 __asm
     push  IX
     ld    IX,#0
-    add   IX,sp
+    add   IX,SP
    
     ld    L,4(IX)
     ld    H,5(IX)
@@ -189,12 +201,15 @@ __asm
     ld    H,9(IX)
 	  ld    (#_TABLA_SONIDOS),HL
    
-   
+    ld    L,10(IX)
+    ld    H,11(IX)
+	  ld    (#_DATOS_NOTAS),HL
+    
    
     XOR	 A
-    LD	 (#_INTERR),A
+    LD	 (#_WYZstate),A
    
-    call PLAYER_OFF
+    call CLEAR_PSG_BUFFER   ;PLAYER_OFF
    
     LD      HL,#_SOUND_BUFFER_A        	;* RESERVAR MEMORIA PARA BUFFER DE SONIDO!!!!!
     LD      (#_CANAL_A),HL
@@ -269,7 +284,7 @@ __endasm;
 
 
 
-// ----------------------------------------------------------------------------- >>> WYZstop  
+
 /* =============================================================================
  WYZpause
  Description: Pause song playback
@@ -284,7 +299,7 @@ PLAYER_OFF:
 ;  XOR	A			
 ;  LD	[INTERR],A
 ;  LD	[FADE],A		;solo si hay fade out
-   LD   HL,#_INTERR       
+   LD   HL,#_WYZstate       
    RES  1,(HL)
 
 CLEAR_PSG_BUFFER:
@@ -314,17 +329,17 @@ __endasm;
 
 
 
-// ----------------------------------------------------------------------------- >>> WYZresume
+
 /* =============================================================================
  WYZresume
  Description: Resume song playback
  Input:       -
  Output:      -
 ============================================================================= */  	
-void WYZresume()
+void WYZresume() __naked
 {
 __asm
-   LD      HL,#_INTERR       
+   LD      HL,#_WYZstate       
    SET     1,(HL)      ;PLAYER ON
    
    RET
@@ -335,7 +350,45 @@ __endasm;
 
 
 
-// ----------------------------------------------------------------------------- >>> WYZplaySound
+
+/* =============================================================================
+ WYZsetLoop
+ Description: Change loop mode
+ Input:       [char] false = 0, true = 1
+ Output:      -
+============================================================================= */  	
+void WYZsetLoop(char mode) __naked
+{
+mode;
+__asm
+    push  IX
+    ld    IX,#0
+    add   IX,SP
+   
+    LD    HL,#_WYZstate
+    
+    ld    A,4(IX)
+    or    A
+    jr    Z,resetLOOP
+
+    SET   4,(HL)      ;LOOP ON
+    pop   IX
+    RET
+
+resetLOOP:           
+
+    RES   4,(HL)   
+    pop   IX
+    RET
+
+__endasm;
+}
+// ----------------------------------------------------------------------------- <<< END WYZloop
+
+
+
+
+
 /* =============================================================================
  WYZplayFX
  Description: Play FX
@@ -358,7 +411,7 @@ __asm
 
 
   
-;-------------------------------------------------------------------------------
+
 ;INICIA EL SONIDO No [A]
 
 INICIA_SONIDO:
@@ -368,7 +421,7 @@ INICIA_SONIDO:
    LD      HL,(#_TABLA_SONIDOS)    ;(v SDCC) HL,TABLA_SONIDOS  
    CALL    EXT_WORD
    LD      (#_PUNTERO_SONIDO),HL
-   LD      HL,#_INTERR
+   LD      HL,#_WYZstate
    SET     2,(HL)
    RET  
     
@@ -383,7 +436,6 @@ __endasm;
 
 
  
-// ----------------------------------------------------------------------------- >>> WYZPlay
 /* =============================================================================
  WYZPlay
  Description: Send data to AY registers
@@ -438,7 +490,6 @@ __endasm;
 
 
 
-// ----------------------------------------------------------------------------- >>> WYZloadSong 
 /* =============================================================================
  WYZloadSong
  Description: Init song.
@@ -454,8 +505,6 @@ __asm
    add  IX,sp
    
    LD   A,4(IX)
-   ;ld   L,4(IX)
-   ;ld   H,5(IX)
    CALL CARGA_CANCION
    
    pop  IX
@@ -463,7 +512,7 @@ __asm
 
 
 
-;-------------------------------------------------------------------------------< CARGA_CANCION
+
 ;CARGA UNA CANCION
 ;IN:[A]=Nº DE CANCION
 
@@ -472,12 +521,12 @@ CARGA_CANCION:
    ;LD   HL,#_SONG
    LD   (#_SONG),A   ;Nº A
    
-   LD   HL,#_INTERR       ;CARGA CANCION		
+   LD   HL,#_WYZstate       ;CARGA CANCION		
    SET  1,(HL)   ;REPRODUCE CANCION
 
 
 ;DECODIFICAR
-;IN-> INTERR 0 ON
+;IN-> WYZstate 0 ON
 ;     SONG
 
 ;CARGA CANCION SI/NO
@@ -504,7 +553,7 @@ DECODE_SONG:
    BIT  0,A
    JR   Z,NPTJP0
    PUSH HL
-   LD   HL,#_INTERR
+   LD   HL,#_WYZstate
    SET  4,(HL)
    POP  HL
 
@@ -651,8 +700,6 @@ __endasm;
 
 
 
-
-// ----------------------------------------------------------------------------- <<< WYZdecode
 /* =============================================================================
  WYZdecode
  Description: Decode a frame from WYZ song 
@@ -665,7 +712,7 @@ __asm
 
    
 INICIO:
-   push IX
+;   push IX
 ;   CALL ROUT
 
 ;   CALL MIXER
@@ -679,8 +726,10 @@ INICIO:
 
    CALL PLAY
 
-   pop  IX
+;   pop  IX
    RET
+
+
 
 
 
@@ -688,7 +737,7 @@ INICIO:
 
 REPRODUCE_SONIDO:
 
-   LD   HL,#_INTERR
+   LD   HL,#_WYZstate
    BIT  2,(HL)   ;ESTA ACTIVADO EL EFECTO?
    RET  Z
    LD   HL,(#_PUNTERO_SONIDO)
@@ -752,7 +801,7 @@ SI_RUIDO:
    RET
 
 FIN_SONIDO:
-   LD   HL,#_INTERR
+   LD   HL,#_WYZstate
    RES  2,(HL)
    LD   A,(#_ENVOLVENTE_BACK)		;NO RESTAURA LA ENVOLVENTE SI ES 0
    AND  A
@@ -769,7 +818,7 @@ FIN_NOPLAYER:
 
 
 PLAY:
-   LD   HL,#_INTERR       ;PLAY BIT 1 ON?
+   LD   HL,#_WYZstate       ;PLAY BIT 1 ON?
    BIT  1,(HL)
    RET  Z
 ;TEMPO
@@ -1031,7 +1080,7 @@ FIN_NOTA_A:
    JP   LOCALIZA_NOTA
    
 FIN_CANAL_A:
-   LD   HL,#_INTERR     ;LOOP?
+   LD   HL,#_WYZstate     ;LOOP?
    BIT  4,(HL)
    JR   NZ,FCA_CONT
    POP  AF
@@ -1266,7 +1315,7 @@ NOTA:
    JR    NZ,EVOLVENTES
    LD    A,B
 TABLA_NOTAS:
-   LD    HL,#_DATOS_NOTAS     ;BUSCA FRECUENCIA
+   LD    HL,(#_DATOS_NOTAS)     ;BUSCA FRECUENCIA
    CALL  EXT_WORD
    LD    0(IY),L
    LD    1(IY),H
@@ -1277,7 +1326,7 @@ TABLA_NOTAS:
 ;IN [A]=CODIGO DE LA ENVOLVENTE
 ;   [IY]=REGISTRO DE FRECUENCIA
 EVOLVENTES:
-    LD    HL,#_DATOS_NOTAS
+    LD    HL,(#_DATOS_NOTAS)
     ;SUB	12
     RLCA      ;X2
     LD    D,#0

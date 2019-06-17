@@ -22,23 +22,23 @@ Area                                    Addr        Size        Decimal Bytes (A
      00000000  s__HEADER                       
      00000000  s__HEADER0                      
      0000001A  l__HEADER0                      
-     0000011C  l__DATA                         
-     00000D17  l__CODE                         
+     0000011E  l__DATA                         
+     00000DEB  l__CODE                         
      00004020  s__CODE                         
      0000C000  s__DATA                         
-     0000C11C  s__BSS                          
-     0000C11C  s__GSFINAL                      
-     0000C11C  s__GSINIT                       
-     0000C11C  s__HOME                         
-     0000C11C  s__INITIALIZED                  
-     0000C11C  s__INITIALIZER                  
+     0000C11E  s__BSS                          
+     0000C11E  s__GSFINAL                      
+     0000C11E  s__GSINIT                       
+     0000C11E  s__HOME                         
+     0000C11E  s__INITIALIZED                  
+     0000C11E  s__INITIALIZER                  
 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-_CODE                               00004020    00000D17 =        3351. bytes (REL,CON)
+_CODE                               00004020    00000DEB =        3563. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -47,49 +47,52 @@ _CODE                               00004020    00000D17 =        3351. bytes (R
      0000405F  _text02                            testWYZ
      00004071  _presskey                          testWYZ
      00004085  _main                              testWYZ
-     00004187  _PauseSong                         testWYZ
-     00004192  _SetSpritesSize                    testWYZ
-     000041CA  _PEEK                              testWYZ
-     000041DD  _POKE                              testWYZ
-     000041F2  _CopyMEM                           testWYZ
-     00004211  _VPEEK                             testWYZ
-     00004226  _INKEY                             testWYZ
-     0000422B  _WAIT                              testWYZ
-     0000423C  _GetKeyMatrix                      testWYZ
-     0000424E  _ShowVumeter                       testWYZ
-     000042A6  _SetSPRITES                        testWYZ
-     0000439E  _install_isr                       interrupt_ROM
-     000043C5  _uninstall_isr                     interrupt_ROM
-     000043D4  _SCREEN0                           textmode_ROM
-     000043DE  _SCREEN1                           textmode_ROM
-     000043E8  _WIDTH                             textmode_ROM
-     000043F9  _COLOR                             textmode_ROM
-     0000441D  _CLS                               textmode_ROM
-     00004422  _LOCATE                            textmode_ROM
-     0000443A  _PRINT                             textmode_ROM
-     00004466  _PrintNumber                       textmode_ROM
-     000044C9  _PrintFNumber                      textmode_ROM
-     0000454E  _num2Dec16                         textmode_ROM
-     000045A7  _bchput                            textmode_ROM
-     000045B8  _WYZinit                           WYZplayer
-     00004654  _WYZpause                          WYZplayer
-     0000467B  _DATOS_NOTAS                       WYZplayer
-     000046F7  _WYZresume                         WYZplayer
-     000046FE  _WYZplayFX                         WYZplayer
-     0000471E  _WYZplayAY                         WYZplayer
-     00004748  _WYZloadSong                       WYZplayer
-     00004857  _WYZdecode                         WYZplayer
-     00004C0F  _WYZ_songs                         WYZ_mod
-     00004C11  _WYZ_instruments                   WYZ_mod
-     00004C17  _WYZ_FXs                           WYZ_mod
-     00004C1B  _Song_name                         WYZ_mod
-     00004C20  _Song_author                       WYZ_mod
+     0000421C  _PlaySong                          testWYZ
+     00004224  _PauseSong                         testWYZ
+     0000422F  _ChangeLoop                        testWYZ
+     00004247  _SetSpritesSize                    testWYZ
+     0000427F  _PEEK                              testWYZ
+     00004292  _POKE                              testWYZ
+     000042A7  _CopyMEM                           testWYZ
+     000042C6  _VPEEK                             testWYZ
+     000042DB  _INKEY                             testWYZ
+     000042E0  _WAIT                              testWYZ
+     000042F1  _GetKeyMatrix                      testWYZ
+     00004303  _ShowVumeter                       testWYZ
+     0000435B  _SetSPRITES                        testWYZ
+     00004453  _install_isr                       interrupt_ROM
+     0000447A  _uninstall_isr                     interrupt_ROM
+     00004489  _SCREEN0                           textmode_ROM
+     00004493  _SCREEN1                           textmode_ROM
+     0000449D  _WIDTH                             textmode_ROM
+     000044AE  _COLOR                             textmode_ROM
+     000044D2  _CLS                               textmode_ROM
+     000044D7  _LOCATE                            textmode_ROM
+     000044EF  _PRINT                             textmode_ROM
+     0000451B  _PrintNumber                       textmode_ROM
+     0000457E  _PrintFNumber                      textmode_ROM
+     00004603  _num2Dec16                         textmode_ROM
+     0000465C  _bchput                            textmode_ROM
+     0000466D  _WYZinit                           WYZplayer
+     00004712  _WYZpause                          WYZplayer
+     00004739  _WYZresume                         WYZplayer
+     0000473F  _WYZsetLoop                        WYZplayer
+     0000475A  _WYZplayFX                         WYZplayer
+     0000477A  _WYZplayAY                         WYZplayer
+     000047A4  _WYZloadSong                       WYZplayer
+     000048B3  _WYZdecode                         WYZplayer
+     00004C67  _WYZ_songs                         WYZ_mod
+     00004C69  _WYZ_instruments                   WYZ_mod
+     00004C6F  _WYZ_FXs                           WYZ_mod
+     00004C73  _Song_name                         WYZ_mod
+     00004C78  _Song_author                       WYZ_mod
+     00004CAB  _WYZ_notas                         WYZ_mod
 ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-_DATA                               0000C000    0000011C =         284. bytes (REL,CON)
+_DATA                               0000C000    0000011E =         286. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -99,7 +102,7 @@ _DATA                               0000C000    0000011C =         284. bytes (R
      0000C04A  _firstPATaddr                      testWYZ
      0000C04C  _OLD_ISR                           interrupt_ROM
      0000C04F  _CSTATE                            textmode_ROM
-     0000C050  _INTERR                            WYZplayer
+     0000C050  _WYZstate                          WYZplayer
      0000C051  _SONG                              WYZplayer
      0000C052  _TEMPO                             WYZplayer
      0000C053  _TTEMPO                            WYZplayer
@@ -148,7 +151,7 @@ Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-_DATA                               0000C000    0000011C =         284. bytes (REL,CON)
+_DATA                               0000C000    0000011E =         286. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -161,10 +164,12 @@ _DATA                               0000C000    0000011C =         284. bytes (R
      0000C0FB  _TABLA_SONG                        WYZplayer
      0000C0FD  _TABLA_PAUTAS                      WYZplayer
      0000C0FF  _TABLA_SONIDOS                     WYZplayer
-     0000C101  _SELECT_CANAL_A                    WYZplayer
-     0000C108  _SELECT_CANAL_B                    WYZplayer
-     0000C10F  _SELECT_CANAL_C                    WYZplayer
-     0000C116  _TABLA_DATOS_CANAL_SFX             WYZplayer
+     0000C101  _DATOS_NOTAS                       WYZplayer
+     0000C103  _SELECT_CANAL_A                    WYZplayer
+     0000C10A  _SELECT_CANAL_B                    WYZplayer
+     0000C111  _SELECT_CANAL_C                    WYZplayer
+     0000C118  _TABLA_DATOS_CANAL_SFX             WYZplayer
+
 ASxxxx Linker V03.00 + NoICE + sdld,  page 5.
 Hexadecimal  [32-Bits]
 

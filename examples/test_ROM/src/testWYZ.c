@@ -23,7 +23,7 @@
 #include "../include/interrupt.h"
 
 #include "../include/WYZplayer.h"
-#include "../include/WYZmodule.h"   //songs data
+#include "../include/WYZsongdata.h"
 
 
 
@@ -71,7 +71,9 @@ void ShowVumeter(char channel, char value);
 
 void SetSPRITES();
 
+void PlaySong();
 void PauseSong();
+void ChangeLoop();
 
 
 
@@ -160,29 +162,13 @@ void main(void)
   //LOCATE(0,10);
   //PRINT(presskey);
 
-/*  
-  TABLA_SONG = (unsigned int) WYZ_songs;
-  TABLA_PAUTAS = (unsigned int) WYZ_instruments;
-  TABLA_SONIDOS = (unsigned int) WYZ_FXs;
-*/
+ 
   
-
-/*__asm
-  ld	hl,#_WYZ_songs
-	ld	(#_TABLA_SONG),hl
-;src\testWYZ.c:163: TABLA_PAUTAS = (unsigned int) WYZ_instruments;
-	ld	hl,#_WYZ_instruments
-	ld	(#_TABLA_PAUTAS),hl
-;src\testWYZ.c:165: TABLA_SONIDOS = (unsigned int) WYZ_FXs;
-	ld	hl,#_WYZ_FXs
-	ld	(#_TABLA_SONIDOS),hl
-__endasm;
-*/  
+  WYZinit((unsigned int) WYZ_songs, (unsigned int) WYZ_instruments, (unsigned int) WYZ_FXs, (unsigned int) WYZ_notas);   
+        
+  //PlaySong();
   
   
-  WYZinit((unsigned int) WYZ_songs, (unsigned int) WYZ_instruments, (unsigned int) WYZ_FXs);   
-      
-  WYZloadSong(0);   //(unsigned int) SONG00);   
   
   //_isPlay=1;  
   
@@ -190,8 +176,10 @@ __endasm;
   
   //INKEY();
   
-  //LOCATE(0,10);
-  //PRINT("Press STOP for mute the song"); 
+  LOCATE(0,10);
+  PRINT("STOP for Mute the song\n");
+  PRINT("SELECT for change Loop mode\n");
+  PRINT("RETURN for Play song\n"); 
   
   SetSPRITES();
   
@@ -223,8 +211,8 @@ __endasm;
     PrintFNumber(TEMPO,32,5);
     
     LOCATE(0,14);
-    PRINT("INTERR :");
-    PrintFNumber(INTERR,32,5);
+    PRINT("WYZstate :");
+    PrintFNumber(WYZstate,32,5);
     
 */
     
@@ -242,11 +230,20 @@ __endasm;
     {
       if(keyB7semaphore==false)
       {
-        //if (keyPressed==0b11101111)  //STOP Key
-        if (!(keyPressed&16))//  0b11101111)
+        if (!(keyPressed&16))    //STOP Key
         {
           keyB7semaphore=true;
           PauseSong(); 
+        }
+        if (!(keyPressed&64))    //SELECT Key
+        {
+          keyB7semaphore=true;
+          ChangeLoop(); 
+        }
+        if (!(keyPressed&128))    //RETURN Key
+        {
+          keyB7semaphore=true;
+          PlaySong(); 
         }          
       }      
     }else{
@@ -271,11 +268,26 @@ __endasm;
 
 
 
+void PlaySong()
+{
+  WYZloadSong(0);
+}
+
+
 void PauseSong()
 {
-  if((INTERR & 0b00000010)==0) WYZresume();  //AND binario  
+  if((WYZstate & 0b00000010)==0) WYZresume();  //AND binario  
   else WYZpause();  
 }
+
+
+
+void ChangeLoop()
+{
+  if((WYZstate & 0b00010000)==0) WYZsetLoop(true); 
+  else WYZsetLoop(false);  
+}
+
 
 
 /* =============================================================================
