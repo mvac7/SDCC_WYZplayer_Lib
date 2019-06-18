@@ -19,8 +19,9 @@
 #include "../include/msxSystemVariables.h"
 #include "../include/msxBIOS.h"
 
-#include "../include/textmode.h"
 #include "../include/interrupt.h"
+#include "../include/textmode.h"
+#include "../include/keyboard.h"
 
 #include "../include/WYZplayer.h"
 #include "../include/WYZsongdata.h"
@@ -60,12 +61,7 @@ void CopyMEM(unsigned int source, unsigned int destination, unsigned int length)
 
 char VPEEK(uint address);
 
-char INKEY();
-
 void WAIT(uint cicles);
-
-char GetKeyMatrix(char line);
-
 
 void ShowVumeter(char channel, char value);
 
@@ -230,17 +226,17 @@ void main(void)
     {
       if(keyB7semaphore==false)
       {
-        if (!(keyPressed&16))    //STOP Key
+        if (!(keyPressed & Bit4))    //STOP Key
         {
           keyB7semaphore=true;
           PauseSong(); 
         }
-        if (!(keyPressed&64))    //SELECT Key
+        if (!(keyPressed & Bit6))    //SELECT Key
         {
           keyB7semaphore=true;
           ChangeLoop(); 
         }
-        if (!(keyPressed&128))    //RETURN Key
+        if (!(keyPressed & Bit7))    //RETURN Key
         {
           keyB7semaphore=true;
           PlaySong(); 
@@ -443,16 +439,6 @@ __endasm;
 
 
 
-/* =============================================================================
-One character input (waiting)
-============================================================================= */
-char INKEY(){
-__asm   
-   call CHGET
-   ld   L,A
-__endasm;
-}
-
 
 
 /* =============================================================================
@@ -471,33 +457,7 @@ void WAIT(uint cicles)
 
 
 
-/* =============================================================================
-   GetKeyMatrix
 
-   Function : Returns the value of the specified line from the keyboard matrix.
-              Each line provides the status of 8 keys.
-              To know which keys correspond, you will need documentation that 
-              includes a keyboard table.
-   Input    : [char] line 
-   Output   : [char] state of the keys. 1 = not pressed; 0 = pressed
-============================================================================= */
-char GetKeyMatrix(char line)
-{
-line;
-__asm
-  push IX
-  ld   IX,#0
-  add  IX,SP
-     
-  ld   A,4(IX)
-  
-  call SNSMAT
-  
-  ld   L,A
-  
-  pop  IX
-__endasm;
-}
 
 
 
