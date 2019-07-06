@@ -146,12 +146,12 @@ void main(void)
   PRINT("\n\n");
   
   PRINT("Song name:\n ");
-  PRINT(Song_name);
+  PRINT("shampoo");
   
   PRINT("\n\n");
   
   PRINT("Author:\n ");
-  PRINT(Song_author);
+  PRINT("WYZ");
   
   //PRINT("\n\n");
   
@@ -160,7 +160,10 @@ void main(void)
 
  
   
-  WYZinit((unsigned int) WYZ_songs, (unsigned int) WYZ_instruments, (unsigned int) WYZ_FXs, (unsigned int) WYZ_notas);   
+  WYZinit((unsigned int) WYZ_songs, 
+          (unsigned int) WYZ_instruments, 
+          (unsigned int) WYZ_FXs, 
+          (unsigned int) WYZ_notes);   
         
   //PlaySong();
   
@@ -173,9 +176,10 @@ void main(void)
   //INKEY();
   
   LOCATE(0,10);
+  PRINT("RETURN for Play song\n"); 
   PRINT("STOP for Mute the song\n");
   PRINT("SELECT for change Loop mode\n");
-  PRINT("RETURN for Play song\n"); 
+  
   
   SetSPRITES();
   
