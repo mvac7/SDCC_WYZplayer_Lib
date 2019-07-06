@@ -10,7 +10,7 @@
 MSX
 
 #### Programming language: 
-C
+Assembler and C (SDCC)
 
 #### Authors: 
 - MSX PSG proPLAYER V 0.3 by WYZ/Iggy Rock 09.03.2016
@@ -131,19 +131,20 @@ steps:
 3) Add a dot after 'DB' and 'DW'. Example:
 
    Before:
-'''  
+```  
      ;Instrumento 'Piano'
      PAUTA_0:  DB  13,0,11,0,9,0,5,0,129
      ;Instrumento 'blip'
      PAUTA_1:  DB  11,0,8,0,9,0,7,0,5,0,0,129
-'''  
+```
+  
    After:
-'''  
+```  
      ;Instrumento 'Piano'
      PAUTA_0:  .DB  13,0,11,0,9,0,5,0,129
      ;Instrumento 'blip'
      PAUTA_1:  .DB  11,0,8,0,9,0,7,0,5,0,0,129
-'''
+```
 
 
 4) Rename labels:
@@ -152,16 +153,16 @@ steps:
 - "DATOS_NOTAS:"   for "_WYZ_notes::"
    
    Example Before:
-'''
+```
      ; Tabla de instrumentos
      TABLA_PAUTAS: DW PAUTA_0,PAUTA_1,PAUTA_2
-'''
+```
 
    Example After:
-'''
+```
      ; Tabla de instrumentos
      _WYZ_instruments:: .DW PAUTA_0,PAUTA_1,PAUTA_2
-'''
+```
 
 
 5) Generate a assembly datas from binary file .mus with an extern aplication, 
@@ -175,29 +176,29 @@ steps:
    with the same set of instruments.
 
    Example:
-'''   
+```   
      SONG00:
      .DB 0x03,0x31,0x00,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x42,0x7E
      .DB 0x3F,0x02,0x00,0x66,0x6A,0x6D,0x72,0x6D,0x6A,0x66,0x6A,0x6D,0x72,0x6D
      .DB n  
-'''
+```
 
 
 6) Add the index of songs width the name "_WYZ_songs::" at the beginning of the 
    source, with the labels of all the songs that we have included:
 
    Example:
-'''
+```
      _WYZ_songs::  .DW SONG00,SONG01
-'''
+```
 
 7) Save the file with '.s' extension.
 
 8) Create a script or execute on the command line, the sentence to compile the 
    source that we have created:
-'''   
+```   
    sdasz80 -o song_name.s
-'''
+```
        
 
 
@@ -209,12 +210,12 @@ To the **WYZInit** function, the directions of the indices must be passed to the
 instruments, FXs, Tones and the sequences of the songs.
 
 The Init ruling should always be like this:
-'''
+```
 WYZinit((unsigned int) WYZ_songs, 
         (unsigned int) WYZ_instruments, 
         (unsigned int) WYZ_FXs, 
         (unsigned int) WYZ_notes);
-'''        
+```        
 
 The next step is to tell the player which song to sound using **WYZloadSong(song number)**
 
