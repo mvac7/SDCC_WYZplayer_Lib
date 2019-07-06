@@ -86,7 +86,7 @@ void WYZresume(); // Resume song playback
 
 
 
-void WYZplayFX(char numSound); //Play FX
+void WYZplayFX(char numSound); //Play Sound Effect
 
 
 
