@@ -1,15 +1,20 @@
 /* =============================================================================
- MSX PSG proPLAYER V 0.3 - WYZ 09.03.2016
-
- CARACTERISTICAS
- 5 OCTAVAS:            O[2-6]=60 NOTAS
- 4 LONGITUDES DE NOTA: L[0-3]+PUNTILLO 
-
-
- LOS DATOS QUE HAY QUE VARIAR :
- * BUFFER DE SONIDO DONDE SE DECODIFICA TOTALMENTE EL ARCHIVO MUS
- * Nº DE CANCION. 
- * TABLA DE CANCIONES
+ SDCC WYZ player for MSX
+ Version: 1.0 (28 may 2019)
+ Author: MSX PSG proPLAYER v0.3 (09.03.2016) by WYZ/Iggy Rock
+         Adapted to SDCC: mvac7/303bcn > <mvac7303b@gmail.com>
+ Architecture: MSX
+ Format: C Object (SDCC .rel)
+ Programming language: Assembler and C (SDCC)
+ WEB: https://sites.google.com/site/wyzplayer/home
+      http://www.cpcwiki.eu/index.php/WYZTracker
+      
+ Description:
+ Adaptation of the WYZ music player for programming in C with the SDCC compiler.
+ 
+ History of versions:
+ - v1.0 (28/4/2019) 
+ - v0.9 (27/4/2013)
 ============================================================================= */
 
 

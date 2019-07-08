@@ -221,12 +221,12 @@
                             221 ; code
                             222 ;--------------------------------------------------------
                             223 	.area _CODE
-                            224 ;src\WYZplayer.c:181: void WYZinit(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked
+                            224 ;src\WYZplayer.c:186: void WYZinit(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked
                             225 ;	---------------------------------
                             226 ; Function WYZinit
                             227 ; ---------------------------------
    0000                     228 _WYZinit::
-                            229 ;src\WYZplayer.c:280: __endasm;
+                            229 ;src\WYZplayer.c:285: __endasm;
    0000 DD E5         [15]  230 	push	IX
    0002 DD 21 00 00   [14]  231 	ld	IX,#0
    0006 DD 39         [15]  232 	add	IX,SP
@@ -290,12 +290,12 @@
    009F 22rCCr00      [16]  290 	LD	(#_TABLA_DATOS_CANAL_SFX+4),HL
    00A2 DD E1         [14]  291 	pop	IX
    00A4 C9            [10]  292 	ret
-                            293 ;src\WYZplayer.c:294: void WYZpause()
+                            293 ;src\WYZplayer.c:299: void WYZpause()
                             294 ;	---------------------------------
                             295 ; Function WYZpause
                             296 ; ---------------------------------
    00A5                     297 _WYZpause::
-                            298 ;src\WYZplayer.c:324: __endasm;
+                            298 ;src\WYZplayer.c:329: __endasm;
    00A5                     299 	PLAYER_OFF:
                             300 ;	XOR A
                             301 ;	LD [INTERR],A
@@ -318,21 +318,21 @@
    00C7 CDr0Dr01      [17]  318 	CALL	ROUT
    00CA C9            [10]  319 	RET
    00CB C9            [10]  320 	ret
-                            321 ;src\WYZplayer.c:339: void WYZresume() __naked
+                            321 ;src\WYZplayer.c:344: void WYZresume() __naked
                             322 ;	---------------------------------
                             323 ; Function WYZresume
                             324 ; ---------------------------------
    00CC                     325 _WYZresume::
-                            326 ;src\WYZplayer.c:346: __endasm;
+                            326 ;src\WYZplayer.c:351: __endasm;
    00CC 21r00r00      [10]  327 	LD	HL,#_WYZstate
    00CF CB CE         [15]  328 	SET	1,(HL) ;PLAYER ON
    00D1 C9            [10]  329 	RET
-                            330 ;src\WYZplayer.c:360: void WYZsetLoop(char mode) __naked
+                            330 ;src\WYZplayer.c:365: void WYZsetLoop(char mode) __naked
                             331 ;	---------------------------------
                             332 ; Function WYZsetLoop
                             333 ; ---------------------------------
    00D2                     334 _WYZsetLoop::
-                            335 ;src\WYZplayer.c:384: __endasm;
+                            335 ;src\WYZplayer.c:389: __endasm;
    00D2 DD E5         [15]  336 	push	IX
    00D4 DD 21 00 00   [14]  337 	ld	IX,#0
    00D8 DD 39         [15]  338 	add	IX,SP
@@ -347,12 +347,12 @@
    00E8 CB A6         [15]  347 	RES	4,(HL)
    00EA DD E1         [14]  348 	pop	IX
    00EC C9            [10]  349 	RET
-                            350 ;src\WYZplayer.c:398: void WYZplayFX(char numSound) __naked
+                            350 ;src\WYZplayer.c:403: void WYZplayFX(char numSound) __naked
                             351 ;	---------------------------------
                             352 ; Function WYZplayFX
                             353 ; ---------------------------------
    00ED                     354 _WYZplayFX::
-                            355 ;src\WYZplayer.c:428: __endasm;
+                            355 ;src\WYZplayer.c:433: __endasm;
    00ED DD E5         [15]  356 	push	IX
    00EF DD 21 00 00   [14]  357 	ld	IX,#0
    00F3 DD 39         [15]  358 	add	IX,sp
@@ -370,12 +370,12 @@
    0107 21r00r00      [10]  370 	LD	HL,#_WYZstate
    010A CB D6         [15]  371 	SET	2,(HL)
    010C C9            [10]  372 	RET
-                            373 ;src\WYZplayer.c:446: void WYZplayAY() __naked
+                            373 ;src\WYZplayer.c:451: void WYZplayAY() __naked
                             374 ;	---------------------------------
                             375 ; Function WYZplayAY
                             376 ; ---------------------------------
    010D                     377 _WYZplayAY::
-                            378 ;src\WYZplayer.c:481: __endasm;
+                            378 ;src\WYZplayer.c:486: __endasm;
    010D                     379 	ROUT:
    010D 3Ar56r00      [13]  380 	LD	A,(#_PSG_REG+13)
    0110 A7            [ 4]  381 	AND	A ;ES CERO?
@@ -403,12 +403,12 @@
    0130 32r66r00      [13]  403 	LD	(#_PSG_REG_SEC+13),A
    0133 32r56r00      [13]  404 	LD	(#_PSG_REG+13),A
    0136 C9            [10]  405 	RET
-                            406 ;src\WYZplayer.c:499: void WYZloadSong(char numSong) __naked
+                            406 ;src\WYZplayer.c:504: void WYZloadSong(char numSong) __naked
                             407 ;	---------------------------------
                             408 ; Function WYZloadSong
                             409 ; ---------------------------------
    0137                     410 _WYZloadSong::
-                            411 ;src\WYZplayer.c:689: __endasm;
+                            411 ;src\WYZplayer.c:694: __endasm;
    0137 DD E5         [15]  412 	push	IX
    0139 DD 21 00 00   [14]  413 	ld	IX,#0
    013D DD 39         [15]  414 	add	IX,sp
@@ -549,12 +549,12 @@
    0242 23            [ 6]  549 	INC	HL
    0243 28 E7         [12]  550 	JR	Z,BGICMODBC1
    0245 C9            [10]  551 	RET
-                            552 ;src\WYZplayer.c:709: void WYZdecode() __naked
+                            552 ;src\WYZplayer.c:714: void WYZdecode() __naked
                             553 ;	---------------------------------
                             554 ; Function WYZdecode
                             555 ; ---------------------------------
    0246                     556 _WYZdecode::
-                            557 ;src\WYZplayer.c:1402: __endasm;
+                            557 ;src\WYZplayer.c:1407: __endasm;
    0246                     558 	INICIO:
                             559 ;	push IX
                             560 ;	CALL ROUT

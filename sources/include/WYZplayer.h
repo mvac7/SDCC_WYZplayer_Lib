@@ -1,9 +1,16 @@
 /* =============================================================================
-                                                                            
-   MSX PSG proPLAYER V0.3 - WYZ 09.03.2016                                                
-                                                                            
-   Description                                                              
-   library for acces to WYZ Player                                          
+ SDCC WYZ player for MSX
+ Version: 1.0 (28 may 2019)
+ Author: MSX PSG proPLAYER v0.3 (09.03.2016) by WYZ/Iggy Rock
+         Adapted to SDCC: mvac7/303bcn > <mvac7303b@gmail.com>
+ Architecture: MSX
+ Format: C Object (SDCC .rel)
+ Programming language: Assembler and C (SDCC)
+ WEB: https://sites.google.com/site/wyzplayer/home
+      http://www.cpcwiki.eu/index.php/WYZTracker
+      
+ Description:
+ Adaptation of the WYZ music player for programming in C with the SDCC compiler.                                          
 ============================================================================= */
 #ifndef  __WYZ_PLAYER_H__
 #define  __WYZ_PLAYER_H__
@@ -23,19 +30,6 @@
 
 
 
-//------------------------------------------------------------------------------
-/*
-const unsigned int DATOS_NOTAS[]={0,0,
-1711,1614,1524,1438,1358,1281,1210,1142,1078,1017,
-960,906,855,807,762,719,679,641,605,571,
-539,509,480,453,428,404,381,360,339,320,
-302,285,269,254,240,227,214,202,190,180,
-170,160,151,143,135,127,120,113,107,101,
-95,90,85,80,76,71,67,64,60,57};
-*/
-
-//------------------------------------------------------------------------------
-
 /*
 WYZstate = INTERR            
 INTERRUPTORES 1=ON 0=OFF
@@ -50,20 +44,12 @@ extern char WYZstate;
 extern char SONG;   //number of song playing
 extern char TEMPO;  //TEMPO
 
-extern char PSG_REG[16];
-extern char PSG_REG_SEC[16];
+extern char PSG_REG_SEC[16];       //PSG registers buffer
 
-//songs index
-extern unsigned int TABLA_SONG;  
-
-//instruments index
-extern unsigned int TABLA_PAUTAS; 
-
-//FXs index 
-extern unsigned int TABLA_SONIDOS;
-
-//Data of the frequencies of the notes
-extern unsigned int DATOS_NOTAS;
+//extern unsigned int TABLA_SONG;    //songs index  
+//extern unsigned int TABLA_PAUTAS;  //instruments index
+//extern unsigned int TABLA_SONIDOS; //FXs index
+//extern unsigned int DATOS_NOTAS;   //Data of the frequencies of the notes
 
 
 
@@ -72,21 +58,27 @@ extern unsigned int DATOS_NOTAS;
 // Init player
 void WYZinit(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked;
 
-void WYZloadSong(char numSong); //Init song
+//Init song
+void WYZloadSong(char numSong); 
 
-void WYZdecode(); // Decode a frame from WYZ song
+// Decode a frame from WYZ song
+void WYZdecode(); 
 
-void WYZplayAY();   // Send data to AY registers. Execute on each interruption of VBLANK
+// Send data to AY registers. Execute on each interruption of VBLANK
+void WYZplayAY();   
 
-void WYZsetLoop(char mode);  // Change loop mode. false = 0, true = 1
+// Change loop mode. 
+// mode= false = 0, true = 1
+void WYZsetLoop(char mode);  
 
-void WYZpause();  // Pause song playback
+// Pause song playback
+void WYZpause();  
 
-void WYZresume(); // Resume song playback
+// Resume song playback
+void WYZresume(); 
 
-
-
-void WYZplayFX(char numSound); //Play Sound Effect
+//Play Sound Effect
+void WYZplayFX(char numSound); 
 
 
 

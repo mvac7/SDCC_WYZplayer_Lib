@@ -4,7 +4,7 @@
 1.0
 
 #### Date: 
-??
+28 may 2019
 
 #### Architecture: 
 MSX
@@ -14,12 +14,16 @@ Assembler and C (SDCC)
 
 #### Authors: 
 - MSX PSG proPLAYER V 0.3 by WYZ/Iggy Rock 09.03.2016
- 
 - Adapted to SDCC: mvac7/303bcn > <mvac7303b@gmail.com>
 
+#### WEB:
 https://sites.google.com/site/wyzplayer/home
 http://www.cpcwiki.eu/index.php/WYZTracker
   
+#### History of versions:
+- v1.0 (28/4/2019) 
+- v0.9 (27/4/2013)
+
 
 
 ## Sorry!: This text is pending correction of the English translation. <<<<<<<<
@@ -110,11 +114,12 @@ The WYZ music system is designed for cross-developing:
 2) It is exported to .mus
 3) It is imported into the project together with the WYZplayer
 
-To be able to use it in SDCC, it has been necessary to adapt the player and 
-because the data of the song .mus is composed of an assembly source plus one or 
-more binaries (as many songs as we have)., it is necessary to convert them to a 
-format that SDCC supports, so we will have to do some modifications and generate 
-an object (.rel), which is explained in the next point.
+To be able to use it in SDCC, it has been necessary to adapt the player (this 
+object), and because the data of the song .mus is composed of an assembly source 
+plus one or more binaries (as many songs as we have), it's necessary to 
+convert them to a format that SDCC supports, so we will have to do some 
+modifications and generate an object (.rel), which is explained in the 6.2 
+point.
 
 From our code in C we can access the features of the player, to which we have 
 added some extra to facilitate control of the song.
@@ -127,7 +132,9 @@ To attach the music data to our program, we will have to follow the following
 steps:
 
 1) Open in WYZtracker a song and export to MUS file (File/Export).
+
 2) Open a file with extension '.mus.asm' in a text editor.
+
 3) Add a dot after 'DB' and 'DW'. Example:
 
    Before:
@@ -166,14 +173,14 @@ steps:
 
 
 5) Generate a assembly datas from binary file .mus with an extern aplication, 
-   and paste it at the end of the source with which we are working.
+and paste it at the end of the source with which we are working.
    
-   Repeat this process for all the songs that your program needs, adding the 
-   numbered label 'SONGnn'.
+Repeat this process for all the songs that your program needs, adding the 
+numbered label 'SONGnn'.
    
-   Warning: The WYZ player is designed to have several songs, thinking about t
-   he development of video games, but to work properly, they must be created 
-   with the same set of instruments.
+##Warning:## The WYZ player is designed to have several songs, thinking about t
+he development of video games, but to work properly, they must be created with 
+the same set of instruments.
 
    Example:
 ```   
@@ -185,9 +192,9 @@ steps:
 
 
 6) Add the index of songs width the name "_WYZ_songs::" at the beginning of the 
-   source, with the labels of all the songs that we have included:
+source, with the labels of all the songs that we have included:
 
-   Example:
+Example:
 ```
      _WYZ_songs::  .DW SONG00,SONG01
 ```
@@ -195,7 +202,7 @@ steps:
 7) Save the file with '.s' extension.
 
 8) Create a script or execute on the command line, the sentence to compile the 
-   source that we have created:
+source that we have created:
 ```   
    sdasz80 -o song_name.s
 ```

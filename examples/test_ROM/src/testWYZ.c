@@ -1,7 +1,7 @@
 /* =============================================================================
-  Test PT3 player Library for SDCC (object type)
+  Test SDCC WYZplayer v1.1
   Version: 1.0 (28/5/2019)
-  Author: (test program) mvac7/303bcn
+  Author: mvac7/303bcn
   Architecture: MSX
   Format: C Object (SDCC .rel)
   Programming language: C
@@ -9,10 +9,10 @@
   mail: mvac7303b@gmail.com
    
   Description:
-
+  Test the different functionalities of the SDCC adaptation of the WYZ player.
     
   History of versions:
-
+  - 1.0 (28/5/2019)
 ============================================================================= */
 
 #include "../include/newTypes.h"
