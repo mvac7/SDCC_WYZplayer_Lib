@@ -1,6 +1,6 @@
 /* =============================================================================
   Test SDCC WYZplayer v1.1
-  Version: 1.0 (28/5/2019)
+  Version: 1.1 (9/7/2019)
   Author: mvac7/303bcn
   Architecture: MSX
   Format: C Object (SDCC .rel)
@@ -12,7 +12,8 @@
   Test the different functionalities of the SDCC adaptation of the WYZ player.
     
   History of versions:
-  - 1.0 (28/5/2019)
+  -v1.1 (9/7/2019)
+  -v1.0 (28/5/2019)
 ============================================================================= */
 
 #include "../include/newTypes.h"
@@ -68,18 +69,19 @@ void ShowVumeter(char channel, char value);
 void SetSPRITES();
 
 void PlaySong();
+void playFX(char FXnumber);
 void PauseSong();
 void ChangeLoop();
-
+void showLoopStatus();
 
 
 // constants  ------------------------------------------------------------------
 const char text01[] = "Test WYZ player Lib for SDCC";
-const char text02[] = "v1.0 (05/06/2019)";
+const char text02[] = "v1.1 (9/7/2019)";
 
-const char presskey[] = "Press a key to Play";
+//const char presskey[] = "Press a key to Play";
 
-
+const char songName[2][22]={"Pentacour's Nayade 01","Pentacour's Nayade 02"};
 
 // global variable definition --------------------------------------------------
 
@@ -87,12 +89,15 @@ char VALUE;
 
 char SPRBUFFER[72];  //20*4 =72B
 
-boolean keyB7semaphore;
+boolean keyB0pressStatus;
+boolean keyB6pressStatus;
+boolean keyB7pressStatus;
 
 //char _isPlay;
 
 uint firstPATaddr;
 
+char _songNumber;
 
 // Functions -------------------------------------------------------------------
 
@@ -130,7 +135,11 @@ void main(void)
   uint conta = 0;
   //uint songStep;
   
-  keyB7semaphore=false;
+  //keyB0semaphore=false;
+  //keyB6semaphore=false;
+  //keyB7semaphore=false;
+  
+  _songNumber=0;
   
   COLOR(WHITE,DARK_BLUE,LIGHT_BLUE);
           
@@ -143,16 +152,7 @@ void main(void)
   PRINT("\n");
   PRINT(text02);
     
-  PRINT("\n\n");
-  
-  PRINT("Song name:\n ");
-  PRINT("shampoo");
-  
-  PRINT("\n\n");
-  
-  PRINT("Author:\n ");
-  PRINT("WYZ");
-  
+   
   //PRINT("\n\n");
   
   //LOCATE(0,10);
@@ -174,13 +174,14 @@ void main(void)
   //firstPATaddr = PT3_CrPsPtr;
   
   //INKEY();
-  
-  LOCATE(0,10);
-  PRINT("RETURN for Play song\n"); 
+   
+  LOCATE(0,3);
+  PRINT("F1 or F2 for play a song\n");
+  PRINT("1 to 7 for play a FX\n"); 
   PRINT("STOP for Mute the song\n");
+  PRINT("RETURN for Restore song\n");
   PRINT("SELECT for change Loop mode\n");
-  
-  
+    
   SetSPRITES();
   
   install_isr(my_isr0);
@@ -189,7 +190,8 @@ void main(void)
   {
     HALT;
     
-/*    LOCATE(0,10);
+/*    
+    LOCATE(0,10);
     PRINT("Channel A:");
     PrintFNumber((PSG_REG_SEC[AY_ToneA+1]*0xFF)+PSG_REG_SEC[AY_ToneA],32,5);
     PrintFNumber(PSG_REG_SEC[AY_AmplA],32,4);
@@ -205,15 +207,10 @@ void main(void)
     LOCATE(0,13);
     PRINT("Noise :");
     PrintFNumber(PSG_REG_SEC[AY_Noise],32,5);
-    
-    LOCATE(0,14);
-    PRINT("Tempo :");
-    PrintFNumber(TEMPO,32,5);
-    
+   
     LOCATE(0,14);
     PRINT("WYZstate :");
     PrintFNumber(WYZstate,32,5);
-    
 */
     
     
@@ -223,31 +220,74 @@ void main(void)
     ShowVumeter(2,PSG_REG_SEC[AY_AmplC]);
     
     
+    keyPressed = GetKeyMatrix(0);  
+    if (keyPressed!=0xFF)  //pressure control of the keys
+    {
+      if(keyB0pressStatus==false)
+      {
+        if (!(keyPressed & Bit1)) playFX(0);
+        if (!(keyPressed & Bit2)) playFX(1);
+        if (!(keyPressed & Bit3)) playFX(2);
+        if (!(keyPressed & Bit4)) playFX(3);
+        if (!(keyPressed & Bit5)) playFX(4);
+        if (!(keyPressed & Bit6)) playFX(5);
+        if (!(keyPressed & Bit7)) playFX(6);
+      }      
+    }else{
+      keyB0pressStatus=false;        
+    }
     
+    
+    keyPressed = GetKeyMatrix(6);  
+    if (keyPressed!=0xFF)  //pressure control of the keys
+    {
+      if(keyB6pressStatus==false)
+      {
+        if (!(keyPressed & Bit5))    //F1 Key
+        {
+          keyB6pressStatus=true;
+          _songNumber=0;
+          PlaySong(); 
+        }
+        if (!(keyPressed & Bit6))    //F2 Key
+        {
+          keyB6pressStatus=true;
+          _songNumber=1;
+          PlaySong(); 
+        }
+        /*if (!(keyPressed & Bit7))    //F3 Key
+        {
+          keyB6pressStatus=true;
+          PlaySong(); 
+        }*/          
+      }      
+    }else{
+      keyB6pressStatus=false;        
+    }
 
     keyPressed = GetKeyMatrix(7);  
     if (keyPressed!=0xFF)  //pressure control of the keys
     {
-      if(keyB7semaphore==false)
+      if(keyB7pressStatus==false)
       {
         if (!(keyPressed & Bit4))    //STOP Key
         {
-          keyB7semaphore=true;
+          keyB7pressStatus=true;
           PauseSong(); 
         }
         if (!(keyPressed & Bit6))    //SELECT Key
         {
-          keyB7semaphore=true;
+          keyB7pressStatus=true;
           ChangeLoop(); 
         }
         if (!(keyPressed & Bit7))    //RETURN Key
         {
-          keyB7semaphore=true;
+          keyB7pressStatus=true;
           PlaySong(); 
         }          
       }      
     }else{
-      keyB7semaphore=false;        
+      keyB7pressStatus=false;        
     }
     
     
@@ -270,8 +310,35 @@ void main(void)
 
 void PlaySong()
 {
-  WYZloadSong(0);
+  LOCATE(0,10);
+  PRINT("Name  : ");  //  Pentacour's Nayade 01");
+  PRINT(songName[_songNumber]);
+  PRINT("\nAuthor: aorante");
+  
+  WYZloadSong(_songNumber);
+  
+  PRINT("\nTempo : ");
+  PrintFNumber(TEMPO,32,3);
+  showLoopStatus();
 }
+
+
+void showLoopStatus()
+{
+  LOCATE(0,13);
+  if ((WYZstate & Bit4)) PRINT("Loop  : ON ");
+  else PRINT("Loop  : OFF");
+
+}
+
+
+
+void playFX(char FXnumber)
+{
+  WYZplayFX(FXnumber);
+  keyB0pressStatus=true;
+}
+
 
 
 void PauseSong()
@@ -285,7 +352,8 @@ void PauseSong()
 void ChangeLoop()
 {
   if((WYZstate & 0b00010000)==0) WYZsetLoop(true); 
-  else WYZsetLoop(false);  
+  else WYZsetLoop(false);
+  showLoopStatus();  
 }
 
 

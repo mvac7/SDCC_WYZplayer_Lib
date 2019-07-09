@@ -116,10 +116,10 @@ The WYZ music system is designed for cross-developing:
 
 To be able to use it in SDCC, it has been necessary to adapt the player (this 
 object), and because the data of the song .mus is composed of an assembly source 
-plus one or more binaries (as many songs as we have), it's necessary to 
-convert them to a format that SDCC supports, so we will have to do some 
-modifications and generate an object (.rel), which is explained in the 6.2 
-point.
+plus one or more binaries (as many songs as we have), with data song sequence, 
+it's necessary to convert them to a format that SDCC supports, so we will have 
+to do some modifications and generate an object (.rel), which is explained in 
+the 6.2 point.
 
 From our code in C we can access the features of the player, to which we have 
 added some extra to facilitate control of the song.
@@ -137,20 +137,20 @@ steps:
 
 3) Add a dot after 'DB' and 'DW'. Example:
 
-   Before:
+Before:
 ```  
-     ;Instrumento 'Piano'
-     PAUTA_0:  DB  13,0,11,0,9,0,5,0,129
-     ;Instrumento 'blip'
-     PAUTA_1:  DB  11,0,8,0,9,0,7,0,5,0,0,129
+   ;Instrumento 'Piano'
+   PAUTA_0:  DB  13,0,11,0,9,0,5,0,129
+   ;Instrumento 'blip'
+   PAUTA_1:  DB  11,0,8,0,9,0,7,0,5,0,0,129
 ```
   
-   After:
+After:
 ```  
-     ;Instrumento 'Piano'
-     PAUTA_0:  .DB  13,0,11,0,9,0,5,0,129
-     ;Instrumento 'blip'
-     PAUTA_1:  .DB  11,0,8,0,9,0,7,0,5,0,0,129
+   ;Instrumento 'Piano'
+   PAUTA_0:  .DB  13,0,11,0,9,0,5,0,129
+   ;Instrumento 'blip'
+   PAUTA_1:  .DB  11,0,8,0,9,0,7,0,5,0,0,129
 ```
 
 
@@ -159,16 +159,16 @@ steps:
 - "TABLA_SONIDOS:" for "_WYZ_FXs::" 
 - "DATOS_NOTAS:"   for "_WYZ_notes::"
    
-   Example Before:
+Example Before:
 ```
-     ; Tabla de instrumentos
-     TABLA_PAUTAS: DW PAUTA_0,PAUTA_1,PAUTA_2
+   ; Tabla de instrumentos
+   TABLA_PAUTAS: DW PAUTA_0,PAUTA_1,PAUTA_2
 ```
 
-   Example After:
+Example After:
 ```
-     ; Tabla de instrumentos
-     _WYZ_instruments:: .DW PAUTA_0,PAUTA_1,PAUTA_2
+   ; Tabla de instrumentos
+   _WYZ_instruments:: .DW PAUTA_0,PAUTA_1,PAUTA_2
 ```
 
 
@@ -182,12 +182,12 @@ numbered label 'SONGnn'.
 he development of video games, but to work properly, they must be created with 
 the same set of instruments.
 
-   Example:
+Example:
 ```   
-     SONG00:
-     .DB 0x03,0x31,0x00,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x42,0x7E
-     .DB 0x3F,0x02,0x00,0x66,0x6A,0x6D,0x72,0x6D,0x6A,0x66,0x6A,0x6D,0x72,0x6D
-     .DB n  
+   SONG00:
+   .DB 0x03,0x31,0x00,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x42,0x7E
+   .DB 0x3F,0x02,0x00,0x66,0x6A,0x6D,0x72,0x6D,0x6A,0x66,0x6A,0x6D,0x72,0x6D
+   .DB n  
 ```
 
 
@@ -196,7 +196,7 @@ source, with the labels of all the songs that we have included:
 
 Example:
 ```
-     _WYZ_songs::  .DW SONG00,SONG01
+   _WYZ_songs::  .DW SONG00,SONG01
 ```
 
 7) Save the file with '.s' extension.
