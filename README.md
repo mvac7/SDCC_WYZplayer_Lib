@@ -17,8 +17,8 @@ Assembler and C (SDCC)
 - Adapted to SDCC: mvac7/303bcn > <mvac7303b@gmail.com>
 
 #### WEB:
-https://sites.google.com/site/wyzplayer/home
-http://www.cpcwiki.eu/index.php/WYZTracker
+- https://sites.google.com/site/wyzplayer/home
+- http://www.cpcwiki.eu/index.php/WYZTracker
   
 #### History of versions:
 - v1.0 (28/4/2019) 
@@ -105,9 +105,24 @@ For C:
 
 
 
-## 6. How to use
+## 6. Player values
 
-### 6.1 Introduction 
+* WYZstate [char] - status of player  (1=ON;0=OFF)
+  - BIT 0 = Load song
+  - BIT 1 = Player
+  - BIT 2 = FXs
+  - BIT 3 = SFX
+  - BIT 4 = LOOP
+
+* SONG  [char]  - Number of song playing
+* TEMPO [char]  - Tempo
+* PSG_REG_SEC [array] - PSG registers values (0 to 13)
+
+
+
+## 7. How to use
+
+### 7.1 Introduction 
 
 The WYZ music system is designed for cross-developing:
 1) The song composes with WYZtracker on a Windows OS-based computer,
@@ -119,14 +134,14 @@ object), and because the data of the song .mus is composed of an assembly source
 plus one or more binaries (as many songs as we have), with data song sequence, 
 it's necessary to convert them to a format that SDCC supports, so we will have 
 to do some modifications and generate an object (.rel), which is explained in 
-the 6.2 point.
+the 7.2 point.
 
 From our code in C we can access the features of the player, to which we have 
 added some extra to facilitate control of the song.
      
 
 
-### 6.2 How to create a Song Data Object
+### 7.2 How to create a Song Data Object
 
 To attach the music data to our program, we will have to follow the following 
 steps:
@@ -137,7 +152,7 @@ steps:
 
 3) Add a dot after 'DB' and 'DW'. Example:
 
-Before:
+Example Before:
 ```  
    ;Instrumento 'Piano'
    PAUTA_0:  DB  13,0,11,0,9,0,5,0,129
@@ -145,7 +160,7 @@ Before:
    PAUTA_1:  DB  11,0,8,0,9,0,7,0,5,0,0,129
 ```
   
-After:
+Example After:
 ```  
    ;Instrumento 'Piano'
    PAUTA_0:  .DB  13,0,11,0,9,0,5,0,129
@@ -210,7 +225,7 @@ source that we have created:
 
 
 
-### 6.3 Control music playback
+### 7.3 Control music playback
 
 The first step to make for the player to work is to initialize it.
 To the **WYZInit** function, the directions of the indices must be passed to the 
