@@ -141,6 +141,7 @@ For C:
 ### 7.1 Introduction 
 
 The WYZ music system is designed for cross-developing:
+
 1) The song composes with WYZtracker on a Windows OS-based computer,
 2) It is exported to .mus
 3) It is imported into the assembler project together with the WYZplayer
@@ -159,11 +160,11 @@ added some extra to facilitate control of the song.
 To attach the music data to our program, we will have to follow the following 
 steps:
 
-1) Open in WYZtracker a song and export to MUS file (File/Export).
+#### 1) Open in WYZtracker a song and export to MUS file (File/Export).
 
-2) Open a file with extension '.mus.asm' in a text editor.
+#### 2) Open a file with extension '.mus.asm' in a text editor.
 
-3) Add a dot after 'DB' and 'DW'. Example:
+#### 3) Add a dot after 'DB' and 'DW'. Example:
 
 Example Before:
 ```  
@@ -182,7 +183,7 @@ Example After:
 ```
 
 
-4) Rename labels:
+#### 4) Rename labels:
 - "TABLA_PAUTAS:"  for "_WYZ_instruments::"
 - "TABLA_SONIDOS:" for "_WYZ_FXs::" 
 - "DATOS_NOTAS:"   for "_WYZ_notes::"
@@ -200,13 +201,13 @@ Example After:
 ```
 
 
-5) Generate a assembly datas from binary file .mus with an extern aplication, 
+#### 5) Generate a assembly datas from binary file .mus with an extern aplication, 
 and paste it at the end of the source with which we are working.
    
 Repeat this process for all the songs that your program needs, adding the 
 numbered label 'SONGnn'.
    
-##Warning:## The WYZ player is designed to have several songs, thinking about t
+**Warning:** The WYZ player is designed to have several songs, thinking about t
 he development of video games, but to work properly, they must be created with 
 the same set of instruments.
 
@@ -219,7 +220,7 @@ Example:
 ```
 
 
-6) Add the index of songs width the name "_WYZ_songs::" at the beginning of the 
+#### 6) Add the index of songs width the name "_WYZ_songs::" at the beginning of the 
 source, with the labels of all the songs that we have included:
 
 Example:
@@ -227,7 +228,7 @@ Example:
    _WYZ_songs::  .DW SONG00,SONG01
 ```
 
-7) Save the file with '.s' extension.
+#### 7) Save the file with '.s' extension.
 
 8) Create a script or execute on the command line, the sentence to compile the 
 source that we have created:
