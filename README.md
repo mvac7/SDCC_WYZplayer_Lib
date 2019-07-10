@@ -30,8 +30,23 @@ Assembler and C (SDCC)
 
 
 
+## Index
 
-## 1. Introduction
+- 1 Introduction
+- 2 License
+- 3 Acknowledgments
+- 4 Requirements
+- 5 Functions
+- 6 Player values
+- 7 How to use
+  - 7.1 Introduction
+  - 7.2 How to create a song data Object
+  - 7.3 Control music playback
+ 
+ 
+
+
+## 1 Introduction
 
 Adaptation of the WYZ Player for MSX to be used in software development in C 
 (SDCC). 
@@ -48,13 +63,13 @@ music and launch sound effects.
  
 
 
-## 2. License
+## 2 License
 
 
 
 
 
-## 3. Acknowledgments
+## 3 Acknowledgments
   
 Thanks for information, help or your contribution to the MSX community:
 
@@ -80,7 +95,7 @@ Thanks for information, help or your contribution to the MSX community:
 
 
 
-## 4. Requirements
+## 4 Requirements
 
 For C:
 
@@ -92,7 +107,8 @@ For C:
   (for create WYZ songs)
    
    
-## 5. Functions
+
+## 5 Functions
 
 * **WYZInit**(many input data) - Init player
 * **WYZloadSong**(char numSong) - Init song
@@ -105,7 +121,7 @@ For C:
 
 
 
-## 6. Player values
+## 6 Player values
 
 * WYZstate [char] - status of player  (1=ON;0=OFF)
   - BIT 0 = Load song
@@ -120,28 +136,25 @@ For C:
 
 
 
-## 7. How to use
+## 7 How to use
 
 ### 7.1 Introduction 
 
 The WYZ music system is designed for cross-developing:
 1) The song composes with WYZtracker on a Windows OS-based computer,
 2) It is exported to .mus
-3) It is imported into the project together with the WYZplayer
+3) It is imported into the assembler project together with the WYZplayer
+
 
 To be able to use it in SDCC, it has been necessary to adapt the player (this 
-object), and because the data of the song .mus is composed of an assembly source 
-plus one or more binaries (as many songs as we have), with data song sequence, 
-it's necessary to convert them to a format that SDCC supports, so we will have 
-to do some modifications and generate an object (.rel), which is explained in 
-the 7.2 point.
+object), and the .mus data files, so they can be imported into the project.
 
 From our code in C we can access the features of the player, to which we have 
 added some extra to facilitate control of the song.
      
 
 
-### 7.2 How to create a Song Data Object
+### 7.2 How to create a song data Object
 
 To attach the music data to our program, we will have to follow the following 
 steps:
@@ -218,10 +231,13 @@ Example:
 
 8) Create a script or execute on the command line, the sentence to compile the 
 source that we have created:
+
 ```   
    sdasz80 -o song_name.s
 ```
-       
+
+This will generate a .rel file that you should include along with WYZplayer.rel 
+in the compilation of your project.       
 
 
 
@@ -249,4 +265,5 @@ From here, we can stop the song with **WYZpause()** and recover it with
 **WYZresume()** or **WYZloadSong(nSong)** to start from the beginning or to 
 change the song.
 
-You can also launch sound effects with the **WYZplayFX(FX number)** function at any time.
+You can also launch sound effects with the **WYZplayFX(FX number)** function at 
+any time.
