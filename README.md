@@ -268,3 +268,14 @@ change the song.
 
 You can also launch sound effects with the **WYZplayFX(FX number)** function at 
 any time.
+
+
+### 8 Examples
+
+In example/test_ROM folder, there is a project included in SDCC to test all the 
+features of the WYZplayer and that can help you learn how to use it.
+
+It uses two songs that I made for the game Nayade Resistance, developed by 
+Pentacour for the MSXdev'14 compo.
+
+http://karoshi.auic.es/index.php/topic,2505.0.html 
