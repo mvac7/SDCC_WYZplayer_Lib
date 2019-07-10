@@ -42,7 +42,7 @@ Assembler and C (SDCC)
   - 7.1 Introduction
   - 7.2 How to create a song data Object
   - 7.3 Control music playback
- 
+-  8 Examples 
  
 
 
@@ -274,6 +274,8 @@ any time.
 
 In example/test_ROM folder, there is a project included in SDCC to test all the 
 features of the WYZplayer and that can help you learn how to use it.
+
+![](https://github.com/mvac7/SDCC_WYZplayer/blob/master/examples/test_ROM/TESTWYZ.png?raw=true)
 
 It uses two songs that I made for the game Nayade Resistance, developed by 
 Pentacour for the MSXdev'14 compo.
