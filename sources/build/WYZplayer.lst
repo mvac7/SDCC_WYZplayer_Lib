@@ -257,7 +257,7 @@
                             257 ;---	chan A
    004B 21r59r00      [10]  258 	LD	HL,#_PSG_REG_SEC+0
    004E 22rB3r00      [16]  259 	LD	(#_SELECT_CANAL_A),HL
-   0051 21r5Ar00      [10]  260 	LD	HL,#_PSG_REG_SEC+1
+   0051 21r5Ar00      [10]  260 	LD	HL,#_PSG_REG_SEC+0 +1
    0054 22rB5r00      [16]  261 	LD	(#_SELECT_CANAL_A+2),HL
    0057 21r61r00      [10]  262 	LD	HL,#_PSG_REG_SEC+8
    005A 22rB7r00      [16]  263 	LD	(#_SELECT_CANAL_A+4),HL
@@ -266,7 +266,7 @@
                             266 ;---	chan B
    0062 21r5Br00      [10]  267 	LD	HL,#_PSG_REG_SEC+2
    0065 22rBAr00      [16]  268 	LD	(#_SELECT_CANAL_B),HL
-   0068 21r5Cr00      [10]  269 	LD	HL,#_PSG_REG_SEC+3
+   0068 21r5Cr00      [10]  269 	LD	HL,#_PSG_REG_SEC+2 +1
    006B 22rBCr00      [16]  270 	LD	(#_SELECT_CANAL_B+2),HL
    006E 21r62r00      [10]  271 	LD	HL,#_PSG_REG_SEC+9
    0071 22rBEr00      [16]  272 	LD	(#_SELECT_CANAL_B+4),HL
@@ -275,7 +275,7 @@
                             275 ;---	chan C
    0079 21r5Dr00      [10]  276 	LD	HL,#_PSG_REG_SEC+4
    007C 22rC1r00      [16]  277 	LD	(#_SELECT_CANAL_C),HL
-   007F 21r5Er00      [10]  278 	LD	HL,#_PSG_REG_SEC+5
+   007F 21r5Er00      [10]  278 	LD	HL,#_PSG_REG_SEC+4 +1
    0082 22rC3r00      [16]  279 	LD	(#_SELECT_CANAL_C+2),HL
    0085 21r63r00      [10]  280 	LD	HL,#_PSG_REG_SEC+10
    0088 22rC5r00      [16]  281 	LD	(#_SELECT_CANAL_C+4),HL
@@ -603,7 +603,7 @@
    028C 32r64r00      [13]  603 	LD	(#_PSG_REG_SEC+11),A
    028F 23            [ 6]  604 	INC	HL
    0290 7E            [ 7]  605 	LD	A,(HL)
-   0291 32r65r00      [13]  606 	LD	(#_PSG_REG_SEC+12),A
+   0291 32r65r00      [13]  606 	LD	(#_PSG_REG_SEC+11 +1),A
    0294 23            [ 6]  607 	INC	HL
    0295 7E            [ 7]  608 	LD	A,(HL)
    0296 FE 01         [ 7]  609 	CP	#1
@@ -896,7 +896,7 @@
    0482                     896 	SILENCIO_ENVOLVENTE:
    0482 3E FF         [ 7]  897 	LD	A,#0xFF
    0484 32r54r00      [13]  898 	LD	(#_PSG_REG+11),A
-   0487 32r55r00      [13]  899 	LD	(#_PSG_REG+12),A
+   0487 32r55r00      [13]  899 	LD	(#_PSG_REG+11 +1),A
    048A AF            [ 4]  900 	XOR	A
    048B 32r56r00      [13]  901 	LD	(#_PSG_REG+13),A
    048E FD 77 00      [19]  902 	LD	0(IY),A
@@ -1113,7 +1113,7 @@
    05D9 32r54r00      [13] 1113 	LD	(#_PSG_REG+11),A
    05DC 7A            [ 4] 1114 	LD	A,D
    05DD E6 03         [ 7] 1115 	AND	#0b00000011
-   05DF 32r55r00      [13] 1116 	LD	(#_PSG_REG+12),A
+   05DF 32r55r00      [13] 1116 	LD	(#_PSG_REG+11 +1),A
    05E2 C1            [10] 1117 	POP	BC
    05E3 F1            [10] 1118 	POP	AF ;SELECCION FORMA DE ENVOLVENTE
    05E4 1F            [ 4] 1119 	RRA

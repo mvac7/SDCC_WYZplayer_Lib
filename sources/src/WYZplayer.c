@@ -230,39 +230,39 @@ __asm
 
 ;TABLA DE DATOS DEL SELECTOR DEL CANAL DE EFECTOS DE RITMO
     ;--- chan A
-    LD      HL,#_PSG_REG_SEC+0       	
+    LD      HL,#_PSG_REG_SEC+AY_ToneA       	
     LD      (#_SELECT_CANAL_A),HL
    
-    LD      HL,#_PSG_REG_SEC+1       	
+    LD      HL,#_PSG_REG_SEC+AY_ToneA+1       	
     LD      (#_SELECT_CANAL_A+2),HL
    
-    LD      HL,#_PSG_REG_SEC+8       	
+    LD      HL,#_PSG_REG_SEC+AY_AmplA       	
     LD      (#_SELECT_CANAL_A+4),HL
    
     LD      A,#0b10110001
     LD      (#_SELECT_CANAL_A+6),A
    
     ;--- chan B
-    LD      HL,#_PSG_REG_SEC+2       	
+    LD      HL,#_PSG_REG_SEC+AY_ToneB       	
     LD      (#_SELECT_CANAL_B),HL
    
-    LD      HL,#_PSG_REG_SEC+3       	
+    LD      HL,#_PSG_REG_SEC+AY_ToneB+1       	
     LD      (#_SELECT_CANAL_B+2),HL
    
-    LD      HL,#_PSG_REG_SEC+9       	
+    LD      HL,#_PSG_REG_SEC+AY_AmplB       	
     LD      (#_SELECT_CANAL_B+4),HL
    
     LD      A,#0b10101010
     LD      (#_SELECT_CANAL_B+6),A
 
     ;--- chan C
-    LD      HL,#_PSG_REG_SEC+4       	
+    LD      HL,#_PSG_REG_SEC+AY_ToneC       	
     LD      (#_SELECT_CANAL_C),HL
    
-    LD      HL,#_PSG_REG_SEC+5       	
+    LD      HL,#_PSG_REG_SEC+AY_ToneC+1       	
     LD      (#_SELECT_CANAL_C+2),HL
    
-    LD      HL,#_PSG_REG_SEC+10       	
+    LD      HL,#_PSG_REG_SEC+AY_AmplC       	
     LD      (#_SELECT_CANAL_C+4),HL
    
     LD      A,#0b10011100
@@ -316,7 +316,7 @@ CLEAR_PSG_BUFFER:
    LDIR
    
    LD   A,#0b10111000		; **** POR SI ACASO ****
-   LD   (#_PSG_REG+7),A
+   LD   (#_PSG_REG+AY_Mixer),A
    
    LD   HL,#_PSG_REG
    LD   DE,#_PSG_REG_SEC
@@ -453,7 +453,7 @@ void WYZplayAY() __naked
 __asm
 
 ROUT:
-   LD   A,(#_PSG_REG+13)			
+   LD   A,(#_PSG_REG+AY_EnvTp)			
    AND  A			;ES CERO?
    JR   Z,NO_BACKUP_ENVOLVENTE
    LD   (#_ENVOLVENTE_BACK),A	;08.13 / GUARDA LA ENVOLVENTE EN EL BACKUP
@@ -478,8 +478,8 @@ LOUT:
    INC     C
    OUT     (C),A    
    XOR     A
-   LD      (#_PSG_REG_SEC+13),A
-   LD	    (#_PSG_REG+13),A
+   LD      (#_PSG_REG_SEC+AY_EnvTp),A
+   LD	    (#_PSG_REG+AY_EnvTp),A
    
    RET
 
@@ -774,15 +774,15 @@ REPRODUCE_SONIDO:
    LD   (DE),A
    INC  HL
    LD   A,(HL)
-   LD   (#_PSG_REG_SEC+11),A
+   LD   (#_PSG_REG_SEC+AY_Env),A
    INC  HL
    LD   A,(HL)
-   LD   (#_PSG_REG_SEC+12),A
+   LD   (#_PSG_REG_SEC+AY_Env+1),A
    INC  HL
    LD   A,(HL)
    CP   #1
    JR   Z,NO_ENVOLVENTES_SONIDO		;NO ESCRIBE LA ENVOLVENTE SI SU VALOR ES 1
-   LD   (#_PSG_REG_SEC+13),A
+   LD   (#_PSG_REG_SEC+AY_EnvTp),A
 
 
 NO_ENVOLVENTES_SONIDO:
@@ -790,17 +790,17 @@ NO_ENVOLVENTES_SONIDO:
    RES  7,A
    AND  A
    JR   Z,NO_RUIDO
-   LD   (#_PSG_REG_SEC+6),A
+   LD   (#_PSG_REG_SEC+AY_Noise),A
    LD   A,(#_SFX_MIX)
    JR   SI_RUIDO
 
 NO_RUIDO:
    XOR  A
-   LD   (#_PSG_REG_SEC+6),A
+   LD   (#_PSG_REG_SEC+AY_Noise),A
    LD   A,#0b10111000
 
 SI_RUIDO:
-   LD   (#_PSG_REG_SEC+7),A   
+   LD   (#_PSG_REG_SEC+AY_Mixer),A   
    INC  HL
    LD   (#_PUNTERO_SONIDO),HL
    RET
@@ -812,11 +812,11 @@ FIN_SONIDO:
    AND  A
    JR   Z,FIN_NOPLAYER
    ;xor  a 
-   LD   (#_PSG_REG_SEC+13),A			;08.13 RESTAURA LA ENVOLVENTE TRAS EL SFX
+   LD   (#_PSG_REG_SEC+AY_EnvTp),A			;08.13 RESTAURA LA ENVOLVENTE TRAS EL SFX
 
 FIN_NOPLAYER:
    LD   A,#0b10111000
-   LD   (#_PSG_REG_SEC+7),A
+   LD   (#_PSG_REG_SEC+AY_Mixer),A
 
    RET
 
@@ -837,31 +837,31 @@ PLAY:
 ;INTERPRETA
    LD   IY,#_PSG_REG
    LD   IX,#_PUNTERO_A
-   LD   BC,#_PSG_REG+8
+   LD   BC,#_PSG_REG+AY_AmplA
    CALL LOCALIZA_NOTA
-   LD   IY,#_PSG_REG+2
+   LD   IY,#_PSG_REG+AY_ToneB
    LD   IX,#_PUNTERO_B
-   LD   BC,#_PSG_REG+9
+   LD   BC,#_PSG_REG+AY_AmplB
    CALL LOCALIZA_NOTA
-   LD   IY,#_PSG_REG+4
+   LD   IY,#_PSG_REG+AY_ToneC
    LD   IX,#_PUNTERO_C
-   LD   BC,#_PSG_REG+10
+   LD   BC,#_PSG_REG+AY_AmplC
    CALL LOCALIZA_NOTA
    LD   IX,#_PUNTERO_P    ;EL CANAL DE EFECTOS ENMASCARA OTRO CANAL
    CALL LOCALIZA_EFECTO
 
 PAUTAS:
-   LD   IY,#_PSG_REG+0
+   LD   IY,#_PSG_REG+AY_ToneA
    LD   IX,#_PUNTERO_P_A
-   LD   HL,#_PSG_REG+8
+   LD   HL,#_PSG_REG+AY_AmplA
    CALL PAUTA    ;PAUTA CANAL A
-   LD   IY,#_PSG_REG+2
+   LD   IY,#_PSG_REG+AY_ToneB
    LD   IX,#_PUNTERO_P_B
-   LD   HL,#_PSG_REG+9
+   LD   HL,#_PSG_REG+AY_AmplB
    CALL PAUTA    ;PAUTA CANAL B
-   LD   IY,#_PSG_REG+4
+   LD   IY,#_PSG_REG+AY_ToneC
    LD   IX,#_PUNTERO_P_C
-   LD   HL,#_PSG_REG+10
+   LD   HL,#_PSG_REG+AY_AmplC
    CALL PAUTA    ;PAUTA CANAL C
 
    RET
@@ -1030,8 +1030,8 @@ NO_INC_TEMPO:
    LD      H,B
    RES     4,(HL)     ;APAGA EFECTO ENVOLVENTE
    XOR     A
-   LD      (#_PSG_REG_SEC+13),A
-   LD      (#_PSG_REG+13),A
+   LD      (#_PSG_REG_SEC+AY_EnvTp),A
+   LD      (#_PSG_REG+AY_EnvTp),A
    ;LD     [ENVOLVENTE_BACK],A   ;08.13 RESETEA EL BACKUP DE LA ENVOLVENTE
    JR      LOCALIZA_NOTA
 
@@ -1117,10 +1117,10 @@ NO_FIN_CANAL_A:
 
 SILENCIO_ENVOLVENTE:
    LD   A,#0xFF
-   LD   (#_PSG_REG+11),A
-   LD   (#_PSG_REG+12),A
+   LD   (#_PSG_REG+AY_Env),A
+   LD   (#_PSG_REG+AY_Env+1),A
    XOR	A
-   LD   (#_PSG_REG+13),A
+   LD   (#_PSG_REG+AY_EnvTp),A
    LD   0(IY),A
    LD   1(IY),A
    RET
@@ -1372,17 +1372,17 @@ CRTBC0:
     RR    E
     DJNZ  CRTBC0
     LD    A,E
-    LD    (#_PSG_REG+11),A
+    LD    (#_PSG_REG+AY_Env),A
     LD    A,D
     AND   #0b00000011
-    LD    (#_PSG_REG+12),A
+    LD    (#_PSG_REG+AY_Env+1),A
     POP   BC
     POP   AF      ;SELECCION FORMA DE ENVOLVENTE
    
     RRA
     AND   #0b00000110		;$08,$0A,$0C,$0E
     ADD   #8   
-    LD    (#_PSG_REG+13),A
+    LD    (#_PSG_REG+AY_EnvTp),A
     LD    (#_ENVOLVENTE_BACK),A
     RET
 

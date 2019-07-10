@@ -283,7 +283,7 @@ void main(void)
         if (!(keyPressed & Bit7))    //RETURN Key
         {
           keyB7pressStatus=true;
-          PlaySong(); 
+          WYZresume();   //PlaySong(); 
         }          
       }      
     }else{

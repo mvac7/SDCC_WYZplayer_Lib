@@ -125,7 +125,7 @@ For C:
 
 * WYZstate [char] - status of player  (1=ON;0=OFF)
   - BIT 0 = Load song
-  - BIT 1 = Player
+  - BIT 1 = Play/Pause
   - BIT 2 = FXs
   - BIT 3 = SFX
   - BIT 4 = LOOP
