@@ -309,23 +309,29 @@ void main(void)
 
 
 void PlaySong()
-{
-  LOCATE(0,10);
-  PRINT("Name  : ");  //  Pentacour's Nayade 01");
-  PRINT(songName[_songNumber]);
-  PRINT("\nAuthor: aorante");
-  
+{ 
   WYZloadSong(_songNumber);
   
+  LOCATE(0,10);
+  
+  PRINT("Song  : ");
+  PrintFNumber(SONG,32,2);
+  
+  PRINT("\nName  : ");  //  Pentacour's Nayade 01");
+  PRINT(songName[_songNumber]);
+  
+  PRINT("\nAuthor: aorante");
+  
   PRINT("\nTempo : ");
-  PrintFNumber(TEMPO,32,3);
+  PrintFNumber(TEMPO,32,2);
+  
   showLoopStatus();
 }
 
 
 void showLoopStatus()
 {
-  LOCATE(0,13);
+  LOCATE(0,14);
   if ((WYZstate & Bit4)) PRINT("Loop  : ON ");
   else PRINT("Loop  : OFF");
 

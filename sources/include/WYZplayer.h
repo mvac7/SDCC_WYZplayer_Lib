@@ -16,6 +16,14 @@
 #define  __WYZ_PLAYER_H__
 
 
+
+//AY38910 ports
+#define AY0index 0xA0
+#define AY0write 0xA1
+#define AY0read  0xA2
+
+
+
 //AY registers
 #define AY_ToneA 0  //Channel A Tone Period (12 bits)
 #define AY_ToneB 2  //Channel B Tone Period (12 bits)
@@ -27,7 +35,6 @@
 #define AY_AmplC 10 //Channel Volume C (4 bits + B5 active Envelope)
 #define AY_Env   11 //Envelope Period (12 bits)
 #define AY_EnvTp 13 //Envelope Type
-
 
 
 /*

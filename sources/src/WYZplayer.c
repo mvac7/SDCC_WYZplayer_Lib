@@ -22,6 +22,7 @@
 
 
 
+
 // -----------------------------------------------------------------------------
 
 /*
@@ -453,6 +454,24 @@ void WYZplayAY() __naked
 __asm
 
 ROUT:
+
+;Record register 7 of the AY38910 ----------------------------------------------
+;collects the last two bits for joysctick port control
+;and adds them to the value of the mixer bits
+  ld   A,(#_PSG_REG_SEC+AY_Mixer)
+  and  #0b00111111
+  ld   B,A
+      
+  ld   A,#AY_Mixer
+  out  (#AY0index),A
+  in   A,(#AY0read)  
+  and	 #0b11000000	; Mask to catch only the two bits of joys 
+	or	 B		        ; Add B
+  
+  ld   (#_PSG_REG_SEC+AY_Mixer),A
+;END register 7 ----------------------------------------------------------------
+
+
    LD   A,(#_PSG_REG+AY_EnvTp)			
    AND  A			;ES CERO?
    JR   Z,NO_BACKUP_ENVOLVENTE
@@ -460,7 +479,7 @@ ROUT:
 
 NO_BACKUP_ENVOLVENTE:
    XOR  A
-   LD   C,#0xA0
+   LD   C,#AY0index   ;0xA0
    LD   HL,#_PSG_REG_SEC
    
 LOUT:
