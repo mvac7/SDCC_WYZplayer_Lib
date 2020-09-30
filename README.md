@@ -1,26 +1,20 @@
 # SDCC WYZ Player Library for MSX
 
-#### Version: 
-1.0
+Architecture: MSX
 
-#### Date: 
-28 may 2019
+Programming language: Assembler and C (SDCC)
 
-#### Architecture: 
-MSX
+Format: .rel (SDCC object file)
 
-#### Programming language: 
-Assembler and C (SDCC)
-
-#### Authors: 
+Authors: 
 - MSX PSG proPLAYER V 0.3 by WYZ/Iggy Rock 09.03.2016
 - Adapted to SDCC: mvac7/303bcn > <mvac7303b@gmail.com>
 
-#### WEB:
+WEB:
 - https://sites.google.com/site/wyzplayer/home
 - http://www.cpcwiki.eu/index.php/WYZTracker
   
-#### History of versions:
+## History of versions:
 - v1.0 (28/4/2019) 
 - v0.9 (27/4/2013)
 
@@ -75,16 +69,9 @@ Thanks for information, help or your contribution to the MSX community:
 
 * Iggy Rock/WYZ > https://sites.google.com/site/wyzplayer/home
 * Augusto Ruiz > https://github.com/AugustoRuiz/WYZTracker
-* MSXKun/Paxanga soft > http://paxangasoft.retroinvaders.com/
-* SapphiRe/Z80ST > http://www.z80st.es/
 * Avelino Herrera > http://msx.atlantes.org/index_es.html
 * Nerlaska > http://albertodehoyonebot.blogspot.com.es
-* Fubu > http://www.gamerachan.org/fubu/
-* Marq/Lieves!Tuore > http://www.kameli.net/lt/
-* Pentacour > http://pentacour.com/
-* JamQue/TPM > http://www.thepetsmode.com/
 * Andrear > http://andrear.altervista.org/home/msxsoftware.php
-* Konamiman > https://www.konamiman.com
 * MSX Assembly Page > http://map.grauw.nl/resources/msxbios.php
 * Portar MSX Tech Doc > http://nocash.emubase.de/portar.htm
 * MSX Resource Center > http://www.msx.org/
@@ -280,4 +267,4 @@ features of the WYZplayer and that can help you learn how to use it.
 It uses two songs that I made for the game Nayade Resistance, developed by 
 Pentacour for the MSXdev'14 compo.
 
-http://karoshi.auic.es/index.php/topic,2505.0.html 
+https://www.msxdev.org/msxdev-archive/msxdev14/
