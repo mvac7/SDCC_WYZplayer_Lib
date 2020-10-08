@@ -138,13 +138,22 @@ From our code in C we can access the features of the player, to which we have ad
 
 ### 7.2 How to create a song data Object
 
-To attach the music data to our program, we will have to follow the following steps:
+When exporting a song with WYZtracker, it generates two files:
+- **.mus** > Binary with the sequence data.
+- **.mus.asm** > Assembler source with the data of the instruments, effects and the note frequency table.
 
-#### 1) Open in WYZtracker a song and export to MUS file (File/Export).
+Since SDCC does not allow including binary files, these must be adapted to a C object (.rel), with a specific structure. 
+Below we describe how to do it, through the following steps:
+
+#### 1) Open a song in WYZtracker and export it to a MUS file (Menu: File/Export). Do it with all the songs you want to include in your program.
+
+> **Warning:** The WYZ player is designed to have several songs, thinking about the development of video games, but to work properly, 
+they must be created with the same set of instruments.
+
 
 #### 2) Open a file with extension '.mus.asm' in a text editor.
 
-#### 3) Add a dot after 'DB' and 'DW'. Example:
+#### 3) Add a dot after 'DB' and 'DW'.
 
 Example Before:
 ```  
@@ -181,13 +190,9 @@ Example After:
 ```
 
 
-#### 5) Generate a assembly datas from binary file .mus with an extern aplication, 
-and paste it at the end of the source with which we are working.
+#### 5) Generate a assembly datas from binary file .mus with an extern aplication, and paste it at the end of the source with which we are working.
    
 Repeat this process for all the songs that your program needs, adding the numbered label 'SONGnn'.
-   
-> **Warning:** The WYZ player is designed to have several songs, thinking about the development of video games, but to work properly, 
-they must be created with the same set of instruments.
 
 Example:
 ```   
@@ -208,7 +213,7 @@ Example:
 
 #### 7) Save the file with '.s' extension.
 
-8) Create a script or execute on the command line, the sentence to compile the source that we have created:
+#### 8) Create a script or execute on the command line, the sentence to compile the source that we have created:
 
 ```   
    sdasz80 -o song_name.s
