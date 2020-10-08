@@ -42,18 +42,15 @@ WEB:
 
 ## 1 Introduction
 
-Adaptation of the WYZ Player for MSX to be used in software development in C 
-(SDCC). 
+Adaptation of the WYZ Player for MSX to be used in software development in C (SDCC). 
 
 Allows access to player variables.
 
 Include an example application for testing and learning purposes.
 
-WYZ player is a music creation and playback system for computers based on Z80 
-processors and the AY3-8910 or compatible sound processor.
+WYZ player is a music creation and playback system for computers based on Z80 processors and the AY3-8910 or compatible sound processor.
 
-It is mainly designed for the development of video games. It allows you to play 
-music and launch sound effects.
+It is mainly designed for the development of video games. It allows you to play music and launch sound effects.
  
 
 
@@ -90,8 +87,7 @@ For C:
      
 * Hex2bin v2.2 > http://hex2bin.sourceforge.net/
 
-* WYZ Tracker by Augusto Ruiz > https://github.com/AugustoRuiz/WYZTracker
-  (for create WYZ songs)
+* WYZ Tracker by Augusto Ruiz > https://github.com/AugustoRuiz/WYZTracker (for create WYZ songs)
    
    
 
@@ -134,18 +130,15 @@ The WYZ music system is designed for cross-developing:
 3) It is imported into the assembler project together with the WYZplayer
 
 
-To be able to use it in SDCC, it has been necessary to adapt the player (this 
-object), and the .mus data files, so they can be imported into the project.
+To be able to use it in SDCC, it has been necessary to adapt the player (this object), and the .mus data files, so they can be imported into the project.
 
-From our code in C we can access the features of the player, to which we have 
-added some extra to facilitate control of the song.
+From our code in C we can access the features of the player, to which we have added some extra to facilitate control of the song.
      
 
 
 ### 7.2 How to create a song data Object
 
-To attach the music data to our program, we will have to follow the following 
-steps:
+To attach the music data to our program, we will have to follow the following steps:
 
 #### 1) Open in WYZtracker a song and export to MUS file (File/Export).
 
@@ -191,12 +184,10 @@ Example After:
 #### 5) Generate a assembly datas from binary file .mus with an extern aplication, 
 and paste it at the end of the source with which we are working.
    
-Repeat this process for all the songs that your program needs, adding the 
-numbered label 'SONGnn'.
+Repeat this process for all the songs that your program needs, adding the numbered label 'SONGnn'.
    
-**Warning:** The WYZ player is designed to have several songs, thinking about t
-he development of video games, but to work properly, they must be created with 
-the same set of instruments.
+> **Warning:** The WYZ player is designed to have several songs, thinking about the development of video games, but to work properly, 
+they must be created with the same set of instruments.
 
 Example:
 ```   
@@ -207,64 +198,54 @@ Example:
 ```
 
 
-#### 6) Add the index of songs width the name "_WYZ_songs::" at the beginning of the 
-source, with the labels of all the songs that we have included:
+#### 6) Add the index of songs width the name "_WYZ_songs::" at the beginning of the source, with the labels of all the songs that we have included:
 
 Example:
 ```
    _WYZ_songs::  .DW SONG00,SONG01
 ```
 
+
 #### 7) Save the file with '.s' extension.
 
-8) Create a script or execute on the command line, the sentence to compile the 
-source that we have created:
+8) Create a script or execute on the command line, the sentence to compile the source that we have created:
 
 ```   
    sdasz80 -o song_name.s
 ```
 
-This will generate a .rel file that you should include along with WYZplayer.rel 
-in the compilation of your project.       
+This will generate a .rel file that you should include along with WYZplayer.rel in the compilation of your project.       
 
 
 
 ### 7.3 Control music playback
 
-The first step to make for the player to work is to initialize it.
-To the **WYZInit** function, the directions of the indices must be passed to the 
-instruments, FXs, Tones and the sequences of the songs.
+The first step is to start the Player using the **WYZInit** function.
+You will have to provide the addresses of the indexes of the instruments, FXs, the sequences of the songs and the address of the frequency table of the notes.
+These addresses are collected from WYZsongdata.h, which you should include in your sources.
 
-The Init ruling should always be like this:
+The initialization statement will always be the same:
 ```
-WYZinit((unsigned int) WYZ_songs, 
-        (unsigned int) WYZ_instruments, 
-        (unsigned int) WYZ_FXs, 
-        (unsigned int) WYZ_notes);
+WYZinit((unsigned int) WYZ_songs, (unsigned int) WYZ_instruments, (unsigned int) WYZ_FXs, (unsigned int) WYZ_notes);
 ```        
 
 The next step is to tell the player which song to sound using **WYZloadSong(song number)**
 
 From here, we will need that in each interruption of VBLANK, **WYZplayAY()** is 
-executed to send the sound data to the PSG and **WYZdecode()** so that the 
-player can process the steps of the song sequence.
+executed to send the sound data to the PSG and **WYZdecode()** so that the player can process the steps of the song sequence.
 
-From here, we can stop the song with **WYZpause()** and recover it with 
-**WYZresume()** or **WYZloadSong(nSong)** to start from the beginning or to 
-change the song.
+From here, we can stop the song with **WYZpause()** and recover it with **WYZresume()** or **WYZloadSong(nSong)** to start from the beginning or to change the song.
 
-You can also launch sound effects with the **WYZplayFX(FX number)** function at 
-any time.
+You can also launch sound effects with the **WYZplayFX(number)** function at any time.
+
 
 
 ### 8 Examples
 
-In example/test_ROM folder, there is a project included in SDCC to test all the 
-features of the WYZplayer and that can help you learn how to use it.
+In example/test_ROM folder, there is a project included in SDCC to test all the features of the WYZplayer and that can help you learn how to use it.
 
 ![](https://github.com/mvac7/SDCC_WYZplayer/blob/master/examples/test_ROM/TESTWYZ.png?raw=true)
 
-It uses two songs that I made for the game Nayade Resistance, developed by 
-Pentacour for the MSXdev'14 compo.
+It uses two songs that I made for the game Nayade Resistance, developed by Pentacour for the MSXdev'14 compo.
 
 https://www.msxdev.org/msxdev-archive/msxdev14/
