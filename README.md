@@ -194,7 +194,7 @@ Example After:
    
 Repeat this process for all the songs that your program needs, adding the numbered label 'SONGnn'.
 
-Example:
+**Example:**
 ```   
    SONG00:
    .DB 0x03,0x31,0x00,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x42,0x7E
@@ -205,7 +205,7 @@ Example:
 
 #### 6) Add the index of songs width the name "_WYZ_songs::" at the beginning of the source, with the labels of all the songs that we have included:
 
-Example:
+**Example:**
 ```
    _WYZ_songs::  .DW SONG00,SONG01
 ```
@@ -221,6 +221,10 @@ Example:
 
 This will generate a .rel file that you should include along with WYZplayer.rel in the compilation of your project.       
 
+**Example:**
+```   
+   sdcc -mz80 -o build\ --code-loc 0x4020 --data-loc 0xC000 --use-stdout --no-std-crt0 crt0msx.16k.4000.rel WYZplayer.rel WYZ_songdata.rel example.c
+```
 
 
 ### 7.3 Control music playback
@@ -242,6 +246,32 @@ executed to send the sound data to the PSG and **WYZdecode()** so that the playe
 From here, we can stop the song with **WYZpause()** and recover it with **WYZresume()** or **WYZloadSong(nSong)** to start from the beginning or to change the song.
 
 You can also launch sound effects with the **WYZplayFX(number)** function at any time.
+
+
+**Example:**
+```
+  void main(void)
+  {
+    WYZinit((unsigned int) WYZ_songs, 
+            (unsigned int) WYZ_instruments, 
+            (unsigned int) WYZ_FXs, 
+            (unsigned int) WYZ_notes);
+            
+    WYZloadSong(0);
+    
+    while(1)
+    {
+  __asm
+    halt
+  __endasm;
+  
+      WYZplayAY();
+    
+      WYZdecode();
+      
+    }
+  } 
+```
 
 
 
