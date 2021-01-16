@@ -1,26 +1,24 @@
-# SDCC WYZ Player Library for MSX
+# VDP WYZ Player MSX SDCC Library (fR3eL Project)
 
-Architecture: MSX
-
-Programming language: Assembler and C (SDCC)
-
-Format: .rel (SDCC object file)
-
+```
 Authors: 
-- MSX PSG proPLAYER V 0.3 by WYZ/Iggy Rock 09.03.2016
+- MSX PSG proPLAYER V 0.3 by WYZ/Iggy Rock 09.03.2016 https://sites.google.com/site/wyzplayer/home
 - Adapted to SDCC: mvac7/303bcn > <mvac7303b@gmail.com>
-
-WEB:
-- https://sites.google.com/site/wyzplayer/home
-- http://www.cpcwiki.eu/index.php/WYZTracker
-  
-## History of versions:
-- v1.0 (28/4/2019) 
-- v0.9 (27/4/2013)
+Architecture: MSX
+Format: C Object (SDCC .rel)
+Programming language: C and Z80 assembler
+```
 
 
 
 ## Sorry!: This text is pending correction of the English translation. <<<<<<<<
+
+
+
+## History of versions:
+
+- v1.0 (28/4/2019) 
+- v0.9 (27/4/2013)
 
 
 
@@ -52,42 +50,51 @@ WYZ player is a music creation and playback system for computers based on Z80 pr
 
 It is mainly designed for the development of video games. It allows you to play music and launch sound effects.
  
+In the source code (\examples), you can find applications for testing and learning purposes.
+
+This library is part of the [MSX fR3eL Project](https://github.com/mvac7/SDCC_MSX_fR3eL).
+
+Enjoy it!
+
 
 
 ## 2 License
 
-
+MSX PSG proPLAYER by WYZ/Iggy Rock
 
 
 
 ## 3 Acknowledgments
   
-Thanks for information, help or your contribution to the MSX community:
+I want to give a special thanks to all those who freely share their knowledge with the MSX developer community.
 
-* Iggy Rock/WYZ > https://sites.google.com/site/wyzplayer/home
-* Augusto Ruiz > https://github.com/AugustoRuiz/WYZTracker
-* Avelino Herrera > http://msx.atlantes.org/index_es.html
-* Nerlaska > http://albertodehoyonebot.blogspot.com.es
-* Andrear > http://andrear.altervista.org/home/msxsoftware.php
-* MSX Assembly Page > http://map.grauw.nl/resources/msxbios.php
-* Portar MSX Tech Doc > http://nocash.emubase.de/portar.htm
-* MSX Resource Center > http://www.msx.org/
-* Karoshi MSX Community > http://karoshi.auic.es/
-* BlueMSX Developers > http://www.bluemsx.com/
-* OpenMSX Developers > http://openmsx.sourceforge.net/
-* Meisei by hap > ?
+* Iggy Rock/WYZ [(WEB)](https://sites.google.com/site/wyzplayer/home)
+* Augusto Ruiz [(gitHub Tracker Project)](https://github.com/AugustoRuiz/WYZTracker)
+* Avelino Herrera > [(WEB)](http://msx.atlantes.org/index_es.html)
+* Nerlaska > [(Blog)](http://albertodehoyonebot.blogspot.com.es)
+* Marq/Lieves!Tuore > [(WEB)](http://www.kameli.net/marq/) [(Lieves!Tuore)](http://www.kameli.net/lt/)
+* Fubukimaru [(gitHub)](https://github.com/Fubukimaru) > [(Blog)](http://www.gamerachan.org/fubu/)
+* Andrear > [(Blog)](http://andrear.altervista.org/home/msxsoftware.php)
+* Ramones > [(Articles published in MSXBlog)](https://www.msxblog.es/tutoriales-de-programacion-en-ensamblador-ramones/) - [(MSXbanzai)](http://msxbanzai.tni.nl/dev/faq.html)
+* Sapphire/Z80ST > [(WEB)](http://z80st.auic.es/)
+* Fernando García > [(youtube tutorials)](https://www.youtube.com/user/bitvision)
+* Eric Boez > [(gitHub)](https://github.com/ericb59)
+* MSX Assembly Page > [(WEB)](http://map.grauw.nl/resources/msxbios.php)
+* Portar MSX Tech Doc > [(WEB)](http://nocash.emubase.de/portar.htm)
+* MSX Resource Center > [(WEB)](http://www.msx.org/)
+* Karoshi MSX Community (RIP 2007-2020)?
+* BlueMSX emulator >> [(WEB)](http://www.bluemsx.com/)
+* OpenMSX emulator >> [(WEB)](http://openmsx.sourceforge.net/)
+* Meisei emulator >> ?
 
 
 
 ## 4 Requirements
 
-For C:
-
-* Small Device C Compiler (SDCC) v3.6 > http://sdcc.sourceforge.net/
-     
-* Hex2bin v2.2 > http://hex2bin.sourceforge.net/
-
+* Small Device C Compiler (SDCC) v3.9 http://sdcc.sourceforge.net/
+* Hex2bin v2.5 http://hex2bin.sourceforge.net/ 
 * WYZ Tracker by Augusto Ruiz > https://github.com/AugustoRuiz/WYZTracker (for create WYZ songs)
+* A software to dump a binary file in C format (for song data).
    
    
 
@@ -95,9 +102,9 @@ For C:
 
 * **WYZInit**(many input data) - Init player
 * **WYZloadSong**(char numSong) - Init song
-* **WYZdecode**() - Decode a frame from WYZ song
+* **WYZdecode**() - Decodes a step in the song sequence
 * **WYZplayAY**() - Send data to AY registers. Execute on each interruption of VBLANK
-* **WYZsetLoop**(char mode) - Change loop mode. false = 0, true = 1
+* **WYZsetLoop**(char mode) - Change loop mode (false = 0, true = 1)
 * **WYZpause**() - Pause song playback
 * **WYZresume**() - Resume song playback
 * **WYZplayFX**(char numSound) - Play Sound Effect
