@@ -1,6 +1,6 @@
 /* =============================================================================
  SDCC WYZ player for MSX
- Version: 1.0 (28 may 2019)
+ Version: 1.1 (18/01/2021)
  Author: MSX PSG proPLAYER v0.3 (09.03.2016) by WYZ/Iggy Rock
          Adapted to SDCC: mvac7/303bcn > <mvac7303b@gmail.com>
  Architecture: MSX
@@ -13,6 +13,8 @@
  Adaptation of the WYZ music player for programming in C with the SDCC compiler.
  
  History of versions:
+ - v1.1 (18/01/2021) same nomenclature for function names on WYZ and Vortex 
+                     players #3
  - v1.0 (28/4/2019) 
  - v0.9 (27/4/2013)
 ============================================================================= */
@@ -103,7 +105,7 @@ unsigned int PUNTERO_SONIDO; //DW : PUNTERO DEL SONIDO QUE SE REPRODUCE
 //DB [13] BUFFERs DE REGISTROS DEL PSG
 
 char PSG_REG[16];
-char PSG_REG_SEC[16];
+char AYREGS[16];  //PSG_REG_SEC
 char ENVOLVENTE;	    /*DB : FORMA DE LA ENVOLVENTE
 ;BIT 0	  : FRECUENCIA CANAL ON/OFF
 ;BIT 1-2  : RATIO 
@@ -184,7 +186,7 @@ char TABLA_DATOS_CANAL_SFX[6];
  Input:       -
  Output:      -
 ============================================================================= */
-void WYZinit(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked
+void WYZ_Init(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked
 {
 addrSONGs;
 addrInstruments;
@@ -203,13 +205,13 @@ __asm
     ld    H,7(IX)
     ld	  (#_TABLA_PAUTAS),HL
     
-	  ld    L,8(IX)
+	ld    L,8(IX)
     ld    H,9(IX)
-	  ld    (#_TABLA_SONIDOS),HL
+	ld    (#_TABLA_SONIDOS),HL
    
     ld    L,10(IX)
     ld    H,11(IX)
-	  ld    (#_DATOS_NOTAS),HL
+	ld    (#_DATOS_NOTAS),HL
     
    
     XOR	 A
@@ -231,39 +233,39 @@ __asm
 
 ;TABLA DE DATOS DEL SELECTOR DEL CANAL DE EFECTOS DE RITMO
     ;--- chan A
-    LD      HL,#_PSG_REG_SEC+AY_ToneA       	
+    LD      HL,#_AYREGS+AY_ToneA       	
     LD      (#_SELECT_CANAL_A),HL
    
-    LD      HL,#_PSG_REG_SEC+AY_ToneA+1       	
+    LD      HL,#_AYREGS+AY_ToneA+1       	
     LD      (#_SELECT_CANAL_A+2),HL
    
-    LD      HL,#_PSG_REG_SEC+AY_AmplA       	
+    LD      HL,#_AYREGS+AY_AmplA       	
     LD      (#_SELECT_CANAL_A+4),HL
    
     LD      A,#0b10110001
     LD      (#_SELECT_CANAL_A+6),A
    
     ;--- chan B
-    LD      HL,#_PSG_REG_SEC+AY_ToneB       	
+    LD      HL,#_AYREGS+AY_ToneB       	
     LD      (#_SELECT_CANAL_B),HL
    
-    LD      HL,#_PSG_REG_SEC+AY_ToneB+1       	
+    LD      HL,#_AYREGS+AY_ToneB+1       	
     LD      (#_SELECT_CANAL_B+2),HL
    
-    LD      HL,#_PSG_REG_SEC+AY_AmplB       	
+    LD      HL,#_AYREGS+AY_AmplB       	
     LD      (#_SELECT_CANAL_B+4),HL
    
     LD      A,#0b10101010
     LD      (#_SELECT_CANAL_B+6),A
 
     ;--- chan C
-    LD      HL,#_PSG_REG_SEC+AY_ToneC       	
+    LD      HL,#_AYREGS+AY_ToneC       	
     LD      (#_SELECT_CANAL_C),HL
    
-    LD      HL,#_PSG_REG_SEC+AY_ToneC+1       	
+    LD      HL,#_AYREGS+AY_ToneC+1       	
     LD      (#_SELECT_CANAL_C+2),HL
    
-    LD      HL,#_PSG_REG_SEC+AY_AmplC       	
+    LD      HL,#_AYREGS+AY_AmplC       	
     LD      (#_SELECT_CANAL_C+4),HL
    
     LD      A,#0b10011100
@@ -292,12 +294,12 @@ __endasm;
 
 
 /* =============================================================================
- WYZpause
+ WYZ_Pause
  Description: Pause song playback
  Input:       -
  Output:      -
 ============================================================================= */
-void WYZpause()
+void WYZ_Pause()
 {
 __asm
 
@@ -320,7 +322,7 @@ CLEAR_PSG_BUFFER:
    LD   (#_PSG_REG+AY_Mixer),A
    
    LD   HL,#_PSG_REG
-   LD   DE,#_PSG_REG_SEC
+   LD   DE,#_AYREGS
    LD   BC,#14
    LDIR		
    
@@ -329,7 +331,7 @@ CLEAR_PSG_BUFFER:
    RET
 __endasm;
 }
-// ----------------------------------------------------------------------------- <<< END WYZstop
+// ----------------------------------------------------------------------------- <<< END WYZ_Pause
 
 
 
@@ -342,7 +344,7 @@ __endasm;
  Input:       -
  Output:      -
 ============================================================================= */  	
-void WYZresume() __naked
+void WYZ_Resume() __naked
 {
 __asm
    LD      HL,#_WYZstate       
@@ -363,29 +365,33 @@ __endasm;
  Input:       [char] false = 0, true = 1
  Output:      -
 ============================================================================= */  	
-void WYZsetLoop(char mode) __naked
+void WYZ_Loop(char loop) __naked
 {
-mode;
+loop;
 __asm
     push  IX
     ld    IX,#0
     add   IX,SP
    
-    LD    HL,#_WYZstate
-    
     ld    A,4(IX)
+    call setLoop
+
+    pop   IX
+    RET
+
+setLoop:   
+    LD    HL,#_WYZstate
+   
     or    A
     jr    Z,resetLOOP
 
     SET   4,(HL)      ;LOOP ON
-    pop   IX
-    RET
+    ret
 
 resetLOOP:           
 
-    RES   4,(HL)   
-    pop   IX
-    RET
+    RES   4,(HL)
+    ret
 
 __endasm;
 }
@@ -401,7 +407,7 @@ __endasm;
  Input:       -
  Output:      -
 ============================================================================= */
-void WYZplayFX(char numSound) __naked
+void WYZ_PlayFX(char numSound) __naked
 {
 numSound;
 __asm
@@ -449,7 +455,7 @@ __endasm;
  Input:       -
  Output:      -
 ============================================================================= */
-void WYZplayAY() __naked
+void WYZ_PlayAY() __naked
 {
 __asm
 
@@ -458,17 +464,17 @@ ROUT:
 ;Record register 7 of the AY38910 ----------------------------------------------
 ;collects the last two bits for joysctick port control
 ;and adds them to the value of the mixer bits
-  ld   A,(#_PSG_REG_SEC+AY_Mixer)
-  and  #0b00111111
-  ld   B,A
+   ld   A,(#_AYREGS+AY_Mixer)
+   and  #0b00111111
+   ld   B,A
       
-  ld   A,#AY_Mixer
-  out  (#AY0index),A
-  in   A,(#AY0read)  
-  and	 #0b11000000	; Mask to catch only the two bits of joys 
-	or	 B		        ; Add B
+   ld   A,#AY_Mixer
+   out  (#AY0index),A
+   in   A,(#AY0read)  
+   and	 #0b11000000	; Mask to catch only the two bits of joys 
+   or	 B		        ; Add B
   
-  ld   (#_PSG_REG_SEC+AY_Mixer),A
+   ld   (#_AYREGS+AY_Mixer),A
 ;END register 7 ----------------------------------------------------------------
 
 
@@ -480,7 +486,7 @@ ROUT:
 NO_BACKUP_ENVOLVENTE:
    XOR  A
    LD   C,#AY0index   ;0xA0
-   LD   HL,#_PSG_REG_SEC
+   LD   HL,#_AYREGS
    
 LOUT:
    OUT     (C),A
@@ -497,8 +503,8 @@ LOUT:
    INC     C
    OUT     (C),A    
    XOR     A
-   LD      (#_PSG_REG_SEC+AY_EnvTp),A
-   LD	    (#_PSG_REG+AY_EnvTp),A
+   LD      (#_AYREGS+AY_EnvTp),A
+   LD	   (#_PSG_REG+AY_EnvTp),A
    
    RET
 
@@ -520,16 +526,20 @@ __endasm;
  Input:       [char] song number
  Output:      -
 ============================================================================= */
-void WYZloadSong(char numSong) __naked
+void WYZ_InitSong(char numSong, char loop) __naked
 {
 numSong;
+loop;
 __asm
    push IX
    ld   IX,#0
    add  IX,sp
    
+   ld   A,5(IX)
+   call setLoop
+   
    LD   A,4(IX)
-   CALL CARGA_CANCION
+   call CARGA_CANCION
    
    pop  IX
    ret
@@ -574,12 +584,13 @@ DECODE_SONG:
 
    INC  HL     ;LOOP 1=ON/0=OFF?
    LD   A,(HL)
-   BIT  0,A
-   JR   Z,NPTJP0
-   PUSH HL
-   LD   HL,#_WYZstate
-   SET  4,(HL)
-   POP  HL
+   ;BIT  0,A
+   ;JR   Z,NPTJP0
+   
+   ;PUSH HL
+   ;LD   HL,#_WYZstate
+   ;SET  4,(HL)
+   ;POP  HL
 
 
 
@@ -588,7 +599,7 @@ DECODE_SONG:
 NPTJP0:
    AND  #0b00000110 
    RRA
-   ;LD	[SELECT_CANAL_P],A
+   ;LD	(#_SELECT_CANAL_P),A
    
    PUSH	HL
    LD	  HL,#_TABLA_DATOS_CANAL_SFX
@@ -726,11 +737,11 @@ __endasm;
 
 /* =============================================================================
  WYZdecode
- Description: Decode a frame from WYZ song 
+ Description: Process the next step in the song sequence 
  Input:       -
  Output:      -
 ============================================================================= */        
-void WYZdecode() __naked
+void WYZ_Decode() __naked
 {
 __asm
 
@@ -742,7 +753,7 @@ INICIO:
 ;   CALL MIXER
 
    LD   HL,#_PSG_REG
-   LD   DE,#_PSG_REG_SEC
+   LD   DE,#_AYREGS
    LD   BC,#14
    LDIR
 
@@ -793,15 +804,15 @@ REPRODUCE_SONIDO:
    LD   (DE),A
    INC  HL
    LD   A,(HL)
-   LD   (#_PSG_REG_SEC+AY_Env),A
+   LD   (#_AYREGS+AY_Env),A
    INC  HL
    LD   A,(HL)
-   LD   (#_PSG_REG_SEC+AY_Env+1),A
+   LD   (#_AYREGS+AY_Env+1),A
    INC  HL
    LD   A,(HL)
    CP   #1
    JR   Z,NO_ENVOLVENTES_SONIDO		;NO ESCRIBE LA ENVOLVENTE SI SU VALOR ES 1
-   LD   (#_PSG_REG_SEC+AY_EnvTp),A
+   LD   (#_AYREGS+AY_EnvTp),A
 
 
 NO_ENVOLVENTES_SONIDO:
@@ -809,17 +820,17 @@ NO_ENVOLVENTES_SONIDO:
    RES  7,A
    AND  A
    JR   Z,NO_RUIDO
-   LD   (#_PSG_REG_SEC+AY_Noise),A
+   LD   (#_AYREGS+AY_Noise),A
    LD   A,(#_SFX_MIX)
    JR   SI_RUIDO
 
 NO_RUIDO:
    XOR  A
-   LD   (#_PSG_REG_SEC+AY_Noise),A
+   LD   (#_AYREGS+AY_Noise),A
    LD   A,#0b10111000
 
 SI_RUIDO:
-   LD   (#_PSG_REG_SEC+AY_Mixer),A   
+   LD   (#_AYREGS+AY_Mixer),A   
    INC  HL
    LD   (#_PUNTERO_SONIDO),HL
    RET
@@ -831,11 +842,11 @@ FIN_SONIDO:
    AND  A
    JR   Z,FIN_NOPLAYER
    ;xor  a 
-   LD   (#_PSG_REG_SEC+AY_EnvTp),A			;08.13 RESTAURA LA ENVOLVENTE TRAS EL SFX
+   LD   (#_AYREGS+AY_EnvTp),A			;08.13 RESTAURA LA ENVOLVENTE TRAS EL SFX
 
 FIN_NOPLAYER:
    LD   A,#0b10111000
-   LD   (#_PSG_REG_SEC+AY_Mixer),A
+   LD   (#_AYREGS+AY_Mixer),A
 
    RET
 
@@ -1049,7 +1060,7 @@ NO_INC_TEMPO:
    LD      H,B
    RES     4,(HL)     ;APAGA EFECTO ENVOLVENTE
    XOR     A
-   LD      (#_PSG_REG_SEC+AY_EnvTp),A
+   LD      (#_AYREGS+AY_EnvTp),A
    LD      (#_PSG_REG+AY_EnvTp),A
    ;LD     [ENVOLVENTE_BACK],A   ;08.13 RESETEA EL BACKUP DE LA ENVOLVENTE
    JR      LOCALIZA_NOTA

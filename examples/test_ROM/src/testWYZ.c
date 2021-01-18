@@ -1,17 +1,16 @@
 /* =============================================================================
   Test SDCC WYZplayer v1.1
-  Version: 1.1 (9/7/2019)
-  Author: mvac7/303bcn
+  Version: 1.2 (18/1/2021)
+  Author: mvac7 <mvac7303b@gmail.com>
   Architecture: MSX
   Format: C Object (SDCC .rel)
   Programming language: C
-  WEB: 
-  mail: mvac7303b@gmail.com
    
   Description:
   Test the different functionalities of the SDCC adaptation of the WYZ player.
     
   History of versions:
+  -v1.2 (18/1/2021) adapted to v1.1 from SDCC WYZ Player
   -v1.1 (9/7/2019)
   -v1.0 (28/5/2019)
 ============================================================================= */
@@ -77,7 +76,7 @@ void showLoopStatus();
 
 // constants  ------------------------------------------------------------------
 const char text01[] = "Test WYZ player Lib for SDCC";
-const char text02[] = "v1.1 (9/7/2019)";
+const char text02[] = "v1.2 (18/1/2021)";
 
 //const char presskey[] = "Press a key to Play";
 
@@ -92,6 +91,8 @@ char SPRBUFFER[72];  //20*4 =72B
 boolean keyB0pressStatus;
 boolean keyB6pressStatus;
 boolean keyB7pressStatus;
+
+boolean _loopState;
 
 //char _isPlay;
 
@@ -108,7 +109,7 @@ void my_isr0(void) __interrupt
 	READ_VDP_STATUS;
 
     
-  WYZplayAY();
+  WYZ_PlayAY();
 
 __asm  
   ;vuelca a VRAM buffer atributos sprites
@@ -135,9 +136,11 @@ void main(void)
   uint conta = 0;
   //uint songStep;
   
-  //keyB0semaphore=false;
-  //keyB6semaphore=false;
-  //keyB7semaphore=false;
+  keyB0pressStatus=false;
+  keyB6pressStatus=false;
+  keyB7pressStatus=false;
+  
+  _loopState = false;
   
   _songNumber=0;
   
@@ -160,7 +163,7 @@ void main(void)
 
  
   
-  WYZinit((unsigned int) WYZ_songs, 
+  WYZ_Init((unsigned int) WYZ_songs, 
           (unsigned int) WYZ_instruments, 
           (unsigned int) WYZ_FXs, 
           (unsigned int) WYZ_notes);   
@@ -193,20 +196,20 @@ void main(void)
 /*    
     LOCATE(0,10);
     PRINT("Channel A:");
-    PrintFNumber((PSG_REG_SEC[AY_ToneA+1]*0xFF)+PSG_REG_SEC[AY_ToneA],32,5);
-    PrintFNumber(PSG_REG_SEC[AY_AmplA],32,4);
+    PrintFNumber((AYREGS[AY_ToneA+1]*0xFF)+AYREGS[AY_ToneA],32,5);
+    PrintFNumber(AYREGS[AY_AmplA],32,4);
     LOCATE(0,11);
     PRINT("Channel B:");
-    PrintFNumber((PSG_REG_SEC[AY_ToneB+1]*0xFF)+PSG_REG_SEC[AY_ToneB],32,5);
-    PrintFNumber(PSG_REG_SEC[AY_AmplB],32,4);
+    PrintFNumber((AYREGS[AY_ToneB+1]*0xFF)+AYREGS[AY_ToneB],32,5);
+    PrintFNumber(AYREGS[AY_AmplB],32,4);
     LOCATE(0,12);
     PRINT("Channel C:");
-    PrintFNumber((PSG_REG_SEC[AY_ToneC+1]*0xFF)+PSG_REG_SEC[AY_ToneC],32,5);
-    PrintFNumber(PSG_REG_SEC[AY_AmplC],32,4);
+    PrintFNumber((AYREGS[AY_ToneC+1]*0xFF)+AYREGS[AY_ToneC],32,5);
+    PrintFNumber(AYREGS[AY_AmplC],32,4);
     
     LOCATE(0,13);
     PRINT("Noise :");
-    PrintFNumber(PSG_REG_SEC[AY_Noise],32,5);
+    PrintFNumber(AYREGS[AY_Noise],32,5);
    
     LOCATE(0,14);
     PRINT("WYZstate :");
@@ -215,9 +218,9 @@ void main(void)
     
     
         
-    ShowVumeter(0,PSG_REG_SEC[AY_AmplA]);
-    ShowVumeter(1,PSG_REG_SEC[AY_AmplB]);
-    ShowVumeter(2,PSG_REG_SEC[AY_AmplC]);
+    ShowVumeter(0,AYREGS[AY_AmplA]);
+    ShowVumeter(1,AYREGS[AY_AmplB]);
+    ShowVumeter(2,AYREGS[AY_AmplC]);
     
     
     keyPressed = GetKeyMatrix(0);  
@@ -264,6 +267,7 @@ void main(void)
     }else{
       keyB6pressStatus=false;        
     }
+    
 
     keyPressed = GetKeyMatrix(7);  
     if (keyPressed!=0xFF)  //pressure control of the keys
@@ -283,7 +287,7 @@ void main(void)
         if (!(keyPressed & Bit7))    //RETURN Key
         {
           keyB7pressStatus=true;
-          WYZresume();   //PlaySong(); 
+          PlaySong();
         }          
       }      
     }else{
@@ -293,7 +297,7 @@ void main(void)
     
     
     
-    WYZdecode();
+    WYZ_Decode();
     
   }
 
@@ -310,12 +314,12 @@ void main(void)
 
 void PlaySong()
 { 
-  WYZloadSong(_songNumber);
+  WYZ_InitSong(_songNumber, _loopState);
   
   LOCATE(0,10);
   
   PRINT("Song  : ");
-  PrintFNumber(SONG,32,2);
+  PrintFNumber(_songNumber+1,32,2);
   
   PRINT("\nName  : ");  //  Pentacour's Nayade 01");
   PRINT(songName[_songNumber]);
@@ -334,14 +338,13 @@ void showLoopStatus()
   LOCATE(0,14);
   if ((WYZstate & Bit4)) PRINT("Loop  : ON ");
   else PRINT("Loop  : OFF");
-
 }
 
 
 
 void playFX(char FXnumber)
 {
-  WYZplayFX(FXnumber);
+  WYZ_PlayFX(FXnumber);
   keyB0pressStatus=true;
 }
 
@@ -349,16 +352,18 @@ void playFX(char FXnumber)
 
 void PauseSong()
 {
-  if((WYZstate & 0b00000010)==0) WYZresume();  //AND binario  
-  else WYZpause();  
+  if((WYZstate & 0b00000010)==0) WYZ_Resume();  //AND binario  
+  else WYZ_Pause();  
 }
 
 
 
 void ChangeLoop()
 {
-  if((WYZstate & 0b00010000)==0) WYZsetLoop(true); 
-  else WYZsetLoop(false);
+  _loopState=!_loopState;
+  WYZ_Loop(_loopState);
+  //if((WYZstate & 0b00010000)==0) WYZ_Loop(true); 
+  //else WYZ_Loop(false);
   showLoopStatus();  
 }
 
@@ -424,7 +429,7 @@ __endasm;
 
 
 
-char PEEK(uint address)
+char PEEK(uint address) __naked
 {
 address;
 __asm
@@ -438,12 +443,13 @@ __asm
 
   ld   L,A
   pop  IX
+  ret
 __endasm;
 }
 
 
 
-void POKE(uint address, char value)
+void POKE(uint address, char value) __naked
 {
 address;value;
 __asm
@@ -456,7 +462,8 @@ __asm
   ld   A,6(IX)
   ld   (HL),A
 
-  pop  IX  
+  pop  IX
+  ret  
 __endasm;
 }
 
@@ -471,7 +478,7 @@ __endasm;
               [unsigned int] length 
    Output   : -
 ============================================================================= */
-void CopyMEM(unsigned int source, unsigned int destination, unsigned int length)
+void CopyMEM(unsigned int source, unsigned int destination, unsigned int length) __naked
 {
 source;destination;length;
 __asm
@@ -491,13 +498,14 @@ __asm
   ldir
   
   pop  IX
+  ret
 __endasm;
 }
 
 
 
 
-char VPEEK(uint address)
+char VPEEK(uint address) __naked
 {
 address;
 __asm
@@ -512,6 +520,7 @@ __asm
   
   ld   L,A
   pop  IX
+  ret
 __endasm;
 }
 
@@ -574,7 +583,7 @@ void WAIT(uint cicles)
 
 
 
-void ShowVumeter(char channel, char value)
+void ShowVumeter(char channel, char value) __naked
 {
 channel;value;
 __asm
@@ -591,63 +600,63 @@ __asm
 ;A = value  
 ;showVumeter:
 
-	ld   (_VALUE),A
-
-	SLA  C
-	SLA  C
-
-	ld	 B,#0
+  ld   (_VALUE),A
+  
+  SLA  C
+  SLA  C
+  
+  ld	 B,#0
 L00107:
-	ld	a,c
-	ld	l,a
-	rla
-	sbc	a, a
-	ld	h,a
-	add	hl,hl
-	add	hl,hl
-
+  ld	a,c
+  ld	l,a
+  rla
+  sbc	a, a
+  ld	h,a
+  add	hl,hl
+  add	hl,hl
+  
   ld   DE,#_SPRBUFFER
   ADD  HL,DE
   ex   DE,HL
   
-	inc	 DE
-	inc	 DE
-
-	ld   A,(_VALUE)
-	cp	 #0
-	jr	 NZ,L00102
-	xor  A
-	ld	 (DE),A
-	jr   L00105
+  inc	 DE
+  inc	 DE
+  
+  ld   A,(_VALUE)
+  cp	 #0
+  jr	 NZ,L00102
+  xor  A
+  ld	 (DE),A
+  jr   L00105
   
 L00102:                       
   ld   A,(_VALUE)
-	cp   #4
-	jr	 C,L00104
-	ld	 A,#16
-	ld	 (DE),A
-
-	ld    A,(_VALUE)
+  cp   #4
+  jr	 C,L00104
+  ld	 A,#16
+  ld	 (DE),A
+  
+  ld    A,(_VALUE)
   sub   #4
-	ld   (_VALUE),A
-	jr	 L00105
+  ld   (_VALUE),A
+  jr	 L00105
 L00104:
   ld   A,(_VALUE)
-	add	 a,a
-	add	 a,a
-	ld	(DE),A
-	xor  A
-	ld   (_VALUE),A
+  add	 a,a
+  add	 a,a
+  ld	(DE),A
+  xor  A
+  ld   (_VALUE),A
 L00105:
-	inc	 C
-	inc	 B
-	ld	 A,B
+  inc	 C
+  inc	 B
+  ld	 A,B
   cp   #4
-	jr	C,L00107
+  jr	C,L00107
   
 
   pop  IX
-;  ret
+  ret
   
 __endasm;
 }

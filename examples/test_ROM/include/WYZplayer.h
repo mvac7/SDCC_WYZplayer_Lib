@@ -1,6 +1,6 @@
 /* =============================================================================
  SDCC WYZ player for MSX
- Version: 1.0 (28 may 2019)
+ Version: 1.1 (18/01/2021)
  Author: MSX PSG proPLAYER v0.3 (09.03.2016) by WYZ/Iggy Rock
          Adapted to SDCC: mvac7/303bcn > <mvac7303b@gmail.com>
  Architecture: MSX
@@ -51,7 +51,7 @@ extern char WYZstate;
 extern char SONG;   //number of song playing
 extern char TEMPO;  //TEMPO
 
-extern char PSG_REG_SEC[16];       //PSG registers buffer
+extern char AYREGS[16];       //PSG registers buffer
 
 //extern unsigned int TABLA_SONG;    //songs index  
 //extern unsigned int TABLA_PAUTAS;  //instruments index
@@ -63,29 +63,31 @@ extern char PSG_REG_SEC[16];       //PSG registers buffer
 //------------------------------------------------------------------------------
 
 // Init player
-void WYZinit(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked;
+void WYZ_Init(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked;
 
-//Init song
-void WYZloadSong(char numSong); 
+// Init song
+void WYZ_InitSong(char numSong, char loop); 
 
-// Decode a frame from WYZ song
-void WYZdecode(); 
+// Process the next step in the song sequence
+void WYZ_Decode(); 
 
 // Send data to AY registers. Execute on each interruption of VBLANK
-void WYZplayAY();   
+void WYZ_PlayAY();   
+
+// Play Sound Effect
+void WYZ_PlayFX(char numSound); 
 
 // Change loop mode. 
-// mode= false = 0, true = 1
-void WYZsetLoop(char mode);  
+// loop= false = 0, true = 1
+void WYZ_Loop(char loop);  
 
 // Pause song playback
-void WYZpause();  
+void WYZ_Pause();  
 
 // Resume song playback
-void WYZresume(); 
+void WYZ_Resume(); 
 
-//Play Sound Effect
-void WYZplayFX(char numSound); 
+
 
 
 

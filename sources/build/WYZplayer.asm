@@ -1,6 +1,6 @@
 ;--------------------------------------------------------
 ; File Created by SDCC : free open source ANSI-C Compiler
-; Version 3.6.0 #9615 (MINGW64)
+; Version 3.9.0 #11195 (MINGW64)
 ;--------------------------------------------------------
 	.module WYZplayer
 	.optsdcc -mz80
@@ -22,7 +22,7 @@
 	.globl _SOUND_BUFFER_A
 	.globl _ENVOLVENTE_BACK
 	.globl _ENVOLVENTE
-	.globl _PSG_REG_SEC
+	.globl _AYREGS
 	.globl _PSG_REG
 	.globl _PUNTERO_SONIDO
 	.globl _N_SONIDO
@@ -66,14 +66,14 @@
 	.globl _TEMPO
 	.globl _SONG
 	.globl _WYZstate
-	.globl _WYZinit
-	.globl _WYZpause
-	.globl _WYZresume
-	.globl _WYZsetLoop
-	.globl _WYZplayFX
-	.globl _WYZplayAY
-	.globl _WYZloadSong
-	.globl _WYZdecode
+	.globl _WYZ_Init
+	.globl _WYZ_Pause
+	.globl _WYZ_Resume
+	.globl _WYZ_Loop
+	.globl _WYZ_PlayFX
+	.globl _WYZ_PlayAY
+	.globl _WYZ_InitSong
+	.globl _WYZ_Decode
 ;--------------------------------------------------------
 ; special function registers
 ;--------------------------------------------------------
@@ -167,7 +167,7 @@ _PUNTERO_SONIDO::
 	.ds 2
 _PSG_REG::
 	.ds 16
-_PSG_REG_SEC::
+_AYREGS::
 	.ds 16
 _ENVOLVENTE::
 	.ds 1
@@ -221,12 +221,12 @@ _TABLA_DATOS_CANAL_SFX::
 ; code
 ;--------------------------------------------------------
 	.area _CODE
-;src\WYZplayer.c:187: void WYZinit(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked
+;src\WYZplayer.c:189: void WYZ_Init(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked
 ;	---------------------------------
-; Function WYZinit
+; Function WYZ_Init
 ; ---------------------------------
-_WYZinit::
-;src\WYZplayer.c:286: __endasm;
+_WYZ_Init::
+;src\WYZplayer.c:288: __endasm;
 	push	IX
 	ld	IX,#0
 	add	IX,SP
@@ -255,29 +255,29 @@ _WYZinit::
 	LD	(#_CANAL_P),HL
 ;TABLA	DE DATOS DEL SELECTOR DEL CANAL DE EFECTOS DE RITMO
 ;---	chan A
-	LD	HL,#_PSG_REG_SEC+0
+	LD	HL,#_AYREGS+0
 	LD	(#_SELECT_CANAL_A),HL
-	LD	HL,#_PSG_REG_SEC+0 +1
+	LD	HL,#_AYREGS+0 +1
 	LD	(#_SELECT_CANAL_A+2),HL
-	LD	HL,#_PSG_REG_SEC+8
+	LD	HL,#_AYREGS+8
 	LD	(#_SELECT_CANAL_A+4),HL
 	LD	A,#0b10110001
 	LD	(#_SELECT_CANAL_A+6),A
 ;---	chan B
-	LD	HL,#_PSG_REG_SEC+2
+	LD	HL,#_AYREGS+2
 	LD	(#_SELECT_CANAL_B),HL
-	LD	HL,#_PSG_REG_SEC+2 +1
+	LD	HL,#_AYREGS+2 +1
 	LD	(#_SELECT_CANAL_B+2),HL
-	LD	HL,#_PSG_REG_SEC+9
+	LD	HL,#_AYREGS+9
 	LD	(#_SELECT_CANAL_B+4),HL
 	LD	A,#0b10101010
 	LD	(#_SELECT_CANAL_B+6),A
 ;---	chan C
-	LD	HL,#_PSG_REG_SEC+4
+	LD	HL,#_AYREGS+4
 	LD	(#_SELECT_CANAL_C),HL
-	LD	HL,#_PSG_REG_SEC+4 +1
+	LD	HL,#_AYREGS+4 +1
 	LD	(#_SELECT_CANAL_C+2),HL
-	LD	HL,#_PSG_REG_SEC+10
+	LD	HL,#_AYREGS+10
 	LD	(#_SELECT_CANAL_C+4),HL
 	LD	A,#0b10011100
 	LD	(#_SELECT_CANAL_C+6),A
@@ -290,12 +290,13 @@ _WYZinit::
 	LD	(#_TABLA_DATOS_CANAL_SFX+4),HL
 	pop	IX
 	ret
-;src\WYZplayer.c:300: void WYZpause()
+;src\WYZplayer.c:289: }         
+;src\WYZplayer.c:302: void WYZ_Pause()
 ;	---------------------------------
-; Function WYZpause
+; Function WYZ_Pause
 ; ---------------------------------
-_WYZpause::
-;src\WYZplayer.c:330: __endasm;
+_WYZ_Pause::
+;src\WYZplayer.c:332: __endasm;
 	PLAYER_OFF:
 ;	XOR A
 ;	LD [INTERR],A
@@ -312,47 +313,52 @@ _WYZpause::
 	LD	A,#0b10111000 ; **** POR SI ACASO ****
 	LD	(#_PSG_REG+7),A
 	LD	HL,#_PSG_REG
-	LD	DE,#_PSG_REG_SEC
+	LD	DE,#_AYREGS
 	LD	BC,#14
 	LDIR
 	CALL	ROUT
 	RET
+;src\WYZplayer.c:333: }
 	ret
-;src\WYZplayer.c:345: void WYZresume() __naked
+;src\WYZplayer.c:347: void WYZ_Resume() __naked
 ;	---------------------------------
-; Function WYZresume
+; Function WYZ_Resume
 ; ---------------------------------
-_WYZresume::
-;src\WYZplayer.c:352: __endasm;
+_WYZ_Resume::
+;src\WYZplayer.c:354: __endasm;
 	LD	HL,#_WYZstate
 	SET	1,(HL) ;PLAYER ON
 	RET
-;src\WYZplayer.c:366: void WYZsetLoop(char mode) __naked
+;src\WYZplayer.c:355: }
+;src\WYZplayer.c:368: void WYZ_Loop(char loop) __naked
 ;	---------------------------------
-; Function WYZsetLoop
+; Function WYZ_Loop
 ; ---------------------------------
-_WYZsetLoop::
-;src\WYZplayer.c:390: __endasm;
+_WYZ_Loop::
+;src\WYZplayer.c:396: __endasm;
 	push	IX
 	ld	IX,#0
 	add	IX,SP
-	LD	HL,#_WYZstate
 	ld	A,4(IX)
+	call	setLoop
+	pop	IX
+	RET
+	setLoop:
+	LD	HL,#_WYZstate
 	or	A
 	jr	Z,resetLOOP
 	SET	4,(HL) ;LOOP ON
-	pop	IX
-	RET
+	ret
 	resetLOOP:
 	RES	4,(HL)
-	pop	IX
-	RET
-;src\WYZplayer.c:404: void WYZplayFX(char numSound) __naked
+	ret
+;src\WYZplayer.c:397: }
+;src\WYZplayer.c:410: void WYZ_PlayFX(char numSound) __naked
 ;	---------------------------------
-; Function WYZplayFX
+; Function WYZ_PlayFX
 ; ---------------------------------
-_WYZplayFX::
-;src\WYZplayer.c:434: __endasm;
+_WYZ_PlayFX::
+;src\WYZplayer.c:440: __endasm;
 	push	IX
 	ld	IX,#0
 	add	IX,sp
@@ -364,23 +370,24 @@ _WYZplayFX::
 	INICIA_SONIDO:
 ;CP	8 ;SFX SPEECH
 ;JP	Z,SLOOP
-	LD	HL,(#_TABLA_SONIDOS) ;(v 360) HL,TABLA_SONIDOS
+	LD	HL,(#_TABLA_SONIDOS) ;(v SDCC) HL,TABLA_SONIDOS
 	CALL	EXT_WORD
 	LD	(#_PUNTERO_SONIDO),HL
 	LD	HL,#_WYZstate
 	SET	2,(HL)
 	RET
-;src\WYZplayer.c:452: void WYZplayAY() __naked
+;src\WYZplayer.c:441: } 
+;src\WYZplayer.c:458: void WYZ_PlayAY() __naked
 ;	---------------------------------
-; Function WYZplayAY
+; Function WYZ_PlayAY
 ; ---------------------------------
-_WYZplayAY::
-;src\WYZplayer.c:505: __endasm;
+_WYZ_PlayAY::
+;src\WYZplayer.c:511: __endasm;
 	ROUT:
 ;Record	register 7 of the AY38910 ----------------------------------------------
 ;collects	the last two bits for joysctick port control
 ;and	adds them to the value of the mixer bits
-	ld	A,(#_PSG_REG_SEC+7)
+	ld	A,(#_AYREGS+7)
 	and	#0b00111111
 	ld	B,A
 	ld	A,#7
@@ -388,7 +395,7 @@ _WYZplayAY::
 	in	A,(#0xA2)
 	and	#0b11000000 ; Mask to catch only the two bits of joys
 	or	B ; Add B
-	ld	(#_PSG_REG_SEC+7),A
+	ld	(#_AYREGS+7),A
 ;END	register 7 ----------------------------------------------------------------
 	LD	A,(#_PSG_REG+13)
 	AND	A ;ES CERO?
@@ -397,7 +404,7 @@ _WYZplayAY::
 	NO_BACKUP_ENVOLVENTE:
 	XOR	A
 	LD	C,#0xA0 ;0xA0
-	LD	HL,#_PSG_REG_SEC
+	LD	HL,#_AYREGS
 	LOUT:
 	OUT	(C),A
 	INC	C
@@ -413,20 +420,23 @@ _WYZplayAY::
 	INC	C
 	OUT	(C),A
 	XOR	A
-	LD	(#_PSG_REG_SEC+13),A
+	LD	(#_AYREGS+13),A
 	LD	(#_PSG_REG+13),A
 	RET
-;src\WYZplayer.c:523: void WYZloadSong(char numSong) __naked
+;src\WYZplayer.c:512: }
+;src\WYZplayer.c:529: void WYZ_InitSong(char numSong, char loop) __naked
 ;	---------------------------------
-; Function WYZloadSong
+; Function WYZ_InitSong
 ; ---------------------------------
-_WYZloadSong::
-;src\WYZplayer.c:713: __endasm;
+_WYZ_InitSong::
+;src\WYZplayer.c:724: __endasm;
 	push	IX
 	ld	IX,#0
 	add	IX,sp
+	ld	A,5(IX)
+	call	setLoop
 	LD	A,4(IX)
-	CALL	CARGA_CANCION
+	call	CARGA_CANCION
 	pop	IX
 	ret
 ;CARGA	UNA CANCION
@@ -444,7 +454,7 @@ _WYZloadSong::
 	LD	A,(#_SONG)
 ;LEE	CABECERA DE LA CANCION
 ;BYTE	0=TEMPO
-	LD	HL,(#_TABLA_SONG) ;(v 360) HL,_TABLA_SONG
+	LD	HL,(#_TABLA_SONG) ;(v SDCC) HL,_TABLA_SONG
 	CALL	EXT_WORD
 	LD	A,(HL)
 	LD	(#_TEMPO),A
@@ -455,17 +465,17 @@ _WYZloadSong::
 ;[-|-|-|-|FX	CHN|LOOP]
 	INC	HL ;LOOP 1=ON/0=OFF?
 	LD	A,(HL)
-	BIT	0,A
-	JR	Z,NPTJP0
-	PUSH	HL
-	LD	HL,#_WYZstate
-	SET	4,(HL)
-	POP	HL
+;BIT	0,A
+;JR	Z,NPTJP0
+;PUSH	HL
+;LD	HL,#_WYZstate
+;SET	4,(HL)
+;POP	HL
 ;SELECCION	DEL CANAL DE EFECTOS DE RITMO
 	NPTJP0:
 	AND	#0b00000110
 	RRA
-;LD	[SELECT_CANAL_P],A
+;LD	(#_SELECT_CANAL_P),A
 	PUSH	HL
 	LD	HL,#_TABLA_DATOS_CANAL_SFX
 	CALL	EXT_WORD
@@ -562,18 +572,19 @@ _WYZloadSong::
 	INC	HL
 	JR	Z,BGICMODBC1
 	RET
-;src\WYZplayer.c:733: void WYZdecode() __naked
+;src\WYZplayer.c:725: }
+;src\WYZplayer.c:744: void WYZ_Decode() __naked
 ;	---------------------------------
-; Function WYZdecode
+; Function WYZ_Decode
 ; ---------------------------------
-_WYZdecode::
-;src\WYZplayer.c:1426: __endasm;
+_WYZ_Decode::
+;src\WYZplayer.c:1437: __endasm;
 	INICIO:
 ;	push IX
 ;	CALL ROUT
 ;	CALL MIXER
 	LD	HL,#_PSG_REG
-	LD	DE,#_PSG_REG_SEC
+	LD	DE,#_AYREGS
 	LD	BC,#14
 	LDIR
 	CALL	REPRODUCE_SONIDO
@@ -613,29 +624,29 @@ _WYZdecode::
 	LD	(DE),A
 	INC	HL
 	LD	A,(HL)
-	LD	(#_PSG_REG_SEC+11),A
+	LD	(#_AYREGS+11),A
 	INC	HL
 	LD	A,(HL)
-	LD	(#_PSG_REG_SEC+11 +1),A
+	LD	(#_AYREGS+11 +1),A
 	INC	HL
 	LD	A,(HL)
 	CP	#1
 	JR	Z,NO_ENVOLVENTES_SONIDO ;NO ESCRIBE LA ENVOLVENTE SI SU VALOR ES 1
-	LD	(#_PSG_REG_SEC+13),A
+	LD	(#_AYREGS+13),A
 	NO_ENVOLVENTES_SONIDO:
 	LD	A,B
 	RES	7,A
 	AND	A
 	JR	Z,NO_RUIDO
-	LD	(#_PSG_REG_SEC+6),A
+	LD	(#_AYREGS+6),A
 	LD	A,(#_SFX_MIX)
 	JR	SI_RUIDO
 	NO_RUIDO:
 	XOR	A
-	LD	(#_PSG_REG_SEC+6),A
+	LD	(#_AYREGS+6),A
 	LD	A,#0b10111000
 	SI_RUIDO:
-	LD	(#_PSG_REG_SEC+7),A
+	LD	(#_AYREGS+7),A
 	INC	HL
 	LD	(#_PUNTERO_SONIDO),HL
 	RET
@@ -646,10 +657,10 @@ _WYZdecode::
 	AND	A
 	JR	Z,FIN_NOPLAYER
 ;xor	a
-	LD	(#_PSG_REG_SEC+13),A ;08.13 RESTAURA LA ENVOLVENTE TRAS EL SFX
+	LD	(#_AYREGS+13),A ;08.13 RESTAURA LA ENVOLVENTE TRAS EL SFX
 	FIN_NOPLAYER:
 	LD	A,#0b10111000
-	LD	(#_PSG_REG_SEC+7),A
+	LD	(#_AYREGS+7),A
 	RET
 	PLAY:
 	LD	HL,#_WYZstate ;PLAY BIT 1 ON?
@@ -832,7 +843,7 @@ _WYZdecode::
 	LD	H,B
 	RES	4,(HL) ;APAGA EFECTO ENVOLVENTE
 	XOR	A
-	LD	(#_PSG_REG_SEC+13),A
+	LD	(#_AYREGS+13),A
 	LD	(#_PSG_REG+13),A
 ;LD	[ENVOLVENTE_BACK],A ;08.13 RESETEA EL BACKUP DE LA ENVOLVENTE
 	JR	LOCALIZA_NOTA
@@ -1149,6 +1160,7 @@ _WYZdecode::
 	LD	D,(HL)
 	EX	DE,HL
 	RET
+;src\WYZplayer.c:1438: }
 	.area _CODE
 	.area _INITIALIZER
 	.area _CABS (ABS)
