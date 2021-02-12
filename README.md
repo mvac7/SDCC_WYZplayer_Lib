@@ -17,7 +17,7 @@ Programming language: C and Z80 assembler
 
 ## History of versions:
 
-- 1.1 (18/01/2021) Same nomenclature for function names on WYZ and Vortex players #3
+- v1.1 (18/01/2021) Same nomenclature for function names on WYZ and Vortex players #3
 - v1.0 (28/4/2019) 
 - v0.9 (27/4/2013)
 
@@ -95,8 +95,8 @@ I want to give a special thanks to all those who freely share their knowledge wi
 * Small Device C Compiler (SDCC) v3.9 http://sdcc.sourceforge.net/
 * Hex2bin v2.5 http://hex2bin.sourceforge.net/ 
 * WYZ Tracker by Augusto Ruiz > https://github.com/AugustoRuiz/WYZTracker (for create WYZ songs)
-* A software to dump a binary file in C format (for song data).
-   
+* A tool for convert export .MUS files from WYZ Tracker to SDCC Object File (.rel). For WinOS you have the [WYZtoSDCCobj Converter Tool](https://github.com/mvac7/mSXdevtools_WYZtoSDCCobj)  
+  
    
 
 ## 5 Functions
@@ -150,8 +150,11 @@ When exporting a song with WYZtracker, it generates two files:
 - **.mus** > Binary with the sequence data.
 - **.mus.asm** > Assembler source with the data of the instruments, effects and the note frequency table.
 
-Since SDCC does not allow including binary files, these must be adapted to a C object (.rel), with a specific structure. 
-Below we describe how to do it, through the following steps:
+Since SDCC does not allow including binary files, these must be adapted to a C object (.rel), with a specific structure.
+
+You can do it manually by following the steps I give in this document or you can use the [WYZtoSDCCobj Converter Tool](https://github.com/mvac7/mSXdevtools_WYZtoSDCCobj), designed for this purpose.
+
+
 
 #### 1) Open a song in WYZtracker and export it to a MUS file (Menu: File/Export). Do it with all the songs you want to include in your program.
 
@@ -251,7 +254,7 @@ The next step is to tell the player which song to sound using **WYZ_InitSong(son
 From here, we will need that in each interruption of VBLANK, **WYZ_PlayAY()** is 
 executed to send the sound data to the PSG and **WYZ_Decode()** so that the player can process the steps of the song sequence.
 
-From here, we can stop the song with **WYZ_Pause()** and recover it with **WYZ_Resume()** or **WYZ_InitSong(nSong)** to start from the beginning or to change the song.
+From here, we can stop the song with **WYZ_Pause()** and recover it with **WYZ_Resume()** or **WYZ_InitSong** to start from the beginning or to change the song.
 
 You can also launch sound effects with the **WYZ_PlayFX(number)** function at any time.
 
@@ -261,9 +264,9 @@ You can also launch sound effects with the **WYZ_PlayFX(number)** function at an
   void main(void)
   {
     WYZ_Init((unsigned int) WYZ_songs, 
-            (unsigned int) WYZ_instruments, 
-            (unsigned int) WYZ_FXs, 
-            (unsigned int) WYZ_notes);
+             (unsigned int) WYZ_instruments, 
+             (unsigned int) WYZ_FXs, 
+             (unsigned int) WYZ_notes);
             
     WYZ_InitSong(0,1);
     
@@ -287,8 +290,6 @@ You can also launch sound effects with the **WYZ_PlayFX(number)** function at an
 
 In example/test_ROM folder, there is a project included in SDCC to test all the features of the WYZplayer and that can help you learn how to use it.
 
-![](https://github.com/mvac7/SDCC_WYZplayer/blob/master/examples/test_ROM/TESTWYZ.png?raw=true)
+![TEST WYZ screenshot](https://raw.githubusercontent.com/mvac7/SDCC_WYZplayer/master/examples/test_ROM/_GFX/TESTWYZ.png)
 
-It uses two songs that I made for the game Nayade Resistance, developed by Pentacour for the MSXdev'14 compo.
-
-https://www.msxdev.org/msxdev-archive/msxdev14/
+It uses two songs that I made for the game Nayade Resistance, developed by [@Pentacour](https://twitter.com/pentacour) for the [MSXdev'14 compo](https://www.msxdev.org/msxdev-archive/msxdev14/).
