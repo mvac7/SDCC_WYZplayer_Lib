@@ -7,77 +7,77 @@ Symbol Table
     .__.ABS.                                                    =  0000 G
     .__.CPU.                                                    =  0000 L
     .__.H$L.                                                    =  0000 L
-  0 BGICMODBC1                                                     023B R
-  0 CARGA_CANCION                                                  0162 R
+  0 BGICMODBC1                                                     0239 R
+  0 CARGA_CANCION                                                  0160 R
   0 CLEAR_PSG_BUFFER                                               00AA R
-  0 COMANDOS                                                       03C8 R
-  0 COM_EFECTO                                                     040D R
-  0 COM_ENVOLVENTE                                                 041E R
-  0 CONT_ENV                                                       05D7 R
-  0 CRTBC0                                                         05E1 R
-  0 DCBC0                                                          03B5 R
-  0 DECODE_CANAL                                                   034A R
-  0 DECODE_SONG                                                    016A R
-  0 EVOLVENTES                                                     05B4 R
-  0 EXT_WORD                                                       05FF R
-  0 FCA_CONT                                                       0468 R
-  0 FIN_CANAL_A                                                    045D R
-  0 FIN_CANAL_P                                                    04F0 R
-  0 FIN_DEC_CANAL                                                  03A3 R
-  0 FIN_NOPLAYER                                                   02D6 R
-  0 FIN_NOTA_A                                                     043D R
-  0 FIN_NOTA_P                                                     04D8 R
-  0 FIN_RUTINA                                                     04B6 R
-  0 FIN_SONIDO                                                     02C8 R
-  0 FRECUENCIA_OFF                                                 05CE R
-  0 GETLEN                                                         03A8 R
-  0 INICIA_SONIDO                                                  0100 R
-  0 INICIO                                                         0255 R
-  0 INIT_DECODER                                                   01F6 R
-  0 LEJP0                                                          04CF R
-  0 LNJP0                                                          0433 R
-  0 LOCALIZA_EFECTO                                                04B7 R
-  0 LOCALIZA_NOTA                                                  03BB R
-  0 LOUT                                                           0130 R
-  0 NOTA                                                           059F R
-  0 NO_BACKUP_ENVOLVENTE                                           012A R
-  0 NO_DEC_TEMPO                                                   03DA R
-  0 NO_ENVOLVENTE                                                  0389 R
-  0 NO_ENVOLVENTES_SONIDO                                          02AC R
-  0 NO_FIN_CANAL_A                                                 0476 R
-  0 NO_FIN_CANAL_P                                                 04F8 R
-  0 NO_INC_TEMPO                                                   03DF R
-  0 NO_INSTRUMENTO                                                 037A R
-  0 NO_MODIFICA                                                    0396 R
-  0 NO_PUNTILLO                                                    0363 R
-  0 NO_RUIDO                                                       02BA R
-  0 NO_SILENCIO                                                    0359 R
-  0 NO_SILENCIO_A                                                  04A4 R
-  0 NPTJP0                                                         017D R
-  0 ORNMJP1                                                        0589 R
-  0 ORNNEG                                                         056B R
-  0 PAUTA                                                          04FF R
-  0 PAUTAS                                                         031F R
+  0 COMANDOS                                                       03CA R
+  0 COM_EFECTO                                                     040F R
+  0 COM_ENVOLVENTE                                                 0420 R
+  0 CONT_ENV                                                       05D9 R
+  0 CRTBC0                                                         05E3 R
+  0 DCBC0                                                          03B7 R
+  0 DECODE_CANAL                                                   034C R
+  0 DECODE_SONG                                                    0168 R
+  0 EVOLVENTES                                                     05B6 R
+  0 EXT_WORD                                                       0601 R
+  0 FCA_CONT                                                       046A R
+  0 FIN_CANAL_A                                                    045F R
+  0 FIN_CANAL_P                                                    04F2 R
+  0 FIN_DEC_CANAL                                                  03A5 R
+  0 FIN_NOPLAYER                                                   02D8 R
+  0 FIN_NOTA_A                                                     043F R
+  0 FIN_NOTA_P                                                     04DA R
+  0 FIN_RUTINA                                                     04B8 R
+  0 FIN_SONIDO                                                     02CA R
+  0 FRECUENCIA_OFF                                                 05D0 R
+  0 GETLEN                                                         03AA R
+  0 INICIA_SONIDO                                                  00FE R
+  0 INICIO                                                         0253 R
+  0 INIT_DECODER                                                   01F4 R
+  0 LEJP0                                                          04D1 R
+  0 LNJP0                                                          0435 R
+  0 LOCALIZA_EFECTO                                                04B9 R
+  0 LOCALIZA_NOTA                                                  03BD R
+  0 LOUT                                                           012E R
+  0 NOTA                                                           05A1 R
+  0 NO_BACKUP_ENVOLVENTE                                           0128 R
+  0 NO_DEC_TEMPO                                                   03DC R
+  0 NO_ENVOLVENTE                                                  038B R
+  0 NO_ENVOLVENTES_SONIDO                                          02AE R
+  0 NO_FIN_CANAL_A                                                 0478 R
+  0 NO_FIN_CANAL_P                                                 04FA R
+  0 NO_INC_TEMPO                                                   03E1 R
+  0 NO_INSTRUMENTO                                                 037C R
+  0 NO_MODIFICA                                                    0398 R
+  0 NO_PUNTILLO                                                    0365 R
+  0 NO_RUIDO                                                       02BC R
+  0 NO_SILENCIO                                                    035B R
+  0 NO_SILENCIO_A                                                  04A6 R
+  0 NPTJP0                                                         017B R
+  0 ORNMJP1                                                        058B R
+  0 ORNNEG                                                         056D R
+  0 PAUTA                                                          0501 R
+  0 PAUTAS                                                         0321 R
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180 / ZX-Next / eZ80), page 2.
 Hexadecimal [16-Bits]
 
 Symbol Table
 
-  0 PCAJP0                                                         051F R
-  0 PCAJP1                                                         0536 R
-  0 PCAJP2                                                         054B R
-  0 PCAJP3                                                         056D R
-  0 PCAJP4                                                         050B R
-  0 PCAJP5                                                         0591 R
-  0 PCAJP6                                                         057D R
-  0 PCAJP7                                                         059B R
-  0 PLAY                                                           02DC R
+  0 PCAJP0                                                         0521 R
+  0 PCAJP1                                                         0538 R
+  0 PCAJP2                                                         054D R
+  0 PCAJP3                                                         056F R
+  0 PCAJP4                                                         050D R
+  0 PCAJP5                                                         0593 R
+  0 PCAJP6                                                         057F R
+  0 PCAJP7                                                         059D R
+  0 PLAY                                                           02DE R
   0 PLAYER_OFF                                                     00A5 R
-  0 REPRODUCE_SONIDO                                               0267 R
-  0 ROUT                                                           010F R
-  0 SILENCIO_ENVOLVENTE                                            0491 R
-  0 SI_RUIDO                                                       02C0 R
-  0 TABLA_NOTAS                                                    05A7 R
+  0 REPRODUCE_SONIDO                                               0269 R
+  0 ROUT                                                           010D R
+  0 SILENCIO_ENVOLVENTE                                            0493 R
+  0 SI_RUIDO                                                       02C2 R
+  0 TABLA_NOTAS                                                    05A9 R
   1 _AYREGS                                                        0059 GR
   1 _CANAL_A                                                       000A GR
   1 _CANAL_B                                                       000C GR
@@ -111,6 +111,19 @@ Symbol Table
   1 _PUNTERO_P_DECC                                                0020 GR
   1 _PUNTERO_P_DECP                                                0038 GR
   1 _PUNTERO_SONIDO                                                0047 GR
+  0 _PlayAY                                                        010D GR
+  0 _PlayFX                                                        00ED GR
+  0 _Player_Decode                                                 0253 GR
+  0 _Player_Init                                                   0000 GR
+  0 _Player_InitSong                                               0149 GR
+  0 _Player_Loop                                                   00D0 GR
+  0 _Player_Pause                                                  00A5 GR
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180 / ZX-Next / eZ80), page 3.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+  0 _Player_Resume                                                 00CA GR
   1 _REG_NOTA_A                                                    0028 GR
   1 _REG_NOTA_B                                                    002A GR
   1 _REG_NOTA_C                                                    002C GR
@@ -118,11 +131,6 @@ Symbol Table
   1 _SELECT_CANAL_B                                                00BA GR
   1 _SELECT_CANAL_C                                                00C1 GR
   1 _SFX_H                                                         0040 GR
-ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180 / ZX-Next / eZ80), page 3.
-Hexadecimal [16-Bits]
-
-Symbol Table
-
   1 _SFX_L                                                         003E GR
   1 _SFX_MIX                                                       0044 GR
   1 _SFX_V                                                         0042 GR
@@ -140,24 +148,16 @@ Symbol Table
   1 _VOL_INST_A                                                    0029 GR
   1 _VOL_INST_B                                                    002B GR
   1 _VOL_INST_C                                                    002D GR
-  0 _WYZ_Decode                                                    0255 GR
-  0 _WYZ_Init                                                      0000 GR
-  0 _WYZ_InitSong                                                  014B GR
-  0 _WYZ_Loop                                                      00D2 GR
-  0 _WYZ_Pause                                                     00A5 GR
-  0 _WYZ_PlayAY                                                    010F GR
-  0 _WYZ_PlayFX                                                    00EF GR
-  0 _WYZ_Resume                                                    00CC GR
   1 _WYZstate                                                      0000 GR
-  0 resetLOOP                                                      00EC R
-  0 setLoop                                                        00E3 R
+  0 resetLOOP                                                      00EA R
+  0 setLoop                                                        00E1 R
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180 / ZX-Next / eZ80), page 4.
 Hexadecimal [16-Bits]
 
 Area Table
 
-   0 _CODE                                      size  609   flags    0
+   0 _CODE                                      size  60B   flags    0
    1 _DATA                                      size   CE   flags    0
    2 _INITIALIZED                               size    0   flags    0
    3 _DABS                                      size    0   flags    8

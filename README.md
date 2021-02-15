@@ -17,6 +17,7 @@ Programming language: C and Z80 assembler
 
 ## History of versions:
 
+- v1.2 (15/02/2021) same function names in music libraries
 - v1.1 (18/01/2021) Same nomenclature for function names on WYZ and Vortex players #3
 - v1.0 (28/4/2019) 
 - v0.9 (27/4/2013)
@@ -101,14 +102,14 @@ I want to give a special thanks to all those who freely share their knowledge wi
 
 ## 5 Functions
 
-* **WYZ_Init**(many input data) - Init player
-* **WYZ_InitSong**(char numSong, char loop) - Init song
-* **WYZ_Decode**() - Process the next step in the song sequence
-* **WYZ_PlayAY**() - Send data to AY registers. Execute on each interruption of VBLANK
-* **WYZ_Loop**(char loop) - Change loop mode (false = 0, true = 1)
-* **WYZ_Pause**() - Pause song playback
-* **WYZ_Resume**() - Resume song playback
-* **WYZ_PlayFX**(char numSound) - Play Sound Effect
+* **Player_Init**(many input data) - Initialize the Player
+* **Player_InitSong**(char numSong, char loop) - Initialize song
+* **Player_Decode**() - Process the next step in the song sequence
+* **PlayAY**() - Send data from AYREGS buffer to AY registers. (Execute on each interruption of VBLANK)
+* **Player_Loop**(char loop) - Change loop mode (false = 0, true = 1)
+* **Player_Pause**() - Pause song playback
+* **Player_Resume**() - Resume song playback
+* **PlayFX**(char numSound) - Play Sound Effect
 
 
 
@@ -238,37 +239,38 @@ This will generate a .rel file that you should include along with WYZplayer.rel 
 ```
 
 
+
 ### 7.3 Control music playback
 
-The first step is to start the Player using the **WYZ_Init** function.
+The first step is to start the Player using the **Player_Init** function.
 You will have to provide the addresses of the indexes of the instruments, FXs, the sequences of the songs and the address of the frequency table of the notes.
 These addresses are collected from WYZsongdata.h, which you should include in your sources.
 
 The initialization statement will always be the same:
 ```
-WYZ_Init((unsigned int) WYZ_songs, (unsigned int) WYZ_instruments, (unsigned int) WYZ_FXs, (unsigned int) WYZ_notes);
+Player_Init((unsigned int) WYZ_songs, (unsigned int) WYZ_instruments, (unsigned int) WYZ_FXs, (unsigned int) WYZ_notes);
 ```        
 
-The next step is to tell the player which song to sound using **WYZ_InitSong(song number, loop status)**
+The next step is to tell the player which song to sound using **Player_InitSong(song_number, loop_status)**
 
-From here, we will need that in each interruption of VBLANK, **WYZ_PlayAY()** is 
-executed to send the sound data to the PSG and **WYZ_Decode()** so that the player can process the steps of the song sequence.
+From here, we will need that in each interruption of VBLANK, **PlayAY()** is 
+executed to send the sound data to the PSG and **Player_Decode()** so that the player can process the steps of the song sequence.
 
-From here, we can stop the song with **WYZ_Pause()** and recover it with **WYZ_Resume()** or **WYZ_InitSong** to start from the beginning or to change the song.
+From here, we can stop the song with **Player_Pause()** and recover it with **Player_Resume()** or **Player_InitSong** to start from the beginning or to change the song.
 
-You can also launch sound effects with the **WYZ_PlayFX(number)** function at any time.
+You can also launch sound effects with the **PlayFX(number)** function at any time.
 
 
 **Example:**
 ```
   void main(void)
   {
-    WYZ_Init((unsigned int) WYZ_songs, 
+    Player_Init((unsigned int) WYZ_songs, 
              (unsigned int) WYZ_instruments, 
              (unsigned int) WYZ_FXs, 
              (unsigned int) WYZ_notes);
             
-    WYZ_InitSong(0,1);
+    Player_InitSong(0,1);
     
     while(1)
     {
@@ -276,9 +278,9 @@ You can also launch sound effects with the **WYZ_PlayFX(number)** function at an
     halt
   __endasm;
   
-      WYZ_PlayAY();
+      PlayAY();
     
-      WYZ_Decode();
+      Player_Decode();
       
     }
   } 

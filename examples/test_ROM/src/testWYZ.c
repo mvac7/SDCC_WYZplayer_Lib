@@ -1,6 +1,6 @@
 /* =============================================================================
-  Test SDCC WYZplayer v1.1
-  Version: 1.2 (18/1/2021)
+  Test SDCC WYZplayer Lib
+  Version: 1.3 (15/2/2021)
   Author: mvac7 <mvac7303b@gmail.com>
   Architecture: MSX
   Format: C Object (SDCC .rel)
@@ -10,9 +10,10 @@
   Test the different functionalities of the SDCC adaptation of the WYZ player.
     
   History of versions:
-  -v1.2 (18/1/2021) adapted to v1.1 from SDCC WYZ Player
-  -v1.1 (9/7/2019)
-  -v1.0 (28/5/2019)
+  - 1.3 (15/2/2021) Adaptation to WYZ_Player v1.2 (function names)
+  - 1.2 (18/1/2021) adapted to v1.1 from SDCC WYZ Player
+  - 1.1 (9/7/2019)
+  - 1.0 (28/5/2019)
 ============================================================================= */
 
 #include "../include/newTypes.h"
@@ -68,15 +69,15 @@ void ShowVumeter(char channel, char value);
 void SetSPRITES();
 
 void PlaySong();
-void playFX(char FXnumber);
+void Play_SoundEffect(char FXnumber);
 void PauseSong();
 void ChangeLoop();
 void showLoopStatus();
 
 
 // constants  ------------------------------------------------------------------
-const char text01[] = "Test WYZ player Lib for SDCC";
-const char text02[] = "v1.2 (18/1/2021)";
+const char text01[] = "Test v1.3 (15/2/2021)";
+const char text02[] = "WYZ Player Lib v1.2";
 
 //const char presskey[] = "Press a key to Play";
 
@@ -105,11 +106,13 @@ char _songNumber;
 
 void my_isr0(void) __interrupt 
 {
-	DI;
-	READ_VDP_STATUS;
+//	DI;
+//	READ_VDP_STATUS;     <<---- It is not necessary as the ISR in the BIOS does.
+
+__asm push  AF __endasm;
 
     
-  WYZ_PlayAY();
+  PlayAY();
 
 __asm  
   ;vuelca a VRAM buffer atributos sprites
@@ -119,8 +122,8 @@ __asm
   call 0x005C  
 __endasm;
 
-   
-  EI;
+__asm pop   AF __endasm;     
+//  EI;
 }
 
 
@@ -134,8 +137,7 @@ void main(void)
   char keyPressed;
      
   uint conta = 0;
-  //uint songStep;
-  
+
   keyB0pressStatus=false;
   keyB6pressStatus=false;
   keyB7pressStatus=false;
@@ -154,29 +156,13 @@ void main(void)
   PRINT(text01);
   PRINT("\n");
   PRINT(text02);
-    
-   
-  //PRINT("\n\n");
+     
   
-  //LOCATE(0,10);
-  //PRINT(presskey);
-
- 
-  
-  WYZ_Init((unsigned int) WYZ_songs, 
-          (unsigned int) WYZ_instruments, 
-          (unsigned int) WYZ_FXs, 
-          (unsigned int) WYZ_notes);   
+  Player_Init((unsigned int) WYZ_songs, 
+              (unsigned int) WYZ_instruments, 
+              (unsigned int) WYZ_FXs, 
+              (unsigned int) WYZ_notes);   
         
-  //PlaySong();
-  
-  
-  
-  //_isPlay=1;  
-  
-  //firstPATaddr = PT3_CrPsPtr;
-  
-  //INKEY();
    
   LOCATE(0,3);
   PRINT("F1 or F2 for play a song\n");
@@ -228,13 +214,13 @@ void main(void)
     {
       if(keyB0pressStatus==false)
       {
-        if (!(keyPressed & Bit1)) playFX(0);
-        if (!(keyPressed & Bit2)) playFX(1);
-        if (!(keyPressed & Bit3)) playFX(2);
-        if (!(keyPressed & Bit4)) playFX(3);
-        if (!(keyPressed & Bit5)) playFX(4);
-        if (!(keyPressed & Bit6)) playFX(5);
-        if (!(keyPressed & Bit7)) playFX(6);
+        if (!(keyPressed & Bit1)) Play_SoundEffect(0);
+        if (!(keyPressed & Bit2)) Play_SoundEffect(1);
+        if (!(keyPressed & Bit3)) Play_SoundEffect(2);
+        if (!(keyPressed & Bit4)) Play_SoundEffect(3);
+        if (!(keyPressed & Bit5)) Play_SoundEffect(4);
+        if (!(keyPressed & Bit6)) Play_SoundEffect(5);
+        if (!(keyPressed & Bit7)) Play_SoundEffect(6);
       }      
     }else{
       keyB0pressStatus=false;        
@@ -294,10 +280,9 @@ void main(void)
       keyB7pressStatus=false;        
     }
     
+   
     
-    
-    
-    WYZ_Decode();
+    Player_Decode();
     
   }
 
@@ -314,7 +299,7 @@ void main(void)
 
 void PlaySong()
 { 
-  WYZ_InitSong(_songNumber, _loopState);
+  Player_InitSong(_songNumber, _loopState);
   
   LOCATE(0,10);
   
@@ -333,6 +318,7 @@ void PlaySong()
 }
 
 
+
 void showLoopStatus()
 {
   LOCATE(0,14);
@@ -342,9 +328,9 @@ void showLoopStatus()
 
 
 
-void playFX(char FXnumber)
+void Play_SoundEffect(char FXnumber)
 {
-  WYZ_PlayFX(FXnumber);
+  PlayFX(FXnumber);
   keyB0pressStatus=true;
 }
 
@@ -352,8 +338,8 @@ void playFX(char FXnumber)
 
 void PauseSong()
 {
-  if((WYZstate & 0b00000010)==0) WYZ_Resume();  //AND binario  
-  else WYZ_Pause();  
+  if((WYZstate & 0b00000010)==0) Player_Resume();  //AND binario  
+  else Player_Pause();  
 }
 
 
@@ -361,9 +347,9 @@ void PauseSong()
 void ChangeLoop()
 {
   _loopState=!_loopState;
-  WYZ_Loop(_loopState);
-  //if((WYZstate & 0b00010000)==0) WYZ_Loop(true); 
-  //else WYZ_Loop(false);
+  Player_Loop(_loopState);
+  //if((WYZstate & 0b00010000)==0) Player_Loop(true); 
+  //else Player_Loop(false);
   showLoopStatus();  
 }
 

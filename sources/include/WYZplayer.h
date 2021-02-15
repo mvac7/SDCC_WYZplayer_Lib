@@ -1,6 +1,6 @@
 /* =============================================================================
  SDCC WYZ player for MSX
- Version: 1.1 (18/01/2021)
+ Version: 1.2 (15/02/2021)
  Author: MSX PSG proPLAYER v0.3 (09.03.2016) by WYZ/Iggy Rock
          Adapted to SDCC: mvac7/303bcn > <mvac7303b@gmail.com>
  Architecture: MSX
@@ -58,34 +58,92 @@ extern char AYREGS[16];       //PSG registers buffer
 //extern unsigned int TABLA_SONIDOS; //FXs index
 //extern unsigned int DATOS_NOTAS;   //Data of the frequencies of the notes
 
-
-
 //------------------------------------------------------------------------------
 
-// Init player
-void WYZ_Init(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked;
 
-// Init song
-void WYZ_InitSong(char numSong, char loop); 
 
-// Process the next step in the song sequence
-void WYZ_Decode(); 
+/* =============================================================================
+ Player_Init
+ Description: Initialize the Player
+ Input:       (unsigned int) Songs data index memory address
+              (unsigned int) Instruments data index memory address
+              (unsigned int) FXs data index memory address
+              (unsigned int) Notes Table memory address
+ Output:      -
+============================================================================= */
+void Player_Init(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs);
 
-// Send data to AY registers. Execute on each interruption of VBLANK
-void WYZ_PlayAY();   
 
-// Play Sound Effect
-void WYZ_PlayFX(char numSound); 
 
-// Change loop mode. 
-// loop= false = 0, true = 1
-void WYZ_Loop(char loop);  
+/* =============================================================================
+ Player_Pause
+ Description: Pause song playback
+ Input:       -
+ Output:      -
+============================================================================= */
+void Player_Pause();  
 
-// Pause song playback
-void WYZ_Pause();  
 
-// Resume song playback
-void WYZ_Resume(); 
+
+/* =============================================================================
+ Player_Resume
+ Description: Resume song playback
+ Input:       -
+ Output:      -
+============================================================================= */ 
+void Player_Resume(); 
+
+
+
+/* =============================================================================
+ Player_Loop
+ Description: Change loop mode
+ Input:       [char] false = 0, true = 1
+ Output:      -
+============================================================================= */ 
+void Player_Loop(char loop);
+
+
+
+/* =============================================================================
+ PlayFX
+ Description: Play Sound Effect
+ Input:       (char) FX number
+ Output:      -
+============================================================================= */
+void PlayFX(char numSound); 
+
+
+
+/* =============================================================================
+ PlayAY
+ Description: Send data from AYREGS buffer to AY registers.
+              Execute on each interruption of VBLANK
+ Input:       -
+ Output:      -
+============================================================================= */
+void PlayAY();
+
+
+
+/* =============================================================================
+ Player_InitSong
+ Description: Initialize song
+ Input:       [char] song number
+              [char] loop status (false = 0, true = 1)
+ Output:      -
+============================================================================= */
+void Player_InitSong(char numSong, char loop); 
+
+
+
+/* =============================================================================
+ Player_Decode
+ Description: Process the next step in the song sequence 
+ Input:       -
+ Output:      -
+============================================================================= */
+void Player_Decode(); 
 
 
 

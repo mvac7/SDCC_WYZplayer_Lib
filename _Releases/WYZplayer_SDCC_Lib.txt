@@ -1,5 +1,6 @@
 SDCC WYZ Player Library for MSX
 
+Version: 1.2 (15/02/2021)
 Architecture: MSX
 Programming language: Assembler and C (SDCC)
 Format: .rel (SDCC object file)
@@ -13,6 +14,9 @@ WEB:
 - http://www.cpcwiki.eu/index.php/WYZTracker
   
 ## History of versions:
+- v1.2 (15/02/2021) same function names in music libraries
+- v1.1 (18/01/2021) Same nomenclature for function names on WYZ and Vortex 
+                    players
 - v1.0 (28/4/2019) 
 - v0.9 (27/4/2013)
 
@@ -96,14 +100,101 @@ For C:
 --------------------------------------------------------------------------------
 5 Functions
 
-- WYZInit(many input data) Init player
-- WYZloadSong(char numSong) Init song
-- WYZdecode() Decode a frame from WYZ song
-- WYZplayAY() Send data to AY registers. Execute on each interruption of VBLANK
-- WYZsetLoop(char mode) Change loop mode. false = 0, true = 1
-- WYZpause() Pause song playback
-- WYZresume() Resume song playback
-- WYZplayFX(char numSound) Play Sound Effect
+5.1 Player_Init
+
+    void Player_Init(unsigned int addrSONGs, 
+                     unsigned int addrInstruments, 
+                     unsigned int addrFXs, 
+                     unsigned int addrFreqs);
+                     
+    Initialize the Player
+    
+    Input:       [unsigned int] Songs data index memory address
+                 [unsigned int] Instruments data index memory address
+                 [unsigned int] FXs data index memory address
+                 [unsigned int] Notes Table memory address
+    Output:      -
+
+
+
+5.2 Player_InitSong
+
+    void Player_InitSong(char numSong, char loop)
+    
+    Initialize song
+    
+    Input:       [char] song number
+                 [char] loop status (false = 0, true = 1)
+    
+    Output:      -
+
+
+
+5.3 Player_Decode
+
+    void Player_Decode()
+    
+    Process the next step in the song sequence
+    
+    Input:       -
+    Output:      -
+
+
+
+5.4 PlayAY
+
+    void PlayAY()
+    
+    Send data from AYREGS buffer to AY registers.
+    Execute on each interruption of VBLANK.
+    
+    Input:       -
+    Output:      -
+    
+
+
+5.5 Player_Loop
+
+    void Player_Loop(char loop)
+    
+    Change loop mode
+    
+    Input:       [char] false = 0, true = 1
+    Output:      -
+
+
+
+5.6 Player_Pause
+
+    void Player_Pause()
+    
+    Pause song playback
+ 
+    Input:       -
+    Output:      -
+
+
+
+5.7 Player_Resume
+
+    void Player_Resume()
+    
+    Resume song playback
+    
+    Input:       -
+    Output:      -
+
+
+
+5.8 PlayFX
+
+    void PlayFX(char numSound)
+    
+    Play Sound Effect
+    
+    Input:       (char) FX number
+    Output:      -
+
 
 
 --------------------------------------------------------------------------------
@@ -248,35 +339,36 @@ your sources.
 
 The initialization statement will always be the same:
 
-  WYZinit((unsigned int) WYZ_songs, 
-          (unsigned int) WYZ_instruments, 
-          (unsigned int) WYZ_FXs, 
-          (unsigned int) WYZ_notes);
+  Player_Init((unsigned int) WYZ_songs, 
+              (unsigned int) WYZ_instruments, 
+              (unsigned int) WYZ_FXs, 
+              (unsigned int) WYZ_notes);
         
 
 The next step is to tell the player which song to sound using 
-  WYZloadSong(song number)
+  Player_InitSong(song_number, loop_status)
 
-From here, we will need that in each interruption of VBLANK, WYZplayAY() is 
-executed to send the sound data to the PSG and WYZdecode() so that the player 
-can process the steps of the song sequence.
+From here, we will need that in each interruption of VBLANK, PlayAY() is 
+executed to send the sound data to the PSG and Player_Decode() so that the 
+player can process the steps of the song sequence.
 
-From here, we can stop the song with WYZpause() and recover it with WYZresume()
-or WYZloadSong(nSong) to start from the beginning or to change the song.
+From here, we can stop the song with WYZpause() and recover it with 
+Player_Resume() or Player_InitSong(nSong) to start from the beginning or to 
+change the song.
 
-You can also launch sound effects with the WYZplayFX(number) function at any 
+You can also launch sound effects with the PlayFX(number) function at any 
 time.
 
 Example:
 
 void main(void)
 {
-  WYZinit((unsigned int) WYZ_songs, 
+  Player_Init((unsigned int) WYZ_songs, 
           (unsigned int) WYZ_instruments, 
           (unsigned int) WYZ_FXs, 
           (unsigned int) WYZ_notes);
           
-  WYZloadSong(0);
+  Player_InitSong(0,1);
   
   while(1)
   {
@@ -284,9 +376,9 @@ __asm
   halt
 __endasm;
 
-    WYZplayAY();
+  PlayAY();
   
-    WYZdecode();
+  Player_Decode();
     
   }
 } 
@@ -299,5 +391,5 @@ In example/test_ROM folder, there is a project included in SDCC to test all the
 features of the WYZplayer and that can help you learn how to use it.
 
 It uses two songs that I made for the game Nayade Resistance, developed by 
-Pentacour for the MSXdev'14 compo.
-https://www.msxdev.org/msxdev-archive/msxdev14/
+Pentacour <https://twitter.com/pentacour> for the MSXdev'14 compo.
+<https://www.msxdev.org/msxdev-archive/msxdev14/>

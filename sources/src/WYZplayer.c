@@ -1,6 +1,6 @@
 /* =============================================================================
  SDCC WYZ player for MSX
- Version: 1.1 (18/01/2021)
+ Version: 1.2 (15/02/2021)
  Author: MSX PSG proPLAYER v0.3 (09.03.2016) by WYZ/Iggy Rock
          Adapted to SDCC: mvac7/303bcn > <mvac7303b@gmail.com>
  Architecture: MSX
@@ -13,10 +13,11 @@
  Adaptation of the WYZ music player for programming in C with the SDCC compiler.
  
  History of versions:
- - v1.1 (18/01/2021) same nomenclature for function names on WYZ and Vortex 
+ - 1.2 (15/02/2021) same function names in music libraries
+ - 1.1 (18/01/2021) same nomenclature for function names on WYZ and Vortex 
                      players #3
- - v1.0 (28/4/2019) 
- - v0.9 (27/4/2013)
+ - 1.0 (28/4/2019) 
+ - 0.9 (27/4/2013)
 ============================================================================= */
 
 
@@ -181,12 +182,15 @@ char TABLA_DATOS_CANAL_SFX[6];
 
 
 /* =============================================================================
- WYZinit
- Description: Init player
- Input:       -
- Output:      -
+ Player_Init
+ Description: Initialize the Player
+ Input:       (unsigned int) Songs data index memory address
+              (unsigned int) Instruments data index memory address
+              (unsigned int) FXs data index memory address
+              (unsigned int) Notes Table memory address
+ Output:      
 ============================================================================= */
-void WYZ_Init(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked
+void Player_Init(unsigned int addrSONGs, unsigned int addrInstruments, unsigned int addrFXs, unsigned int addrFreqs) __naked
 {
 addrSONGs;
 addrInstruments;
@@ -287,19 +291,19 @@ __asm
     		
 __endasm;
 }         
-// ----------------------------------------------------------------------------- <<< END WYZinit      	
+// ----------------------------------------------------------------------------- <<< END Player_Init      	
 
 
 
 
 
 /* =============================================================================
- WYZ_Pause
+ Player_Pause
  Description: Pause song playback
  Input:       -
  Output:      -
 ============================================================================= */
-void WYZ_Pause()
+void Player_Pause() __naked
 {
 __asm
 
@@ -326,12 +330,11 @@ CLEAR_PSG_BUFFER:
    LD   BC,#14
    LDIR		
    
-   CALL	ROUT
+   jp	ROUT
    
-   RET
 __endasm;
 }
-// ----------------------------------------------------------------------------- <<< END WYZ_Pause
+// ----------------------------------------------------------------------------- <<< END Player_Pause
 
 
 
@@ -339,12 +342,12 @@ __endasm;
 
 
 /* =============================================================================
- WYZresume
+ Player_Resume
  Description: Resume song playback
  Input:       -
  Output:      -
 ============================================================================= */  	
-void WYZ_Resume() __naked
+void Player_Resume() __naked
 {
 __asm
    LD      HL,#_WYZstate       
@@ -353,19 +356,19 @@ __asm
    RET
 __endasm;
 }
-// ----------------------------------------------------------------------------- <<< END WYZresume
+// ----------------------------------------------------------------------------- <<< END Player_Resume
 
 
 
 
 
 /* =============================================================================
- WYZsetLoop
+ Player_Loop
  Description: Change loop mode
  Input:       [char] false = 0, true = 1
  Output:      -
 ============================================================================= */  	
-void WYZ_Loop(char loop) __naked
+void Player_Loop(char loop) __naked
 {
 loop;
 __asm
@@ -395,19 +398,19 @@ resetLOOP:
 
 __endasm;
 }
-// ----------------------------------------------------------------------------- <<< END WYZloop
+// ----------------------------------------------------------------------------- <<< END Player_Loop
 
 
 
 
 
 /* =============================================================================
- WYZplayFX
- Description: Play FX
- Input:       -
+ PlayFX
+ Description: Play Sound Effect
+ Input:       (char) FX number
  Output:      -
 ============================================================================= */
-void WYZ_PlayFX(char numSound) __naked
+void PlayFX(char numSound) __naked
 {
 numSound;
 __asm
@@ -439,7 +442,7 @@ INICIA_SONIDO:
     
 __endasm;
 } 
-// ----------------------------------------------------------------------------- <<< END WYZplaySound
+// ----------------------------------------------------------------------------- <<< END PlayFX
 
 
 
@@ -449,13 +452,13 @@ __endasm;
 
  
 /* =============================================================================
- WYZPlay
- Description: Send data to AY registers
-       Execute on each interruption of VBLANK
+ PlayAY
+ Description: Send data from AYREGS buffer to AY registers.
+              Execute on each interruption of VBLANK
  Input:       -
  Output:      -
 ============================================================================= */
-void WYZ_PlayAY() __naked
+void PlayAY() __naked
 {
 __asm
 
@@ -510,7 +513,7 @@ LOUT:
 
 __endasm;
 }
-// ----------------------------------------------------------------------------- <<< END WYZPlay
+// ----------------------------------------------------------------------------- <<< END PlayAY
 
 
 
@@ -521,12 +524,13 @@ __endasm;
 
 
 /* =============================================================================
- WYZloadSong
- Description: Init song.
+ Player_InitSong
+ Description: Initialize song
  Input:       [char] song number
+              [char] loop status (false = 0, true = 1)
  Output:      -
 ============================================================================= */
-void WYZ_InitSong(char numSong, char loop) __naked
+void Player_InitSong(char numSong, char loop) __naked
 {
 numSong;
 loop;
@@ -723,7 +727,7 @@ BGICMODBC1:
 
 __endasm;
 }
-// ----------------------------------------------------------------------------- <<< END WYZloadSong
+// ----------------------------------------------------------------------------- <<< END Player_InitSong
 
 
 
@@ -736,18 +740,18 @@ __endasm;
 
 
 /* =============================================================================
- WYZdecode
+ Player_Decode
  Description: Process the next step in the song sequence 
  Input:       -
  Output:      -
 ============================================================================= */        
-void WYZ_Decode() __naked
+void Player_Decode() __naked
 {
 __asm
 
    
 INICIO:
-;   push IX
+   push IX
 ;   CALL ROUT
 
 ;   CALL MIXER
@@ -761,7 +765,7 @@ INICIO:
 
    CALL PLAY
 
-;   pop  IX
+   pop  IX
    RET
 
 
@@ -1436,6 +1440,6 @@ EXT_WORD:
 
 __endasm;
 }
-// ----------------------------------------------------------------------------- <<< END WYZdecode 
+// ----------------------------------------------------------------------------- <<< END Player_Decode 
 
 
