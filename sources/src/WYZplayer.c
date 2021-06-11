@@ -28,6 +28,20 @@
 
 // -----------------------------------------------------------------------------
 
+
+//Internal AY
+#define AY0index 0xA0
+#define AY0write 0xA1
+#define AY0read  0xA2
+
+//External AY
+/*
+#define AY0index 0x10
+#define AY0write 0x11
+#define AY0read  0x12*/
+
+
+
 /*
 WYZstate = INTERR            
 INTERRUPTORES 1=ON 0=OFF
@@ -243,7 +257,7 @@ __asm
     LD      HL,#_AYREGS+AY_ToneA+1       	
     LD      (#_SELECT_CANAL_A+2),HL
    
-    LD      HL,#_AYREGS+AY_AmplA       	
+    LD      HL,#_AYREGS+AY_AmpA       	
     LD      (#_SELECT_CANAL_A+4),HL
    
     LD      A,#0b10110001
@@ -256,7 +270,7 @@ __asm
     LD      HL,#_AYREGS+AY_ToneB+1       	
     LD      (#_SELECT_CANAL_B+2),HL
    
-    LD      HL,#_AYREGS+AY_AmplB       	
+    LD      HL,#_AYREGS+AY_AmpB       	
     LD      (#_SELECT_CANAL_B+4),HL
    
     LD      A,#0b10101010
@@ -269,7 +283,7 @@ __asm
     LD      HL,#_AYREGS+AY_ToneC+1       	
     LD      (#_SELECT_CANAL_C+2),HL
    
-    LD      HL,#_AYREGS+AY_AmplC       	
+    LD      HL,#_AYREGS+AY_AmpC       	
     LD      (#_SELECT_CANAL_C+4),HL
    
     LD      A,#0b10011100
@@ -481,10 +495,10 @@ ROUT:
 ;END register 7 ----------------------------------------------------------------
 
 
-   LD   A,(#_PSG_REG+AY_EnvTp)			
-   AND  A			;ES CERO?
-   JR   Z,NO_BACKUP_ENVOLVENTE
-   LD   (#_ENVOLVENTE_BACK),A	;08.13 / GUARDA LA ENVOLVENTE EN EL BACKUP
+;   LD   A,(#_PSG_REG+AY_EnvShape)			
+;   AND  A			;ES CERO?
+;   JR   Z,NO_BACKUP_ENVOLVENTE
+;   LD   (#_ENVOLVENTE_BACK),A	;08.13 / GUARDA LA ENVOLVENTE EN EL BACKUP
 
 NO_BACKUP_ENVOLVENTE:
    XOR  A
@@ -499,15 +513,19 @@ LOUT:
    INC     A
    CP      #13
    JR      NZ,LOUT
+   
    OUT     (C),A
    LD      A,(HL)
    AND     A
    RET     Z
+   
    INC     C
-   OUT     (C),A    
+   OUT     (C),A
+   LD      (#_ENVOLVENTE_BACK),A
+       
    XOR     A
-   LD      (#_AYREGS+AY_EnvTp),A
-   LD	   (#_PSG_REG+AY_EnvTp),A
+   LD      (#_AYREGS+AY_EnvShape),A
+   LD	   (#_PSG_REG+AY_EnvShape),A
    
    RET
 
@@ -808,15 +826,15 @@ REPRODUCE_SONIDO:
    LD   (DE),A
    INC  HL
    LD   A,(HL)
-   LD   (#_AYREGS+AY_Env),A
+   LD   (#_AYREGS+AY_EnvPeriod),A
    INC  HL
    LD   A,(HL)
-   LD   (#_AYREGS+AY_Env+1),A
+   LD   (#_AYREGS+AY_EnvPeriod+1),A
    INC  HL
    LD   A,(HL)
    CP   #1
    JR   Z,NO_ENVOLVENTES_SONIDO		;NO ESCRIBE LA ENVOLVENTE SI SU VALOR ES 1
-   LD   (#_AYREGS+AY_EnvTp),A
+   LD   (#_AYREGS+AY_EnvShape),A
 
 
 NO_ENVOLVENTES_SONIDO:
@@ -846,7 +864,7 @@ FIN_SONIDO:
    AND  A
    JR   Z,FIN_NOPLAYER
    ;xor  a 
-   LD   (#_AYREGS+AY_EnvTp),A			;08.13 RESTAURA LA ENVOLVENTE TRAS EL SFX
+   LD   (#_AYREGS+AY_EnvShape),A			;08.13 RESTAURA LA ENVOLVENTE TRAS EL SFX
 
 FIN_NOPLAYER:
    LD   A,#0b10111000
@@ -871,15 +889,15 @@ PLAY:
 ;INTERPRETA
    LD   IY,#_PSG_REG
    LD   IX,#_PUNTERO_A
-   LD   BC,#_PSG_REG+AY_AmplA
+   LD   BC,#_PSG_REG+AY_AmpA
    CALL LOCALIZA_NOTA
    LD   IY,#_PSG_REG+AY_ToneB
    LD   IX,#_PUNTERO_B
-   LD   BC,#_PSG_REG+AY_AmplB
+   LD   BC,#_PSG_REG+AY_AmpB
    CALL LOCALIZA_NOTA
    LD   IY,#_PSG_REG+AY_ToneC
    LD   IX,#_PUNTERO_C
-   LD   BC,#_PSG_REG+AY_AmplC
+   LD   BC,#_PSG_REG+AY_AmpC
    CALL LOCALIZA_NOTA
    LD   IX,#_PUNTERO_P    ;EL CANAL DE EFECTOS ENMASCARA OTRO CANAL
    CALL LOCALIZA_EFECTO
@@ -887,15 +905,15 @@ PLAY:
 PAUTAS:
    LD   IY,#_PSG_REG+AY_ToneA
    LD   IX,#_PUNTERO_P_A
-   LD   HL,#_PSG_REG+AY_AmplA
+   LD   HL,#_PSG_REG+AY_AmpA
    CALL PAUTA    ;PAUTA CANAL A
    LD   IY,#_PSG_REG+AY_ToneB
    LD   IX,#_PUNTERO_P_B
-   LD   HL,#_PSG_REG+AY_AmplB
+   LD   HL,#_PSG_REG+AY_AmpB
    CALL PAUTA    ;PAUTA CANAL B
    LD   IY,#_PSG_REG+AY_ToneC
    LD   IX,#_PUNTERO_P_C
-   LD   HL,#_PSG_REG+AY_AmplC
+   LD   HL,#_PSG_REG+AY_AmpC
    CALL PAUTA    ;PAUTA CANAL C
 
    RET
@@ -1064,8 +1082,8 @@ NO_INC_TEMPO:
    LD      H,B
    RES     4,(HL)     ;APAGA EFECTO ENVOLVENTE
    XOR     A
-   LD      (#_AYREGS+AY_EnvTp),A
-   LD      (#_PSG_REG+AY_EnvTp),A
+   LD      (#_AYREGS+AY_EnvShape),A
+   LD      (#_PSG_REG+AY_EnvShape),A
    ;LD     [ENVOLVENTE_BACK],A   ;08.13 RESETEA EL BACKUP DE LA ENVOLVENTE
    JR      LOCALIZA_NOTA
 
@@ -1151,10 +1169,10 @@ NO_FIN_CANAL_A:
 
 SILENCIO_ENVOLVENTE:
    LD   A,#0xFF
-   LD   (#_PSG_REG+AY_Env),A
-   LD   (#_PSG_REG+AY_Env+1),A
+   LD   (#_PSG_REG+AY_EnvPeriod),A
+   LD   (#_PSG_REG+AY_EnvPeriod+1),A
    XOR	A
-   LD   (#_PSG_REG+AY_EnvTp),A
+   LD   (#_PSG_REG+AY_EnvShape),A
    LD   0(IY),A
    LD   1(IY),A
    RET
@@ -1406,17 +1424,17 @@ CRTBC0:
     RR    E
     DJNZ  CRTBC0
     LD    A,E
-    LD    (#_PSG_REG+AY_Env),A
+    LD    (#_PSG_REG+AY_EnvPeriod),A
     LD    A,D
     AND   #0b00000011
-    LD    (#_PSG_REG+AY_Env+1),A
+    LD    (#_PSG_REG+AY_EnvPeriod+1),A
     POP   BC
     POP   AF      ;SELECCION FORMA DE ENVOLVENTE
    
     RRA
     AND   #0b00000110		;$08,$0A,$0C,$0E
     ADD   #8   
-    LD    (#_PSG_REG+AY_EnvTp),A
+    LD    (#_PSG_REG+AY_EnvShape),A
     LD    (#_ENVOLVENTE_BACK),A
     RET
 

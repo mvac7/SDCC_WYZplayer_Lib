@@ -14,7 +14,7 @@ Programming language: C and Z80 assembler
 ## Sorry!: This text is pending correction of the English translation. <<<<<<<<
 
 
-
+---
 ## History of versions:
 
 - v1.2 (15/02/2021) same function names in music libraries
@@ -23,23 +23,25 @@ Programming language: C and Z80 assembler
 - v0.9 (27/4/2013)
 
 
-
+---
 ## Index
 
 - 1 Introduction
 - 2 License
-- 3 Acknowledgments
-- 4 Requirements
+- 3 Requirements
+- 4 Acknowledgments
 - 5 Functions
 - 6 Player values
-- 7 How to use
-  - 7.1 Introduction
-  - 7.2 How to create a song data Object
-  - 7.3 Control music playback
--  8 Examples 
+- 7 Definitions
+  - 7.1 AY Registers
+- 8 How to use
+  - 8.1 Introduction
+  - 8.2 How to create a song data Object
+  - 8.3 Control music playback
+-  9 Examples 
  
 
-
+---
 ## 1 Introduction
 
 Adaptation of the WYZ Player for MSX to be used in software development in C (SDCC). 
@@ -66,7 +68,17 @@ MSX PSG proPLAYER by WYZ/Iggy Rock
 
 
 
-## 3 Acknowledgments
+## 3 Requirements
+
+* Small Device C Compiler (SDCC) v3.9 http://sdcc.sourceforge.net/
+* Hex2bin v2.5 http://hex2bin.sourceforge.net/ 
+* WYZ Tracker by Augusto Ruiz > https://github.com/AugustoRuiz/WYZTracker (for create WYZ songs)
+* A tool for convert export .MUS files from WYZ Tracker to SDCC Object File (.rel). For WinOS you have the [WYZtoSDCCobj Converter Tool](https://github.com/mvac7/mSXdevtools_WYZtoSDCCobj)  
+  
+  
+
+---
+## 4 Acknowledgments
   
 I want to give a special thanks to all those who freely share their knowledge with the MSX developer community.
 
@@ -91,15 +103,8 @@ I want to give a special thanks to all those who freely share their knowledge wi
 
 
 
-## 4 Requirements
-
-* Small Device C Compiler (SDCC) v3.9 http://sdcc.sourceforge.net/
-* Hex2bin v2.5 http://hex2bin.sourceforge.net/ 
-* WYZ Tracker by Augusto Ruiz > https://github.com/AugustoRuiz/WYZTracker (for create WYZ songs)
-* A tool for convert export .MUS files from WYZ Tracker to SDCC Object File (.rel). For WinOS you have the [WYZtoSDCCobj Converter Tool](https://github.com/mvac7/mSXdevtools_WYZtoSDCCobj)  
-  
-   
-
+ 
+---
 ## 5 Functions
 
 * **Player_Init**(many input data) - Initialize the Player
@@ -110,7 +115,6 @@ I want to give a special thanks to all those who freely share their knowledge wi
 * **Player_Pause**() - Pause song playback
 * **Player_Resume**() - Resume song playback
 * **PlayFX**(char numSound) - Play Sound Effect
-
 
 
 ## 6 Player values
@@ -127,10 +131,29 @@ I want to give a special thanks to all those who freely share their knowledge wi
 * AYREGS [array] - PSG registers values (0 to 13)
 
 
+## 7 Definitions
 
-## 7 How to use
+### 7.1 AY Registers
 
-### 7.1 Introduction 
+Label | Value | Description
+-- | -- | -- 
+AY_ToneA     |  0 | Channel A Tone Period (12 bits)
+AY_ToneB     |  2 | Channel B Tone Period (12 bits)
+AY_ToneC     |  4 | Channel C Tone Period (12 bits)
+AY_Noise     |  6 | Noise Period (5 bits)
+AY_Mixer     |  7 | Mixer
+AY_AmpA      |  8 | Channel Volume A (4 bits + B5 active Envelope)
+AY_AmpB      |  9 | Channel Volume B (4 bits + B5 active Envelope)
+AY_AmpC      | 10 | Channel Volume C (4 bits + B5 active Envelope)
+AY_EnvPeriod | 11 | Envelope Period (16 bits)
+AY_EnvShape  | 13 | Envelope Shape
+
+
+
+---
+## 8 How to use
+
+### 8.1 Introduction 
 
 The WYZ music system is designed for cross-developing:
 
@@ -142,10 +165,16 @@ The WYZ music system is designed for cross-developing:
 To be able to use it in SDCC, it has been necessary to adapt the player (this object), and the .mus data files, so they can be imported into the project.
 
 From our code in C we can access the features of the player, to which we have added some extra to facilitate control of the song.
+
+The player is based on a decoder that collects the data of a song step (frame) and translates it into data from the AY-3-8910 that writes in the `AYREGS` buffer. 
+These data should be transferred to PSG, at the beginning of the VBLANK interruption through the `PlayAY()` function.
+
+We will have control of the final sound if between the `Player_Decode()` and `PlayAY()` we modify the buffer. 
+In this way we can mute channels, generate fades or launch sound effects on the song that is playing.
      
 
 
-### 7.2 How to create a song data Object
+### 8.2 How to create a song data Object
 
 When exporting a song with WYZtracker, it generates two files:
 - **.mus** > Binary with the sequence data.
@@ -240,7 +269,7 @@ This will generate a .rel file that you should include along with WYZplayer.rel 
 
 
 
-### 7.3 Control music playback
+### 8.3 Control music playback
 
 The first step is to start the Player using the **Player_Init** function.
 You will have to provide the addresses of the indexes of the instruments, FXs, the sequences of the songs and the address of the frequency table of the notes.
@@ -287,8 +316,8 @@ You can also launch sound effects with the **PlayFX(number)** function at any ti
 ```
 
 
-
-### 8 Examples
+---
+## 9 Examples
 
 In example/test_ROM folder, there is a project included in SDCC to test all the features of the WYZplayer and that can help you learn how to use it.
 
