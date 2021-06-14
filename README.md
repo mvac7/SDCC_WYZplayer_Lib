@@ -115,16 +115,19 @@ I want to give a special thanks to all those who freely share their knowledge wi
 * **Player_Pause**() - Pause song playback
 * **Player_Resume**() - Resume song playback
 * **PlayFX**(char numSound) - Play Sound Effect
+* **char Player_IsEnd()** Indicates whether the song has finished playing. `(0 = No, 1 = Yes)`. It's only useful if you're playing a song with the loop turned off.
 
 
 ## 6 Player values
 
-* WYZstate [char] - status of player  (1=ON;0=OFF)
-  - BIT 0 = Load song
-  - BIT 1 = Play? (0 for Pause song)
-  - BIT 2 = FXs
-  - BIT 3 = SFX
-  - BIT 4 = LOOP
+* WYZstate [char] (1=ON;0=OFF)
+
+Bit | Description
+ -- | -- 
+1 | Player status
+4 | Loop
+7 | Is song End?  (0=No, 1=Yes)
+
 
 * SONG  [char]  - Number of song playing
 * TEMPO [char]  - Tempo
@@ -147,6 +150,14 @@ AY_AmpB      |  9 | Channel Volume B (4 bits + B5 active Envelope)
 AY_AmpC      | 10 | Channel Volume C (4 bits + B5 active Envelope)
 AY_EnvPeriod | 11 | Envelope Period (16 bits)
 AY_EnvShape  | 13 | Envelope Shape
+
+
+### 7.2 Switcher
+
+Label | Value
+-- | -- 
+OFF |  0
+ON  |  1
 
 
 
@@ -299,7 +310,7 @@ You can also launch sound effects with the **PlayFX(number)** function at any ti
              (unsigned int) WYZ_FXs, 
              (unsigned int) WYZ_notes);
             
-    Player_InitSong(0,1);
+    Player_InitSong(0,ON);
     
     while(1)
     {

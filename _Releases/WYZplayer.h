@@ -1,6 +1,6 @@
 /* =============================================================================
  SDCC WYZ player for MSX
- Version: 1.2 (15/02/2021)
+ Version: 1.3 (14/06/2021)
  Author: MSX PSG proPLAYER v0.3 (09.03.2016) by WYZ/Iggy Rock
          Adapted to SDCC: mvac7/303bcn > <mvac7303b@gmail.com>
  Architecture: MSX
@@ -30,6 +30,13 @@
 #define AY_AmpC      10 //Channel Volume C (4 bits + B5 active Envelope)
 #define AY_EnvPeriod 11 //Envelope Period (16 bits)
 #define AY_EnvShape  13 //Envelope Shape
+#endif
+
+
+
+#ifndef _SWITCHER
+#define _SWITCHER
+  typedef enum {OFF = 0, ON = 1} SWITCHER;
 #endif
 
 
@@ -99,6 +106,16 @@ void Player_Resume();
  Output:      -
 ============================================================================= */ 
 void Player_Loop(char loop);
+
+
+
+/* -----------------------------------------------------------------------------
+ Player_IsEnd
+ Description: Indicates whether the song has finished playing
+ Input:       -
+ Output:      [char] 0 = No, 1 = Yes 
+----------------------------------------------------------------------------- */
+char Player_IsEnd();
 
 
 

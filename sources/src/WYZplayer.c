@@ -1,6 +1,6 @@
 /* =============================================================================
  SDCC WYZ player for MSX
- Version: 1.2 (15/02/2021)
+ Version: 1.3 (14/06/2021)
  Author: MSX PSG proPLAYER v0.3 (09.03.2016) by WYZ/Iggy Rock
          Adapted to SDCC: mvac7/303bcn > <mvac7303b@gmail.com>
  Architecture: MSX
@@ -13,6 +13,7 @@
  Adaptation of the WYZ music player for programming in C with the SDCC compiler.
  
  History of versions:
+ - 1.3 (14/06/2021) Add Player_IsEnd function
  - 1.2 (15/02/2021) same function names in music libraries
  - 1.1 (18/01/2021) same nomenclature for function names on WYZ and Vortex 
                      players #3
@@ -42,14 +43,18 @@
 
 
 
+
 /*
 WYZstate = INTERR            
-INTERRUPTORES 1=ON 0=OFF
-- BIT 0=CARGA CANCION ON/OFF
-- BIT 1=PLAYER ON/OFF
-- BIT 2=EFECTOS ON/OFF
-- BIT 3=SFX ON/OFF
-- BIT 4=LOOP
+Switches: 1=ON; 0=OFF
+- BIT 0 = CARGA CANCION ON/OFF
+- BIT 1 = PLAYER ON/OFF
+- BIT 2 = EFECTOS ON/OFF
+- BIT 3 = SFX ON/OFF
+- BIT 4 = LOOP
+- BIT 5 = ?
+- BIT 6 = ?
+- BIT 7 = is END? 0=No, 1=Yes    
 */
 char WYZstate;  // (v SDCC) original player name = INTERR
 
@@ -320,7 +325,7 @@ __endasm;
 void Player_Pause() __naked
 {
 __asm
-
+    
 PLAYER_OFF:
 ;  XOR	A			
 ;  LD	[INTERR],A
@@ -372,6 +377,31 @@ __endasm;
 }
 // ----------------------------------------------------------------------------- <<< END Player_Resume
 
+
+
+
+/* -----------------------------------------------------------------------------
+ Player_IsEnd
+ Description: Indicates whether the song has finished playing
+ Input:       -
+ Output:      [char] 0 = No, 1 = Yes 
+----------------------------------------------------------------------------- */
+char Player_IsEnd() __naked
+{
+__asm
+    xor  A
+    
+    LD   HL,#_WYZstate
+    BIT  7,(HL)
+    jr   Z,retPlayerEndState
+    ld   A,#1
+    
+retPlayerEndState:    
+    ld   L,A
+    ret  
+__endasm;
+}
+// ----------------------------------------------------------------------------- <<< END Player_IsEnd
 
 
 
@@ -475,7 +505,7 @@ __endasm;
 void PlayAY() __naked
 {
 __asm
-
+    
 ROUT:
 
 ;Record register 7 of the AY38910 ----------------------------------------------
@@ -578,8 +608,9 @@ CARGA_CANCION:
    LD   (#_SONG),A   ;Nº A
    
    LD   HL,#_WYZstate       ;CARGA CANCION		
-   SET  1,(HL)   ;REPRODUCE CANCION
-
+   SET  1,(HL)              ;REPRODUCE CANCION
+   RES  7,(HL)              ;END off
+   
 
 ;DECODIFICAR
 ;IN-> WYZstate 0 ON
@@ -769,6 +800,7 @@ __asm
 
    
 INICIO:
+
    push IX
 ;   CALL ROUT
 
@@ -878,6 +910,7 @@ PLAY:
    LD   HL,#_WYZstate       ;PLAY BIT 1 ON?
    BIT  1,(HL)
    RET  Z
+   
 ;TEMPO
    LD   HL,#_TTEMPO       ;CONTADOR TEMPO
    INC  (HL)
@@ -1141,6 +1174,8 @@ FIN_CANAL_A:
    BIT  4,(HL)
    JR   NZ,FCA_CONT
    POP  AF
+   
+   SET  7,(HL)           ;End song
    JP   PLAYER_OFF
 
 FCA_CONT:
