@@ -34,6 +34,7 @@ Programming language: C and Z80 assembler
 - 6 Player values
 - 7 Definitions
   - 7.1 AY Registers
+  - 7.2 SWITCHER
 - 8 How to use
   - 8.1 Introduction
   - 8.2 How to create a song data Object
@@ -152,7 +153,7 @@ AY_EnvPeriod | 11 | Envelope Period (16 bits)
 AY_EnvShape  | 13 | Envelope Shape
 
 
-### 7.2 Switcher
+### 7.2 SWITCHER
 
 Label | Value
 -- | -- 
@@ -332,6 +333,6 @@ You can also launch sound effects with the **PlayFX(number)** function at any ti
 
 In example/test_ROM folder, there is a project included in SDCC to test all the features of the WYZplayer and that can help you learn how to use it.
 
-![TEST WYZ screenshot](https://raw.githubusercontent.com/mvac7/SDCC_WYZplayer/master/examples/test_ROM/_GFX/TESTWYZ.png)
+![TEST WYZ screenshot](https://raw.githubusercontent.com/mvac7/SDCC_WYZplayer/master/examples/test_ROM/GFX/TESTWYZ.png)
 
 It uses two songs that I made for the game Nayade Resistance, developed by [@Pentacour](https://twitter.com/pentacour) for the [MSXdev'14 compo](https://www.msxdev.org/msxdev-archive/msxdev14/).
