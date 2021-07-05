@@ -133,7 +133,7 @@ void main(void)
     
   SetSPRITES();
   
-  Install_TIMI(my_TIMI);;
+  Install_TIMI(my_TIMI);
   
   while(1)
   {
