@@ -22,7 +22,7 @@
 #include "../include/msxSystemVariables.h"
 #include "../include/msxBIOS.h"
 
-#include "../include/interrupt.h"
+#include "../include/interruptM1_Hooks.h"
 #include "../include/memory.h"
 #include "../include/keyboard.h"
 #include "../include/VDP_TMS9918A_MSXROM.h"
@@ -43,6 +43,8 @@
 
 
 // Function Declarations -------------------------------------------------------
+void my_TIMI(void);
+
 void WAIT(uint cicles);
 
 void ShowVumeter(char channel, char value);
@@ -96,34 +98,7 @@ uint firstPATaddr;
 // Functions -------------------------------------------------------------------
 
 
-void my_isr0(void) __interrupt 
-{
-//	DI;
-//	READ_VDP_STATUS;     <<---- It is not necessary as the ISR in the BIOS does.
 
-__asm push  AF __endasm;
-
-    
-  PlayAY();
-
-__asm  
-  ;vuelca a VRAM buffer atributos sprites
-  ld   HL,#_SPRBUFFER
-  ld   DE,#BASE13  
-  ld   BC,#20*4
-  call 0x005C  
-__endasm;
-
-__asm pop   AF __endasm;     
-//  EI;
-}
-
-
-
-
-
-
-//
 void main(void)
 {
   char keyPressed;
@@ -158,7 +133,7 @@ void main(void)
     
   SetSPRITES();
   
-  install_isr(my_isr0);
+  Install_TIMI(my_TIMI);;
   
   while(1)
   {
@@ -228,6 +203,26 @@ void main(void)
     
   }
 
+}
+
+
+
+void my_TIMI(void)
+{
+  PUSH_AF;
+
+    
+  PlayAY();
+
+__asm  
+  ;vuelca a VRAM buffer atributos sprites
+  ld   HL,#_SPRBUFFER
+  ld   DE,#BASE13  
+  ld   BC,#20*4
+  call 0x005C  
+__endasm;
+
+  POP_AF;  
 }
 
 

@@ -2,7 +2,7 @@
 
 ```
 Authors: 
-- MSX PSG proPLAYER V 0.3 by WYZ/Iggy Rock 09.03.2016 https://sites.google.com/site/wyzplayer/home
+- MSX PSG proPLAYER V0.3 by WYZ 09.03.2016 https://sites.google.com/site/wyzplayer/home
 - Adapted to SDCC: mvac7/303bcn > <mvac7303b@gmail.com>
 Architecture: MSX
 Format: C Object (SDCC .rel)
@@ -65,7 +65,7 @@ Enjoy it!
 
 ## 2 License
 
-MSX PSG proPLAYER by WYZ/Iggy Rock
+MSX PSG proPLAYER by WYZ
 
 
 
@@ -83,9 +83,9 @@ MSX PSG proPLAYER by WYZ/Iggy Rock
   
 I want to give a special thanks to all those who freely share their knowledge with the MSX developer community.
 
-* Iggy Rock/WYZ [(WEB)](https://sites.google.com/site/wyzplayer/home)
+* WYZ [(WEB)](https://sites.google.com/site/wyzplayer/home)
 * Augusto Ruiz [(gitHub Tracker Project)](https://github.com/AugustoRuiz/WYZTracker)
-* Avelino Herrera > [(WEB)](http://msx.atlantes.org/index_es.html)
+* Avelino Herrera > [(WEB)](http://msx.avelinoherrera.com/index_es.html)
 * Nerlaska > [(Blog)](http://albertodehoyonebot.blogspot.com.es)
 * Marq/Lieves!Tuore > [(WEB)](http://www.kameli.net/marq/) [(Lieves!Tuore)](http://www.kameli.net/lt/)
 * Fubukimaru [(gitHub)](https://github.com/Fubukimaru) > [(Blog)](http://www.gamerachan.org/fubu/)
@@ -115,8 +115,9 @@ I want to give a special thanks to all those who freely share their knowledge wi
 * **Player_Loop**(char loop) - Change loop mode (false = 0, true = 1)
 * **Player_Pause**() - Pause song playback
 * **Player_Resume**() - Resume song playback
-* **PlayFX**(char numSound) - Play Sound Effect
 * **char Player_IsEnd()** Indicates whether the song has finished playing. `(0 = No, 1 = Yes)`. It's only useful if you're playing a song with the loop turned off.
+
+* **PlayFX**(char numSound) - Play Sound Effect
 
 
 ## 6 Player values
